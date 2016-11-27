@@ -1,0 +1,13 @@
+# java binaries
+*.class
+*.jar
+
+# logfiles
+logs/
+
+# Build
+.gradle/
+build/
+
+# Editors
+xplang.sublime-workspace
