@@ -5,7 +5,9 @@
 			"folder_exclude_patterns":
 			[
 				".gradle",
-				"build"
+				"build",
+				".idea",
+				"gradle"
 			],
 			"path": "."
 		}

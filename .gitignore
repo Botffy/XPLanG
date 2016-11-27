@@ -7,7 +7,11 @@ logs/
 
 # Build
 .gradle/
+gradle/
 build/
+gradlew
+gradlew.bat
 
 # Editors
 xplang.sublime-workspace
+.idea/
