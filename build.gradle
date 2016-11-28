@@ -22,6 +22,6 @@ test {
 }
 
 task run(type: JavaExec) {
-    main = "ppke.itk.xplang.Main"
+    main = "ppke.itk.xplang.cli.Main"
     classpath = sourceSets.main.runtimeClasspath
 }
