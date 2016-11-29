@@ -5,6 +5,9 @@
 # logfiles
 logs/
 
+# generated docs
+docs/javadoc
+
 # Build
 .gradle/
 gradle/

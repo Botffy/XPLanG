@@ -21,6 +21,15 @@ test {
     }
 }
 
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    destinationDir = file('docs/javadoc')
+    options.noQualifiers = ["java", "com.sun"]
+    options.links = ['http://docs.oracle.com/javase/8/docs/api/']
+    options.charSet = 'UTF-8'
+}
+
 task run(type: JavaExec) {
     main = "ppke.itk.xplang.cli.Main"
     classpath = sourceSets.main.runtimeClasspath
