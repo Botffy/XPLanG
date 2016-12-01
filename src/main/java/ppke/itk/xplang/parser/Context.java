@@ -11,7 +11,7 @@ public class Context {
 
     private SymbolTable symbolTable = new SymbolTable();
 
-    Context() {
+    public Context() {
         log.debug("New context created.");
         openScope();
     }

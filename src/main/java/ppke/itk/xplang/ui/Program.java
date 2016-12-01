@@ -1,4 +1,4 @@
-package ppke.itk.xplang.cli;
+package ppke.itk.xplang.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

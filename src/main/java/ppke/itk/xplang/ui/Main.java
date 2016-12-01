@@ -1,4 +1,4 @@
-package ppke.itk.xplang.cli;
+package ppke.itk.xplang.ui;
 
 public class Main {
     /**

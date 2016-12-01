@@ -34,6 +34,6 @@ javadoc {
 }
 
 task run(type: JavaExec) {
-    main = "ppke.itk.xplang.cli.Main"
+    main = "ppke.itk.xplang.ui.Main"
     classpath = sourceSets.main.runtimeClasspath
 }
