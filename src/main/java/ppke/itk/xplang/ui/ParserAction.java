@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ui;
 
+import ppke.itk.xplang.lang.Grammar;
 import ppke.itk.xplang.parser.Context;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
@@ -10,17 +11,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-class ParserAction implements Action{
+class ParserAction implements Action {
+    private final Grammar grammar = new Grammar() {
+        @Override
+        public void setup(Context context) {
+            context.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
+            context.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
+            context.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
+            context.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
+            context.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
+        }
+
+        @Override
+        public void S(Parser parser) {}
+    };
+
     @Override
     public List<Action> execute() {
         Context context = new Context();
-
-        context.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
-        context.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
-        context.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
-        context.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
-        context.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
-
+        grammar.setup(context);
         Reader source = new StringReader("<_< >_>\nಠ_ಠ ¯\\_(ツ)_/¯ ಠ_ಠ\nಠ_ಠ\nಠ_ಠ\n¯\\_(ツ)_/¯ öö¯\\_(ツ)_/¯ ¯\\_(ツ)_/¯");
 
         try {
