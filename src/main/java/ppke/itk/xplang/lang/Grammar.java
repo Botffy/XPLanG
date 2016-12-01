@@ -15,16 +15,21 @@ abstract public class Grammar {
 
     public static enum Attribute {
         /**
-         * Grammars are case-sensitive by default. This attribute makes them case-insensitive. Used in the
+         * Grammars are case-sensitive by default. This attribute makes them case-insensitive. Used when compiling the
+         * regex pattern of a {@link Symbol};
          */
-        CASE_INSENSITIVE
+        CASE_INSENSITIVE;
     }
-
     private final EnumSet<Attribute> attributes;
 
     public Grammar() {
         this(EnumSet.noneOf(Attribute.class));
     }
+
+    public Grammar(Attribute caseInsensitive) {
+        this(EnumSet.of(caseInsensitive));
+    }
+
     public Grammar(EnumSet<Attribute> attributes) {
         this.attributes = attributes;
     }
@@ -47,5 +52,9 @@ abstract public class Grammar {
             builder.caseInsensitive();
         }
         return builder;
+    }
+
+    protected Symbol.Builder createSymbol(String name) {
+        return this.createSymbol().named(name);
     }
 }
