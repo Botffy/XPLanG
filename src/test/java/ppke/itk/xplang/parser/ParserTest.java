@@ -64,7 +64,7 @@ public class ParserTest {
         Parser parser = new Parser(source, this.ctx);
 
         try {
-            Token tok = parser.accept(ctx.getSymbol("FUNNY_STARE_LEFT"));
+            Token tok = parser.accept(ctx.getSymbol("FUNNY_STARE_LEFT"), null);
             assertEquals("The accepted symbol should be equal to the expected symbol",
                 ctx.getSymbol("FUNNY_STARE_LEFT"), tok.getSymbol()
             );
@@ -81,7 +81,7 @@ public class ParserTest {
         Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
         Parser parser = new Parser(source, this.ctx);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("SHRUGGIE")));
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("SHRUGGIE"), null));
         assertEquals(error.getClass(), SyntaxError.class);
     }
 
@@ -91,7 +91,19 @@ public class ParserTest {
         Reader source = new StringReader(">_> öö\n¯\\_(ツ)_/¯");
         Parser parser = new Parser(source, this.ctx);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("FUNNY_STARE_RIGHT")));
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("FUNNY_STARE_RIGHT"), null));
         assertEquals(error.getClass(), LexerError.class);
+    }
+
+    @Test
+    public void syntaxErrorCanBeCustomised() throws LexerError {
+        Reader source = new StringReader(">_>");
+        Parser parser = new Parser(source, this.ctx);
+
+        ParseError error = (ParseError) exceptionThrownBy(() ->
+            parser.accept(ctx.getSymbol("FUNNY_STARE_LEFT"), "Hi")
+        );
+
+        assertEquals("Hi", error.getMessage());
     }
 }
