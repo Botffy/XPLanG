@@ -12,7 +12,7 @@ public class Parser {
     private Lexer lexer;
 
     public Parser(Reader source, Context context) throws LexerError {
-        this.context = new Context();
+        this.context = context;
         this.lexer = new Lexer(source, context.getSymbols());
         advance();
     }

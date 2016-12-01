@@ -106,4 +106,11 @@ public class ParserTest {
 
         assertEquals("Hi", error.getMessage());
     }
+
+    @Test
+    public void parserShouldAcceptItsContext() throws LexerError{
+        Reader source = new StringReader(">_>");
+        Parser parser = new Parser(source, this.ctx);
+        assertSame(this.ctx, parser.context());
+    }
 }
