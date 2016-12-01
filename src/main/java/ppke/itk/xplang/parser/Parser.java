@@ -42,7 +42,7 @@ public class Parser {
         log.trace("Advance");
         act = lexer.next();
 
-        if(act.getSymbol().equals(Symbol.LEXER_ERROR)) {
+        if(act.symbol().equals(Symbol.LEXER_ERROR)) {
             log.error("Lexer error: invalid token {}", actual());
             throw new LexerError(actual());
         }
@@ -57,17 +57,17 @@ public class Parser {
      *  @throws SyntaxError if the actual symbol under tape head does not match the expected one.
      */
     public Token accept(Symbol symbol, String message) throws LexerError, SyntaxError {
-        if(!act.getSymbol().equals(symbol)) {
-            log.error(message, symbol, act.getSymbol());
+        if(!act.symbol().equals(symbol)) {
+            log.error(message, symbol, act.symbol());
             if(message != null) {
-                throw new SyntaxError(message, symbol, act.getSymbol(), act);
+                throw new SyntaxError(message, symbol, act.symbol(), act);
             } else {
-                throw new SyntaxError(symbol, act.getSymbol(), act);
+                throw new SyntaxError(symbol, act.symbol(), act);
             }
         }
 
         Token token = actual();
-        log.trace("Accepted symbol {} as {}", token.getSymbol(), token.getLexeme());
+        log.trace("Accepted symbol {} as {}", token.symbol(), token.lexeme());
         advance();
         return token;
     }
@@ -81,6 +81,6 @@ public class Parser {
      * @throws SyntaxError if the actual symbol under tape head does not match the expected one.
      */
     public Token accept(String symbolName, String message) throws LexerError, SyntaxError {
-        return accept(context.getSymbol(symbolName), message);
+        return accept(context.lookup(symbolName), message);
     }
 }

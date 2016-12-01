@@ -19,12 +19,12 @@ public class Token {
     }
 
     /** The terminal symbol this token is an instance of. */
-    public Symbol getSymbol() {
+    public Symbol symbol() {
         return symbol;
     }
 
     /** The realisation of the symbol, the way it occurs in the source */
-    public String getLexeme() {
+    public String lexeme() {
         return lexeme;
     }
 

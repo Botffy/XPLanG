@@ -24,7 +24,7 @@ public class LexerTest {
         Lexer lexer = new Lexer(source, symbols);
         assertEquals(
             "Lexer should find the longest match",
-            variable, lexer.next().getSymbol()
+            variable, lexer.next().symbol()
         );
     }
 
@@ -39,7 +39,7 @@ public class LexerTest {
         Lexer lexer = new Lexer(source, symbols);
         assertEquals(
             "If two matches are of the same length, lexer should hand up the one with the higher precedence",
-            keyword, lexer.next().getSymbol()
+            keyword, lexer.next().symbol()
         );
     }
 
@@ -54,7 +54,7 @@ public class LexerTest {
         Lexer lexer = new Lexer(source, symbols);
         assertEquals(
             "If two matches are of the same length and have the same precedence, lexer should hand up the one declared earlier",
-            keyword, lexer.next().getSymbol()
+            keyword, lexer.next().symbol()
         );
     }
 
@@ -66,7 +66,7 @@ public class LexerTest {
         Reader source = new StringReader("if");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should hand up EOF at the end of the source.", Symbol.EOF, lexer.next().getSymbol());
+        assertEquals("Lexer should hand up EOF at the end of the source.", Symbol.EOF, lexer.next().symbol());
     }
 
     @Test public void eol() {
@@ -77,7 +77,7 @@ public class LexerTest {
         Reader source = new StringReader("if\nif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should hand up EOL at line end.", Symbol.EOL, lexer.next().getSymbol());
+        assertEquals("Lexer should hand up EOL at line end.", Symbol.EOL, lexer.next().symbol());
     }
 
     @Test public void eolAtEof() {
@@ -88,7 +88,7 @@ public class LexerTest {
         Reader source = new StringReader("if\n");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should hand up EOF even if there's a final EOL.", Symbol.EOF, lexer.next().getSymbol());
+        assertEquals("Lexer should hand up EOF even if there's a final EOL.", Symbol.EOF, lexer.next().symbol());
     }
 
     @Test public void lackWS() {
@@ -99,7 +99,7 @@ public class LexerTest {
         Reader source = new StringReader("ifif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lack of whitespace should not matter.", keyword, lexer.next().getSymbol());
+        assertEquals("Lack of whitespace should not matter.", keyword, lexer.next().symbol());
     }
 
     @Test public void lexerError() {
@@ -110,9 +110,9 @@ public class LexerTest {
         Reader source = new StringReader("foo\nif");
         Lexer lexer = new Lexer(source, symbols);
         Token tok = lexer.next();
-        assertEquals("Lexer should signal LEXER_ERROR on no match.", Symbol.LEXER_ERROR, tok.getSymbol());
+        assertEquals("Lexer should signal LEXER_ERROR on no match.", Symbol.LEXER_ERROR, tok.symbol());
         assertEquals("Lexer should put the rest of the line in the token handed up.",
-            "foo", tok.getLexeme()
+            "foo", tok.lexeme()
         );
     }
 
@@ -123,8 +123,8 @@ public class LexerTest {
         Reader source = new StringReader("foo bar baz\nif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should recover from lexer error on the next line.", Symbol.EOL, lexer.next().getSymbol());
-        assertEquals("Lexer should work normally after recovery.", keyword, lexer.next().getSymbol());
+        assertEquals("Lexer should recover from lexer error on the next line.", Symbol.EOL, lexer.next().symbol());
+        assertEquals("Lexer should work normally after recovery.", keyword, lexer.next().symbol());
     }
 
     @Test public void insignificantSymbols() {
@@ -136,6 +136,6 @@ public class LexerTest {
         Reader source = new StringReader("if if");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Non-significant symbols should be parsed, but not handed up.", keyword, lexer.next().getSymbol());
+        assertEquals("Non-significant symbols should be parsed, but not handed up.", keyword, lexer.next().symbol());
     }
 }

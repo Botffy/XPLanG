@@ -42,7 +42,7 @@ public class Context {
     /**
      * Get the Symbol associated with this name (in this scope).
      */
-    public Symbol getSymbol(String symbolName) {
+    public Symbol lookup(String symbolName) {
         return symbolTable.lookup(symbolName);
     }
 }

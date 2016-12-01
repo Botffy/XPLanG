@@ -29,7 +29,7 @@ public class ParserTest {
         Reader source = new StringReader("<_< >_>");
         Parser parser = new Parser(source, this.ctx);
         assertTrue("Actual symbol should be the first symbol after init.",
-            parser.actual().getSymbol().equals(ctx.getSymbol("FUNNY_STARE_LEFT"))
+            parser.actual().symbol().equals(ctx.lookup("FUNNY_STARE_LEFT"))
         );
     }
 
@@ -39,22 +39,22 @@ public class ParserTest {
         Parser parser = new Parser(source, this.ctx);
         parser.advance();
         assertEquals("Actual symbol should be the second symbol after advancing",
-            ctx.getSymbol("FUNNY_STARE_RIGHT"), parser.actual().getSymbol()
+            ctx.lookup("FUNNY_STARE_RIGHT"), parser.actual().symbol()
         );
 
         parser.advance();
         assertEquals("Actual symbol should be the third symbol after advancing twice",
-            ctx.getSymbol("DISAPPROVAL_LOOK"), parser.actual().getSymbol()
+            ctx.lookup("DISAPPROVAL_LOOK"), parser.actual().symbol()
         );
 
         parser.advance();
         assertEquals("Actual symbol should be the fourth symbol after advancing three times",
-            ctx.getSymbol("SHRUGGIE"), parser.actual().getSymbol()
+            ctx.lookup("SHRUGGIE"), parser.actual().symbol()
         );
 
         parser.advance();
         assertEquals("Advancing enough should give me an EOF",
-            Symbol.EOF, parser.actual().getSymbol()
+            Symbol.EOF, parser.actual().symbol()
         );
     }
 
@@ -64,12 +64,12 @@ public class ParserTest {
         Parser parser = new Parser(source, this.ctx);
 
         try {
-            Token tok = parser.accept(ctx.getSymbol("FUNNY_STARE_LEFT"), null);
+            Token tok = parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), null);
             assertEquals("The accepted symbol should be equal to the expected symbol",
-                ctx.getSymbol("FUNNY_STARE_LEFT"), tok.getSymbol()
+                ctx.lookup("FUNNY_STARE_LEFT"), tok.symbol()
             );
             assertEquals("Accepting should advance the head",
-                ctx.getSymbol("FUNNY_STARE_RIGHT"), parser.actual().getSymbol()
+                ctx.lookup("FUNNY_STARE_RIGHT"), parser.actual().symbol()
             );
         } catch(Exception e) {
             fail("Accepting should not throw exceptions if accepting the correct symbol");
@@ -81,7 +81,7 @@ public class ParserTest {
         Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
         Parser parser = new Parser(source, this.ctx);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("SHRUGGIE"), null));
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("SHRUGGIE"), null));
         assertEquals(error.getClass(), SyntaxError.class);
     }
 
@@ -91,7 +91,7 @@ public class ParserTest {
         Reader source = new StringReader(">_> öö\n¯\\_(ツ)_/¯");
         Parser parser = new Parser(source, this.ctx);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.getSymbol("FUNNY_STARE_RIGHT"), null));
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("FUNNY_STARE_RIGHT"), null));
         assertEquals(error.getClass(), LexerError.class);
     }
 
@@ -101,7 +101,7 @@ public class ParserTest {
         Parser parser = new Parser(source, this.ctx);
 
         ParseError error = (ParseError) exceptionThrownBy(() ->
-            parser.accept(ctx.getSymbol("FUNNY_STARE_LEFT"), "Hi")
+            parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), "Hi")
         );
 
         assertEquals("Hi", error.getMessage());

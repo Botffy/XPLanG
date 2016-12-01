@@ -52,11 +52,11 @@ public class PlangGrammar extends Grammar {
         parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie! (%s, %s)");
         Token nameToken = parser.accept("IDENTIFIER", "Hiányzik a program neve (egy azonosító).");
 
-        while(!parser.actual().getSymbol().equals(parser.context().getSymbol("END_PROGRAM"))) {
+        while(!parser.actual().symbol().equals(parser.context().lookup("END_PROGRAM"))) {
             parser.advance();
         }
 
         parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
-        return new Program(nameToken.getLexeme());
+        return new Program(nameToken.lexeme());
     }
 }
