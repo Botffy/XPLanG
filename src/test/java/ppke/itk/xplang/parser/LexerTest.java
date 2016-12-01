@@ -107,16 +107,19 @@ public class LexerTest {
 
         List<Symbol> symbols = singletonList(keyword);
 
-        Reader source = new StringReader("foo");
+        Reader source = new StringReader("foo\nif");
         Lexer lexer = new Lexer(source, symbols);
-        assertEquals("Lexer should signal LEXER_ERROR on no match.", Symbol.LEXER_ERROR, lexer.next().getSymbol());
+        Token tok = lexer.next();
+        assertEquals("Lexer should signal LEXER_ERROR on no match.", Symbol.LEXER_ERROR, tok.getSymbol());
+        assertEquals("Lexer should put the rest of the line in the token handed up.",
+            "foo", tok.getLexeme()
+        );
     }
 
     @Test public void lexerErrorRecovery() {
         Symbol keyword = new Symbol("if", Pattern.compile("if"));
 
         List<Symbol> symbols = singletonList(keyword);
-
         Reader source = new StringReader("foo bar baz\nif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
@@ -135,5 +138,4 @@ public class LexerTest {
         lexer.next();
         assertEquals("Non-significant symbols should be parsed, but not handed up.", keyword, lexer.next().getSymbol());
     }
-
 }

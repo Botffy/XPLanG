@@ -94,7 +94,7 @@ class Lexer {
             } else {
                 int bakCursor = cursor;
                 cursor = line.length();	// skip to EOL and recover;
-                return new Token( Symbol.LEXER_ERROR, line.substring(cursor), lineno, bakCursor );
+                return new Token( Symbol.LEXER_ERROR, line.substring(bakCursor), lineno, bakCursor );
             }
         } while(!match_symbol.isSignificant()); // if the match isn't significant, continue.
 
