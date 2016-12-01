@@ -2,6 +2,7 @@ package ppke.itk.xplang.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.Scope;
 
 /**
  * Parsing context. The state of the parser, encapsulating the symbol table.
@@ -20,8 +21,9 @@ public class Context {
         symbolTable.openScope();
     }
 
-    public void closeScope() {
+    public Scope closeScope() {
         symbolTable.closeScope();
+        return new Scope();
     }
 
     public void register(Symbol symbol) {

@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ui;
 
+import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.lang.Grammar;
 import ppke.itk.xplang.parser.Context;
 import ppke.itk.xplang.parser.Parser;
@@ -22,7 +23,9 @@ class ParserAction implements Action {
         }
 
         @Override
-        public void S(Parser parser) {}
+        public Root S(Parser parser) {
+            return null;
+        }
     };
 
     @Override
