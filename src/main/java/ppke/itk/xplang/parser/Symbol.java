@@ -83,4 +83,80 @@ public class Symbol {
     @Override public String toString() {
         return String.format("%s[%s]", name, pattern);
     }
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    /**
+     * A comfy builder.
+     */
+    public static class Builder {
+        private boolean caseInsensitive = false;
+        private boolean isLiteralPattern = false;
+        private String name = null;
+        private String pattern = null;
+        private int precedence = Precedence.DEFAULT;
+        private boolean significant = true;
+
+        private Builder() {
+            // private ctor to hide the default one.
+            // Use Symbol.create()
+        }
+
+        public Builder named(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder matching(String pattern) {
+            this.pattern = pattern;
+            this.isLiteralPattern = false;
+            return this;
+        }
+
+        public Builder matchingLiteral(String pattern) {
+            this.pattern = pattern;
+            this.isLiteralPattern = true;
+            return this;
+        }
+
+        public Builder withPrecedence(int precedence) {
+            this.precedence = precedence;
+            return this;
+        }
+
+        public Builder notSignificant() {
+            this.significant = false;
+            return this;
+        }
+
+        public Builder caseInsensitive() {
+            this.caseInsensitive = true;
+            return this;
+        }
+
+        public Builder caseSensitive() {
+            this.caseInsensitive = false;
+            return this;
+        }
+
+        public Symbol register(Context context) {
+            int regexFlags = Pattern.UNICODE_CASE;
+            if(caseInsensitive) {
+                regexFlags |= Pattern.CASE_INSENSITIVE;
+            }
+            if(isLiteralPattern) {
+                regexFlags |= Pattern.LITERAL;
+            }
+            Symbol symbol = new Symbol(
+                this.name,
+                Pattern.compile(this.pattern, regexFlags),
+                this.precedence,
+                this.significant
+            );
+            context.register(symbol);
+            return symbol;
+        }
+    }
 }

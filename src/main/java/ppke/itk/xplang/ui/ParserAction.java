@@ -9,17 +9,16 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 class ParserAction implements Action {
     private final Grammar grammar = new Grammar() {
         @Override
         public void setup(Context context) {
-            context.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
-            context.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
-            context.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
-            context.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
-            context.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
+            createSymbol().named("FUNNY_STARE_RIGHT").matchingLiteral(">_>").register(context);
+            createSymbol().named("FUNNY_STARE_LEFT") .matchingLiteral("<_<").register(context);
+            createSymbol().named("SHRUGGIE")         .matchingLiteral("¯\\_(ツ)_/¯").register(context);
+            createSymbol().named("DISAPPROVAL_LOOK") .matchingLiteral("ಠ_ಠ").register(context);
+            createSymbol().named("WHITESPACE").matching("\\s+").notSignificant().register(context);
         }
 
         @Override

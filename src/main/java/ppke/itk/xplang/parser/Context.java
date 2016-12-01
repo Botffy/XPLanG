@@ -26,6 +26,7 @@ public class Context {
 
     public void register(Symbol symbol) {
         symbolTable.register(symbol);
+        log.debug("Registered symbol {}", symbol);
     }
 
     /**
