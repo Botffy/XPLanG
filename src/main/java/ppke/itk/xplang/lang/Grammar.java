@@ -2,6 +2,7 @@ package ppke.itk.xplang.lang;
 
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.Context;
+import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
 
@@ -44,7 +45,7 @@ abstract public class Grammar {
      *  The starting symbol of the grammar. This starts the recursive descent.
      *  @param parser The parser object.
      */
-    abstract public Root S(Parser parser);
+    abstract public Root S(Parser parser) throws ParseError;
 
     protected Symbol.Builder createSymbol() {
         Symbol.Builder builder = Symbol.create();
