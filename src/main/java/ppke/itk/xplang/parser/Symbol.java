@@ -12,7 +12,7 @@ public class Symbol {
      * defined only for convenience.
      */
     public static final class Precedence {
-        public final static int IDENTIFIER = 50;
+        public final static int IDENTIFIER = 0;
         public final static int LITERAL = 5;
         public final static int KEYWORD = 10;
         public final static int DEFAULT = 10;
