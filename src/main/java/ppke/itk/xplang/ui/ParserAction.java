@@ -35,8 +35,8 @@ class ParserAction implements Action {
         try {
             Parser parser = new Parser(source, context);
             while(!parser.actual().getSymbol().equals(Symbol.EOF)) {
-                parser.advance();
                 System.out.println(parser.actual());
+                parser.advance();
             }
         } catch(Exception e) {
             System.out.println(e.getMessage());
