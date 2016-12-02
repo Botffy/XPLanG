@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'checkstyle'
 
 version = 'git describe --tags --always'.execute().text.trim()
 sourceCompatibility = 1.8
@@ -21,6 +22,23 @@ dependencies {
 test {
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+
+checkstyle {
+    toolVersion = '7.3'
+    sourceSets = [sourceSets.main]
+    showViolations = true
+    ignoreFailures = true
+}
+
+checkstyleTest {
+    enabled = false
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        html.destination rootProject.file("build/reports/checkstyle.html")
     }
 }
 
