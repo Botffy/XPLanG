@@ -1,0 +1,18 @@
+engines:
+  fixme:
+    enabled: true
+  markdownlint:
+    enabled: true
+  checkstyle:
+    enabled: true
+    config: config/checkstyle/checkstyle.xml
+    channel: "beta"
+ratings:
+  paths:
+  - src/**
+  - "**.java"
+  - "**.md"
+  - "**.xml"
+  - "**.properties"
+exclude_paths:
+- docs/**/*
