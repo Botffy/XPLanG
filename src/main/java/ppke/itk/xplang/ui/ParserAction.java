@@ -1,15 +1,15 @@
 package ppke.itk.xplang.ui;
 
-import ppke.itk.xplang.ast.ASTPrinter;
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.Grammar;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Context;
+import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,17 +25,12 @@ class ParserAction implements Action {
         try {
             Parser parser = new Parser(source, context);
             Root root = grammar.S(parser);
-
-            ASTPrinter printer = new ASTPrinter();
-            printer.visit(root);
-
-            System.out.println("Executing program...");
-            Interpreter interpreter = new Interpreter();
-            interpreter.visit(root);
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
+            return Arrays.asList(
+                new ASTPrinting(root),
+                new Interpreting(root)
+            );
+        } catch(ParseError e) {
+            return Collections.singletonList(new MessagePrinter(e.getMessage()));
         }
-
-        return Collections.emptyList();
     }
 }
