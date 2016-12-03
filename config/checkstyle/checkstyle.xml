@@ -91,7 +91,10 @@
     <module name="ThrowsCount">
       <property name="max" value="2"/>
     </module>
-    <module name="VisibilityModifier"/>
+    <module name="VisibilityModifier">
+      <!-- I HAVE DECIDED this should be allowed for pure value classes -->
+      <property name="allowPublicImmutableFields" value="true" />
+    </module>
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>
     <module name="EmptyStatement"/>
