@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-class ParserAction implements Action {
+class Parsing implements Action {
     private final Grammar grammar = new PlangGrammar();
 
     @Override
@@ -30,7 +30,7 @@ class ParserAction implements Action {
                 new Interpreting(root)
             );
         } catch(ParseError e) {
-            return Collections.singletonList(new MessagePrinter(e.getMessage()));
+            return Collections.singletonList(new MessagePrinting(e.getMessage()));
         }
     }
 }

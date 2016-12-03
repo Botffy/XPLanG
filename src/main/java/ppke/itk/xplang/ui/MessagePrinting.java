@@ -5,10 +5,10 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 
 
-class MessagePrinter implements Action {
+class MessagePrinting implements Action {
     private final String message;
 
-    MessagePrinter(String message) {
+    MessagePrinting(String message) {
         this.message = message;
     }
 
