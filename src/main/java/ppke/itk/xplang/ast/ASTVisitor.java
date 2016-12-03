@@ -11,4 +11,7 @@ public interface ASTVisitor {
     void visit(Program program);
     void visit(Sequence sequence);
     void visit(Block block);
+
+    void visit(Incrementation incrementation);
+    void visit(Decrementation decrementation);
 }

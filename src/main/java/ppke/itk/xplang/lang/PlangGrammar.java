@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.parser.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
-
-import static java.util.Collections.emptyList;
 
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -46,21 +46,39 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code Program = PROGRAM IDENTIFIER {FUNNY_STARE} END_PROGRAM}
+     * {@code Program = PROGRAM IDENTIFIER {STATEMENT} END_PROGRAM}
      */
     protected Program program(Parser parser) throws ParseError {
         log.debug("Program");
         parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie! (%s, %s)");
         Token nameToken = parser.accept("IDENTIFIER", "Hiányzik a program neve (egy azonosító).");
 
+        List<Statement> statementList = new ArrayList<>();
         while(!parser.actual().symbol().equals(parser.context().lookup("END_PROGRAM"))) {
-            parser.advance();
+            statementList.add(statement(parser));
         }
 
         parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
         Scope scope = parser.context().closeScope();
-        Sequence sequence = new Sequence(emptyList());
+        Sequence sequence = new Sequence(statementList);
 
         return new Program(nameToken.lexeme(), new Block(scope, sequence));
+    }
+
+    /**
+     * @code Statement = FUNNY_STARE_LEFT | FUNNY_STARE_RIGHT
+     */
+    protected Statement statement(Parser parser) throws ParseError {
+        log.debug("Statement");
+        Symbol act = parser.actual().symbol();
+        if(act.equals(parser.context().lookup("FUNNY_STARE_LEFT"))) {
+            parser.advance();
+            return new Decrementation();
+        } else if(act.equals(parser.context().lookup("FUNNY_STARE_RIGHT"))) {
+            parser.advance();
+            return new Incrementation();
+        }
+        // FIXME SyntaxError should accept a list of expected symbols
+        throw new SyntaxError("", null, act, parser.actual());
     }
 }
