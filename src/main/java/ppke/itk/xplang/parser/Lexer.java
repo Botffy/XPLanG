@@ -1,7 +1,6 @@
 package ppke.itk.xplang.parser;
 
 import java.io.Reader;
-import java.util.Iterator;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,11 +32,15 @@ class Lexer {
 
         // initialize buffer
         if(input.hasNextLine()) {
-            line = input.nextLine();
-            matcher.reset(line);
-            ++lineno;
-            cursor = 0;
+            loadLine();
         }
+    }
+
+    private void loadLine() {
+        line = input.nextLine();
+        matcher.reset(line);
+        ++lineno;
+        cursor = 0;
     }
 
     /**
@@ -51,9 +54,9 @@ class Lexer {
      * An important difference to the GNU flex behaviour is that the newline cannot be matched: Lexer automatically
      * catches the EOL and loads a new line into its inner buffer. That's not perfect.
      */
-    public Token next() {
-        Symbol match_symbol;
-        String match_lexeme;
+    Token next() {
+        Symbol matchSymbol;
+        String matchLexeme;
         do {
             // we've read the entire buffer?
             if(line.length() <= cursor) {
@@ -61,16 +64,13 @@ class Lexer {
                 if(!input.hasNextLine()) return new Token(Symbol.EOF, "", lineno, cursor);
 
                 // otherwise read another line into the buffer and hand up an EOL
-                line = input.nextLine();
-                matcher.reset(line);
                 int oldline = lineno;
                 int oldcurs = cursor;
-                ++lineno;
-                cursor = 0;
+                loadLine();
                 return new Token(Symbol.EOL, "", oldline, oldcurs);
             }
-            match_symbol = null;
-            match_lexeme = "";
+            matchSymbol = null;
+            matchLexeme = "";
             matcher.region(cursor, line.length());
             for(final Symbol s : symbols) {
                 // if there is a match,
@@ -78,26 +78,29 @@ class Lexer {
                 //   or there is, but the new match is properly longer than any previous matches,
                 //   or they're of the same length but this has a higher precedence
                 // then use that.
-                if(matcher.usePattern(s.getPattern()).lookingAt() && (
-                    match_symbol == null ||
-                    matcher.group().length() > match_lexeme.length() ||
-                    (matcher.group().length() == match_lexeme.length() && s.getPrecedence() > match_symbol.getPrecedence())
-                ) ) {
-                    match_symbol = s;
-                    match_lexeme = matcher.group();
+                if(matcher.usePattern(s.getPattern()).lookingAt()
+                    && (matchSymbol == null
+                        || matcher.group().length() > matchLexeme.length()
+                        || (matcher.group().length() == matchLexeme.length()
+                                && s.getPrecedence() > matchSymbol.getPrecedence()
+                        )
+                    )
+                 ){
+                    matchSymbol = s;
+                    matchLexeme = matcher.group();
                 }
             }
 
             // any results?
-            if(match_symbol != null) {
-                cursor += match_lexeme.length();
+            if(matchSymbol != null) {
+                cursor += matchLexeme.length();
             } else {
                 int bakCursor = cursor;
-                cursor = line.length();	// skip to EOL and recover;
-                return new Token( Symbol.LEXER_ERROR, line.substring(bakCursor), lineno, bakCursor );
+                cursor = line.length(); // skip to EOL and recover;
+                return new Token(Symbol.LEXER_ERROR, line.substring(bakCursor), lineno, bakCursor);
             }
-        } while(!match_symbol.isSignificant()); // if the match isn't significant, continue.
+        } while(!matchSymbol.isSignificant()); // if the match isn't significant, continue.
 
-        return new Token(match_symbol, match_lexeme, lineno, cursor-match_lexeme.length());
+        return new Token(matchSymbol, matchLexeme, lineno, cursor - matchLexeme.length());
     }
 }
