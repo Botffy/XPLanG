@@ -11,7 +11,7 @@ import java.util.*;
  * A data structure to store the terminal symbols of the language.
  */
 class SymbolTable {
-    private final static Logger log = LoggerFactory.getLogger("Root.Context.SymbolTable");
+    private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context.SymbolTable");
 
     private static class Entry {
         final Symbol symbol;

@@ -8,7 +8,7 @@ import ppke.itk.xplang.ast.Scope;
  * Parsing context. The state of the parser, encapsulating the symbol table.
  */
 public class Context {
-    private final static Logger log = LoggerFactory.getLogger("Root.Context");
+    private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
     private SymbolTable symbolTable = new SymbolTable();
 

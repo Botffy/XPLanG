@@ -16,7 +16,7 @@ import java.util.*;
  * extensible at runtime.
  */
 class ScopedMap<Key, Value> {
-    private final static Logger log = LoggerFactory.getLogger("Root.Context.ScopedMap");
+    private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context.ScopedMap");
 
     static class NoScopeError extends RuntimeException {
         NoScopeError() {

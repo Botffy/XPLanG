@@ -20,7 +20,7 @@ class ParserAction implements Action {
     public List<Action> execute() {
         Context context = new Context();
         grammar.setup(context);
-        Reader source = new StringReader("PROGRAM testing <_< >_> >_> >_> >_> program_vége");
+        Reader source = new StringReader("PROGRAM testing <_< >_> >_> \n >_> >_> program_vége");
 
         try {
             Parser parser = new Parser(source, context);
