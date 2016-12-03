@@ -22,7 +22,7 @@ public class SyntaxError extends ParseError {
     public SyntaxError(String message, Collection<Symbol> expected, Symbol actual, Token token) {
         super(
             String.format(message, expected, actual),
-            token.getLine(), token.getCol()
+            token.location()
         );
     }
 

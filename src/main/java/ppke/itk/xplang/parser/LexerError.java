@@ -10,6 +10,6 @@ public class LexerError extends ParseError {
      * @param token Lexer is supposed to return the rest of the line, starting from the point of error.
      */
     LexerError(Token token) {
-        super(String.format("Encountered invalid token %s", token), token.getLine(), token.getCol());
+        super(String.format("Encountered invalid token %s", token), token.location());
     }
 }
