@@ -23,6 +23,6 @@ public class Sequence extends Node {
     }
 
     @Override public String toString() {
-        return null;
+        return String.format("%s[%s]", super.toString(), statements().size());
     }
 }

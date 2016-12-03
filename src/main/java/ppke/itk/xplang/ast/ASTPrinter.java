@@ -20,11 +20,7 @@ public final class ASTPrinter {
     }
 
     private void print(Node node) {
-        System.out.println(String.format(
-            "%s%s",
-            StringUtils.repeat(' ', indentation),
-            node.getClass().getSimpleName().toUpperCase()
-        ));
+        System.out.println(String.format("%s%s", StringUtils.repeat(' ', indentation), node));
     }
 
     public void visit(Node node) {

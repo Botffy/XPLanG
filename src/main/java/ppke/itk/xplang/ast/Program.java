@@ -15,6 +15,6 @@ public class Program extends Node {
     }
 
     @Override public String toString() {
-        return String.format("Program %s", name == null? "main" : name);
+        return String.format("%s[%s]", super.toString(), name == null? "main" : name);
     }
 }

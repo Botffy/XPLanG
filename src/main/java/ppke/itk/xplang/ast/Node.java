@@ -34,5 +34,15 @@ public abstract class Node {
         return children.get(index);
     }
 
-    @Override abstract public String toString();
+    /**
+     * A string representation, to be used internally, in debug messages, etc.
+     *
+     * Subclasses may override this to give additional details about themselves in square brackets. These additional
+     * details must not be about their children, only themselves.
+     *
+     * @return a string the label describing the AST node.
+     */
+    @Override public String toString() {
+        return this.getClass().getSimpleName().toUpperCase();
+    }
 }

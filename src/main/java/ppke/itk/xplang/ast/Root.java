@@ -19,8 +19,4 @@ public class Root extends Scope {
     public Program entryPoint() {
         return (Program) children.get(0);
     }
-
-    @Override public String toString() {
-        return "Root scope";
-    }
 }
