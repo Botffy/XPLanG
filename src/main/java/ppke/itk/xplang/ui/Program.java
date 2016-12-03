@@ -2,6 +2,7 @@ package ppke.itk.xplang.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.util.VersionInfo;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -10,6 +11,7 @@ import java.util.List;
 
 class Program {
     private final static Logger log = LoggerFactory.getLogger("Root.UI");
+    private final static VersionInfo version = new VersionInfo();
 
     private final Deque<Action> actions = new ArrayDeque<>();
 
@@ -27,6 +29,9 @@ class Program {
      */
     void run(Action initial) {
         log.info("XPLanG starting");
+        log.info("OS: {}", System.getProperty("os.name"));
+        log.info("Java: {}", System.getProperty("java.version"));
+        log.info("Version: {}", version.describe());
 
         actions.addFirst(initial);
 

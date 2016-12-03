@@ -51,6 +51,16 @@ javadoc {
     options.charSet = 'UTF-8'
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+processResources {
+   filter(ReplaceTokens, tokens: [
+      "version": version,
+      "built.at": (new Date()).format("yyyy-MM-dd HH:mm:ssZ"),
+      "built.by": System.getProperty('user.name'),
+      "build.JDK": System.getProperty('java.version')
+   ])
+}
+
 task run(type: JavaExec) {
     main = "ppke.itk.xplang.ui.Main"
     classpath = sourceSets.main.runtimeClasspath
