@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -50,7 +51,7 @@ public class PlangGrammar extends Grammar {
      */
     protected Program program(Parser parser) throws ParseError {
         log.debug("Program");
-        parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie! (%s, %s)");
+        parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie!");
         Token nameToken = parser.accept("IDENTIFIER", "Hiányzik a program neve (egy azonosító).");
 
         List<Statement> statementList = new ArrayList<>();
@@ -78,7 +79,12 @@ public class PlangGrammar extends Grammar {
             parser.advance();
             return new Incrementation();
         }
-        // FIXME SyntaxError should accept a list of expected symbols
-        throw new SyntaxError("", null, act, parser.actual());
+
+        throw new SyntaxError(
+            Arrays.asList(
+                parser.context().lookup("FUNNY_STARE_LEFT"),
+                parser.context().lookup("FUNNY_STARE_RIGHT")
+            ), act, parser.actual()
+        );
     }
 }

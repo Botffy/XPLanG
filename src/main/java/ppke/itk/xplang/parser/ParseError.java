@@ -1,10 +1,13 @@
 package ppke.itk.xplang.parser;
 
 /**
- * Ancestor of all errors that may be thrown during parsing.
+ * An error encountered in compilation time.
  */
 abstract public class ParseError extends Exception {
+    /** The line on which we encountered this error */
     public final int line;
+
+    /** The column in which we encountered this error */
     public final int column;
 
     ParseError(String message, int line, int column) {
