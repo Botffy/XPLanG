@@ -1,11 +1,11 @@
 package ppke.itk.xplang.ui;
 
+import ppke.itk.xplang.ast.ASTPrinter;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.lang.Grammar;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Context;
 import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -23,7 +23,10 @@ class ParserAction implements Action {
 
         try {
             Parser parser = new Parser(source, context);
-            grammar.S(parser);
+            Root root = grammar.S(parser);
+
+            ASTPrinter printer = new ASTPrinter();
+            printer.visit(root);
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
