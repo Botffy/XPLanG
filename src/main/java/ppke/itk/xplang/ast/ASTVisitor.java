@@ -9,4 +9,6 @@ public interface ASTVisitor {
     void visit(Scope scope);
     void visit(Root root);
     void visit(Program program);
+    void visit(Sequence sequence);
+    void visit(Block block);
 }

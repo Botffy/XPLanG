@@ -2,11 +2,12 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.Program;
-import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.parser.*;
 
 import java.util.stream.Stream;
+
+import static java.util.Collections.emptyList;
 
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -57,6 +58,9 @@ public class PlangGrammar extends Grammar {
         }
 
         parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
-        return new Program(nameToken.lexeme());
+        Scope scope = parser.context().closeScope();
+        Sequence sequence = new Sequence(emptyList());
+
+        return new Program(nameToken.lexeme(), new Block(scope, sequence));
     }
 }
