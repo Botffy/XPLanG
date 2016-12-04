@@ -82,7 +82,7 @@ public class ParserTest {
             assertEquals("Accepting should advance the head",
                 ctx.lookup("FUNNY_STARE_RIGHT"), parser.actual().symbol()
             );
-        } catch(Exception e) {
+        } catch(ParseError e) {
             fail("Accepting should not throw exceptions if accepting the correct symbol");
         }
     }

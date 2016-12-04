@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.ASTPrinter;
 import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
@@ -33,18 +35,26 @@ class Program {
 
         Reader source = new StringReader("PROGRAM testing <_< >_> >_> \n >_> >_> program_vége");
 
+        ErrorLog errorLog = new ErrorLog();
         Grammar grammar = new PlangGrammar();
-        Parser parser = new Parser();
-        try {
-            Root root = parser.parse(source, grammar);
+        Parser parser = new Parser(errorLog);
 
-            ASTPrinter printer = new ASTPrinter();
-            printer.visit(root);
+        Root root = parser.parse(source, grammar);
+        if(!errorLog.isEmpty()) {
+            printErrors(errorLog);
+            return;
+        }
 
-            Interpreter interpreter = new Interpreter();
-            interpreter.visit(root);
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
+        ASTPrinter printer = new ASTPrinter();
+        printer.visit(root);
+
+        Interpreter interpreter = new Interpreter();
+        interpreter.visit(root);
+    }
+
+    private void printErrors(ErrorLog errorLog) {
+        for(CompilerMessage message : errorLog.getErrorMessages()) {
+            System.out.println(message);
         }
     }
 }

@@ -3,36 +3,52 @@ package ppke.itk.xplang.parser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.ErrorLog;
 
 import java.io.Reader;
 
 public class Parser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser");
 
+    private final ErrorLog errorLog;
     private Context context;
     private Lexer lexer;
     private Token act;
 
     public Parser() {
-        this(new Context());
+        this(new Context(), new ErrorLog());
+    }
+
+    public Parser(ErrorLog errorLog) {
+        this(new Context(), errorLog);
     }
 
     public Parser(Context context) {
+        this(context, new ErrorLog());
+    }
+
+    public Parser(Context context, ErrorLog errorLog) {
         this.context = context;
+        this.errorLog = errorLog;
     }
 
     /**
      * Parse the given source text, using the given grammar.
      * @param source The reader pointing at the source text to be parsed.
      * @param grammar The grammar used during parsing.
-     * @return The root node of the generated {@link ppke.itk.xplang.ast AST}
-     * @throws ParseError if there were errors during the parsing.
+     * @return The root node of the generated {@link ppke.itk.xplang.ast AST}, or null if the parsing failed.
      */
-    public Root parse(Reader source, Grammar grammar) throws ParseError {
-        grammar.setup(context);
-        this.lexer = new Lexer(source, context.getSymbols());
-        advance();
-        return grammar.S(this);
+    public Root parse(Reader source, Grammar grammar) {
+        try {
+            grammar.setup(context);
+            this.lexer = new Lexer(source, context.getSymbols());
+            advance();
+            return grammar.S(this);
+        } catch(ParseError e) {
+            recordError(e.toErrorMessage());
+            return null;
+        }
     }
 
     /**
@@ -98,5 +114,13 @@ public class Parser {
      */
     public Token accept(String symbolName, String message) throws LexerError, SyntaxError {
         return accept(context.lookup(symbolName), message);
+    }
+
+    public void recordError(CompilerMessage errorMessage) {
+        errorLog.add(errorMessage);
+    }
+
+    public ErrorLog getErrorLog() {
+        return errorLog;
     }
 }

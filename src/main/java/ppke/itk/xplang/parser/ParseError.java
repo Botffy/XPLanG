@@ -1,5 +1,6 @@
 package ppke.itk.xplang.parser;
 
+import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.Location;
 
 /**
@@ -17,5 +18,13 @@ abstract public class ParseError extends Exception {
     ParseError(String message, Location location) {
         super(message);
         this.location = location;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public CompilerMessage toErrorMessage() {
+        return CompilerMessage.error(this.getMessage(), this.getLocation());
     }
 }
