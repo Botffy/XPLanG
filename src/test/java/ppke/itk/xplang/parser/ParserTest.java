@@ -3,6 +3,7 @@ package ppke.itk.xplang.parser;
 
 import org.junit.Before;
 import org.junit.Test;
+import ppke.itk.xplang.ast.Root;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -12,31 +13,40 @@ import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static org.junit.Assert.*;
 
 public class ParserTest {
+    private final Grammar grammar = new Grammar() {
+        @Override protected void setup(Context ctx) {
+            ctx.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
+            ctx.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
+            ctx.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
+            ctx.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
+            ctx.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
+        }
+        @Override protected Root S(Parser parser) throws ParseError {
+            return null;
+        }
+    };
+
     private Context ctx;
 
     @Before public void setUp() {
         ctx = new Context();
-
-        ctx.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
-        ctx.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
-        ctx.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
-        ctx.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
-        ctx.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
     }
 
     @Test
-    public void tapeHeadShouldBeOnFirstToken() throws LexerError {
+    public void tapeHeadShouldBeOnFirstToken() throws ParseError {
         Reader source = new StringReader("<_< >_>");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
         assertTrue("Actual symbol should be the first symbol after init.",
             parser.actual().symbol().equals(ctx.lookup("FUNNY_STARE_LEFT"))
         );
     }
 
     @Test
-    public void advanceShouldAdvance() throws LexerError {
+    public void advanceShouldAdvance() throws ParseError {
         Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
         parser.advance();
         assertEquals("Actual symbol should be the second symbol after advancing",
             ctx.lookup("FUNNY_STARE_RIGHT"), parser.actual().symbol()
@@ -59,9 +69,10 @@ public class ParserTest {
     }
 
     @Test
-    public void acceptShouldAcceptAndAdvance() throws LexerError {
+    public void acceptShouldAcceptAndAdvance() throws ParseError {
         Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
 
         try {
             Token tok = parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), null);
@@ -77,9 +88,10 @@ public class ParserTest {
     }
 
     @Test
-    public void acceptingWrongSymbolShouldCauseError() throws LexerError {
+    public void acceptingWrongSymbolShouldCauseError() throws ParseError {
         Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
 
         Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("SHRUGGIE"), null));
         assertEquals(error.getClass(), SyntaxError.class);
@@ -87,18 +99,20 @@ public class ParserTest {
 
 
     @Test
-    public void lexerErrorShouldBeThrownOnLexerError() throws LexerError, SyntaxError {
+    public void lexerErrorShouldBeThrownOnLexerError() throws ParseError {
         Reader source = new StringReader(">_> öö\n¯\\_(ツ)_/¯");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
 
         Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("FUNNY_STARE_RIGHT"), null));
         assertEquals(error.getClass(), LexerError.class);
     }
 
     @Test
-    public void syntaxErrorCanBeCustomised() throws LexerError {
+    public void syntaxErrorCanBeCustomised() throws ParseError {
         Reader source = new StringReader(">_>");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
 
         ParseError error = (ParseError) exceptionThrownBy(() ->
             parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), "Hi")
@@ -108,9 +122,10 @@ public class ParserTest {
     }
 
     @Test
-    public void parserShouldAcceptItsContext() throws LexerError{
+    public void parserShouldAcceptItsContext() throws ParseError {
         Reader source = new StringReader(">_>");
-        Parser parser = new Parser(source, this.ctx);
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
         assertSame(this.ctx, parser.context());
     }
 }

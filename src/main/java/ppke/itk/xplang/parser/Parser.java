@@ -2,6 +2,7 @@ package ppke.itk.xplang.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.Root;
 
 import java.io.Reader;
 
@@ -10,14 +11,29 @@ public class Parser {
 
     private Context context;
     private Lexer lexer;
+    private Token act;
 
-    public Parser(Reader source, Context context) throws LexerError {
-        this.context = context;
-        this.lexer = new Lexer(source, context.getSymbols());
-        advance();
+    public Parser() {
+        this(new Context());
     }
 
-    private Token act;
+    public Parser(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * Parse the given source text, using the given grammar.
+     * @param source The reader pointing at the source text to be parsed.
+     * @param grammar The grammar used during parsing.
+     * @return The root node of the generated {@link ppke.itk.xplang.ast AST}
+     * @throws ParseError if there were errors during the parsing.
+     */
+    public Root parse(Reader source, Grammar grammar) throws ParseError {
+        grammar.setup(context);
+        this.lexer = new Lexer(source, context.getSymbols());
+        advance();
+        return grammar.S(this);
+    }
 
     /**
      * Get the Parser context.

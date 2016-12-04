@@ -1,10 +1,6 @@
-package ppke.itk.xplang.lang;
+package ppke.itk.xplang.parser;
 
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.parser.Context;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
 
 import java.util.EnumSet;
 
@@ -39,13 +35,13 @@ abstract public class Grammar {
      *  Prelude to the grammar: registers terminal symbols, functions, global variables, etc.
      *  @param ctx The parsing context to be populated.
      */
-    abstract public void setup(Context ctx);
+    abstract protected void setup(Context ctx);
 
     /**
      *  The starting symbol of the grammar. This starts the recursive descent.
      *  @param parser The parser object.
      */
-    abstract public Root S(Parser parser) throws ParseError;
+    abstract protected Root S(Parser parser) throws ParseError;
 
     protected Symbol.Builder createSymbol() {
         Symbol.Builder builder = Symbol.create();

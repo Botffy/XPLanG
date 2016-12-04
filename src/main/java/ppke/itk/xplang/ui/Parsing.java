@@ -1,9 +1,8 @@
 package ppke.itk.xplang.ui;
 
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.lang.Grammar;
 import ppke.itk.xplang.lang.PlangGrammar;
-import ppke.itk.xplang.parser.Context;
+import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 
@@ -18,13 +17,10 @@ class Parsing implements Action {
 
     @Override
     public List<Action> execute() {
-        Context context = new Context();
-        grammar.setup(context);
         Reader source = new StringReader("PROGRAM testing <_< >_> >_> \n >_> >_> program_vége");
-
+        Parser parser = new Parser();
         try {
-            Parser parser = new Parser(source, context);
-            Root root = grammar.S(parser);
+            Root root = parser.parse(source, grammar);
             return Arrays.asList(
                 new ASTPrinting(root),
                 new Interpreting(root)
