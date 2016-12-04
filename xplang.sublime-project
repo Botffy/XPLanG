@@ -2,13 +2,19 @@
 	"folders":
 	[
 		{
+			"file_exclude_patterns":
+			[
+				"gradlew",
+				"gradlew.bat"
+			],
 			"folder_exclude_patterns":
 			[
 				".gradle",
 				"build",
 				".idea",
 				"gradle",
-				"docs/javadoc"
+				"docs/javadoc",
+				"out"
 			],
 			"path": "."
 		}
