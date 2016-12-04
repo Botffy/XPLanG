@@ -1,1 +1,9 @@
-PROGRAM testing <_< >_> >_>  >_> >_> program_vége
+Program testing
+  Változók:
+    a, b: Egész,
+    c: Egész
+
+  a := 10
+  b := 20
+  c := 30
+program_vége
