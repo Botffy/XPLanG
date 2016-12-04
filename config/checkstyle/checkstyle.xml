@@ -5,6 +5,11 @@
 <module name="Checker">
   <property name="charset" value="UTF-8"/>
   <property name="localeLanguage" value="en"/>
+  <module name="SuppressionFilter">
+    <!-- This thing is shit, that it's relative to classloader. It totally should be relative to this file -->
+    <!-- but these guys are a bit asses about it: https://github.com/checkstyle/checkstyle/issues/2976 -->
+    <property name="file" value="config/checkstyle/checkstyle-suppressions.xml"/>
+  </module>
   <module name="FileLength"/>
   <module name="JavadocPackage"/>
   <module name="NewlineAtEndOfFile">
@@ -93,7 +98,7 @@
     </module>
     <module name="VisibilityModifier">
       <!-- I HAVE DECIDED this should be allowed for pure value classes -->
-      <property name="allowPublicImmutableFields" value="true" />
+      <property name="allowPublicImmutableFields" value="true"/>
     </module>
     <module name="CovariantEquals"/>
     <module name="DefaultComesLast"/>
@@ -173,7 +178,7 @@
       <property name="allowEmptyMethods" value="true"/>
       <property name="allowEmptyTypes" value="true"/>
       <property name="allowEmptyLoops" value="true"/>
-      <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_RETURN,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND" />
+      <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_RETURN,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
     </module>
   </module>
 </module>
