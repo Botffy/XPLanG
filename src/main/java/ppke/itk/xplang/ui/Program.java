@@ -2,18 +2,21 @@ package ppke.itk.xplang.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.ASTPrinter;
+import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.interpreter.Interpreter;
+import ppke.itk.xplang.lang.PlangGrammar;
+import ppke.itk.xplang.parser.Grammar;
+import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.util.VersionInfo;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
+import java.io.Reader;
+import java.io.StringReader;
 
 
 class Program {
     private final static Logger log = LoggerFactory.getLogger("Root.UI");
     private final static VersionInfo version = new VersionInfo();
-
-    private final Deque<Action> actions = new ArrayDeque<>();
 
     Program() {
         // empty ctor
@@ -21,26 +24,27 @@ class Program {
 
     /**
      * Run the program.
-     *
-     * Starting from given initial Action, it executes the action chain as it unfolds.  If an action has consequences,
-     * those consequcnes are executed right after the action.
-     *
-     * @param initial the initial Action to be taken.
      */
-    void run(Action initial) {
+    void run() {
         log.info("XPLanG starting");
         log.info("OS: {}", System.getProperty("os.name"));
         log.info("Java: {}", System.getProperty("java.version"));
         log.info("Version: {}", version.describe());
 
-        actions.addFirst(initial);
+        Reader source = new StringReader("PROGRAM testing <_< >_> >_> \n >_> >_> program_vége");
 
-        while(!actions.isEmpty()) {
-            Action action = actions.pollFirst();
-            List<Action> consequences = action.execute();
-            for(int i=consequences.size(); i-->0;) {
-                actions.addFirst(consequences.get(i));
-            }
+        Grammar grammar = new PlangGrammar();
+        Parser parser = new Parser();
+        try {
+            Root root = parser.parse(source, grammar);
+
+            ASTPrinter printer = new ASTPrinter();
+            printer.visit(root);
+
+            Interpreter interpreter = new Interpreter();
+            interpreter.visit(root);
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }
