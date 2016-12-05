@@ -59,15 +59,17 @@ class Lexer {
         String matchLexeme;
         do {
             // we've read the entire buffer?
-            if(line.length() <= cursor) {
+            while(line.length() <= cursor) {
                 // if no lines left, just hand up an EOF.
                 if(!input.hasNextLine()) return new Token(Symbol.EOF, "", lineno, cursor);
 
-                // otherwise read another line into the buffer and hand up an EOL
+                // otherwise read another line into the buffer (and hand up an EOL if it is significant)
                 int oldline = lineno;
                 int oldcurs = cursor;
                 loadLine();
-                return new Token(Symbol.EOL, "", oldline, oldcurs);
+                if(Symbol.EOL.isSignificant()) {
+                    return new Token(Symbol.EOL, "", oldline, oldcurs);
+                }
             }
             matchSymbol = null;
             matchLexeme = "";

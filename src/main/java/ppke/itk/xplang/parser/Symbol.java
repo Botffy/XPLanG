@@ -28,8 +28,8 @@ public class Symbol {
     /** Symbol denoting the end of the input stream. */
     public static final Symbol EOF = new Symbol("EOF", null);
 
-    /** Symbol denoting end of line. */
-    public static final Symbol EOL = new Symbol("EOL", null);
+    /** Symbol denoting end of line. FIXME it should not be insignificant for ALL grammars, always */
+    public static final Symbol EOL = new Symbol("EOL", null, Precedence.DEFAULT, false);
 
     private final String name;
     private final Pattern pattern;
