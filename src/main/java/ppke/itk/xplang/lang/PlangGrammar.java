@@ -66,7 +66,11 @@ public class PlangGrammar extends Grammar {
 
         List<Statement> statementList = new ArrayList<>();
         while(!parser.actual().symbol().equals(parser.context().lookup("END_PROGRAM"))) {
-            statementList.add(statement(parser));
+            try {
+                statementList.add(statement(parser));
+            } catch(ParseError error) {
+                parser.recordError(error.toErrorMessage());
+            }
         }
 
         parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
@@ -80,6 +84,7 @@ public class PlangGrammar extends Grammar {
      * {@code Declarations = DECLARE COLON {variableDeclaration} [{COMMA variableDeclaration}}
      */
     protected void declarations(Parser parser) throws ParseError {
+        log.debug("Declarations");
         parser.accept("DECLARE", "Hiányzik a VÁLTOZÓK kulcsszó");
         parser.accept("COLON", "Hiányzik a VÁLTOZÓK kulcsszó után a kettőspont.");
 
@@ -94,6 +99,7 @@ public class PlangGrammar extends Grammar {
      * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON INT_TYPE}
      */
     protected void variableDeclaration(Parser parser) throws ParseError {
+        log.debug("VariableDeclaration");
         List<Token> variables = new ArrayList<>();
 
         variables.add(parser.accept("IDENTIFIER"));
@@ -105,12 +111,16 @@ public class PlangGrammar extends Grammar {
         parser.accept("INT_TYPE");
 
         for(Token variable : variables) {
-            parser.context().declare(variable);
+            try {
+                parser.context().declare(variable);
+            } catch(NameClashError error) {
+                parser.recordError(error.toErrorMessage());
+            }
         }
     }
 
     /**
-     * @code Statement = Assignment
+     * {@code Statement = Assignment}
      */
     protected Statement statement(Parser parser) throws ParseError {
         log.debug("Statement");
@@ -138,7 +148,11 @@ public class PlangGrammar extends Grammar {
         );
     }
 
+    /**
+     * {@code RValue = IDENTIFIER | LITERAL_INT}
+     */
     private RValue rValue(Parser parser) throws LexerError, SyntaxError, NameError {
+        log.debug("RValue");
         Symbol act = parser.actual().symbol();
         if(act.equals(parser.context().lookup("LITERAL_INT"))) {
             parser.advance();
