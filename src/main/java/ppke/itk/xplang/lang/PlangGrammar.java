@@ -94,16 +94,19 @@ public class PlangGrammar extends Grammar {
      * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON INT_TYPE}
      */
     protected void variableDeclaration(Parser parser) throws ParseError {
-        List<Token> names = new ArrayList<>();
+        List<Token> variables = new ArrayList<>();
 
-        Token name = parser.accept("IDENTIFIER");
-        names.add(name);
+        variables.add(parser.accept("IDENTIFIER"));
         while(parser.actual().symbol().equals(parser.context().lookup("COMMA"))) {
             parser.advance(); // consume the comma
-            names.add(parser.accept("IDENTIFIER"));
+            variables.add(parser.accept("IDENTIFIER"));
         }
         parser.accept("COLON");
         parser.accept("INT_TYPE");
+
+        for(Token variable : variables) {
+            parser.context().declare(variable);
+        }
     }
 
     /**
@@ -124,25 +127,25 @@ public class PlangGrammar extends Grammar {
     /**
      * {@code Assignment = IDENTIFIER ASSIGNMENT RValue}
      */
-    private Assignment assignment(Parser parser) throws LexerError, SyntaxError {
+    private Assignment assignment(Parser parser) throws LexerError, SyntaxError, NameError {
         log.debug("Assignment");
         Token var = parser.accept("IDENTIFIER");
         parser.accept("ASSIGNMENT");
         RValue rhs = rValue(parser);
         return new Assignment(
-            new VarRef(new VariableDeclaration(var.lexeme())), // FIXME this should come from Context, obviously
+            parser.context().getVariableReference(var),
             rhs
         );
     }
 
-    private RValue rValue(Parser parser) throws LexerError, SyntaxError {
+    private RValue rValue(Parser parser) throws LexerError, SyntaxError, NameError {
         Symbol act = parser.actual().symbol();
         if(act.equals(parser.context().lookup("LITERAL_INT"))) {
             parser.advance();
             return new IntegerLiteral();
         } else if(act.equals(parser.context().lookup("IDENTIFIER"))) {
             Token namTok = parser.accept("IDENTIFIER");
-            return new VarVal(new VariableDeclaration(namTok.lexeme()));
+            return parser.context().getVariableValue(namTok);
         }
         throw new SyntaxError(
             Arrays.asList(
