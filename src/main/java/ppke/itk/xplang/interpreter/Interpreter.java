@@ -7,11 +7,8 @@ import ppke.itk.xplang.ast.*;
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
-    private int memory = 0;
-
     @Override public void visit(Root root) {
         root.entryPoint().accept(this);
-        System.out.println(String.format("Value: %s", memory));
     }
 
     @Override public void visit(Program program) {
@@ -51,15 +48,5 @@ public class Interpreter implements ASTVisitor {
 
     @Override public void visit(IntegerLiteral integerLiteral) {
 
-    }
-
-    @Override public void visit(Incrementation incrementation) {
-        log.debug("incrementing");
-        ++memory;
-    }
-
-    @Override public void visit(Decrementation decrementation) {
-        log.debug("decrementing");
-        --memory;
     }
 }
