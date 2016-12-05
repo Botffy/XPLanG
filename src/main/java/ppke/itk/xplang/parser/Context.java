@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Scope;
 
+import java.util.Collections;
+
 /**
  * Parsing context. The state of the parser, encapsulating the symbol table.
  */
@@ -23,7 +25,7 @@ public class Context {
 
     public Scope closeScope() {
         symbolTable.closeScope();
-        return new Scope();
+        return new Scope(Collections.emptyList());
     }
 
     public void register(Symbol symbol) {

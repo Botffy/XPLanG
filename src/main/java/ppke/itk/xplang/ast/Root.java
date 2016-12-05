@@ -5,7 +5,8 @@ import ppke.itk.xplang.parser.Symbol;
 /**
  * The root node of the AST. Essentially the global scope.
  */
-public class Root extends Scope {
+// FIXME should include a Scope
+public class Root extends Node {
     @Override public void accept(ASTVisitor visitor) { visitor.visit(this); }
 
     public Root(Program entryPoint) {
