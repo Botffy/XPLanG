@@ -122,16 +122,33 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code Assignment = IDENTIFIER ASSIGNMENT LITERAL_INT}
+     * {@code Assignment = IDENTIFIER ASSIGNMENT RValue}
      */
     private Assignment assignment(Parser parser) throws LexerError, SyntaxError {
         log.debug("Assignment");
         Token var = parser.accept("IDENTIFIER");
         parser.accept("ASSIGNMENT");
-        parser.accept("LITERAL_INT");
+        RValue rhs = rValue(parser);
         return new Assignment(
             new VarRef(new VariableDeclaration(var.lexeme())), // FIXME this should come from Context, obviously
-            new IntegerLiteral()
+            rhs
+        );
+    }
+
+    private RValue rValue(Parser parser) throws LexerError, SyntaxError {
+        Symbol act = parser.actual().symbol();
+        if(act.equals(parser.context().lookup("LITERAL_INT"))) {
+            parser.advance();
+            return new IntegerLiteral();
+        } else if(act.equals(parser.context().lookup("IDENTIFIER"))) {
+            Token namTok = parser.accept("IDENTIFIER");
+            return new VarVal(new VariableDeclaration(namTok.lexeme()));
+        }
+        throw new SyntaxError(
+            Arrays.asList(
+                parser.context().lookup("IDENTIFIER"),
+                parser.context().lookup("LITERAL_INT")
+            ), act, parser.actual()
         );
     }
 }

@@ -6,4 +6,6 @@ Program testing
   a := 10
   b := 20
   c := 30
+  a := c
+  c := 31
 program_vége
