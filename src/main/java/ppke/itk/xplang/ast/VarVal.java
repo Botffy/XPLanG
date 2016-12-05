@@ -6,16 +6,18 @@ package ppke.itk.xplang.ast;
  * This tells the interpreter to load the value of the referenced variable.
  */
 public class VarVal extends RValue {
+    private final VariableDeclaration var;
+
     /**
      * Constructor.
      * @param var The variable this reference refers to.
      */
     public VarVal(VariableDeclaration var) {
-        this.children.add(0, var);
+        this.var = var;
     }
 
     public VariableDeclaration getVariable() {
-        return (VariableDeclaration) children.get(0);
+        return this.var;
     }
 
     public String getName() {

@@ -7,16 +7,18 @@ package ppke.itk.xplang.ast;
  * we're just going to overwrite it).
  */
 public final class VarRef extends LValue {
+    private final VariableDeclaration var;
+
     /**
      * Constructor.
      * @param var The variable this reference refers to.
      */
     public VarRef(VariableDeclaration var) {
-        this.children.add(0, var);
+        this.var = var;
     }
 
     public VariableDeclaration getVariable() {
-        return (VariableDeclaration) children.get(0);
+        return this.var;
     }
 
     public String getName() {
