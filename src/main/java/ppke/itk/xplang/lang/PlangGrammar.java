@@ -23,11 +23,17 @@ public class PlangGrammar extends Grammar {
         Stream.of(
             createSymbol("PROGRAM")    .matchingLiteral("program"),
             createSymbol("END_PROGRAM").matchingLiteral("program_vége"),
+            createSymbol("DECLARE")    .matchingLiteral("változók"),
+            createSymbol("INT_TYPE")   .matchingLiteral("egész"),
+            createSymbol("ASSIGNMENT") .matchingLiteral(":="),
+            createSymbol("COLON")      .matchingLiteral(":"),
+            createSymbol("COMMA")      .matchingLiteral(","),
             createSymbol("IDENTIFIER")
                 .matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*")
                 .withPrecedence(Symbol.Precedence.IDENTIFIER),
-            createSymbol("FUNNY_STARE_LEFT").matchingLiteral("<_<"),
-            createSymbol("FUNNY_STARE_RIGHT").matchingLiteral(">_>"),
+            createSymbol("LITERAL_INT")
+                .withPrecedence(Symbol.Precedence.LITERAL)
+                .matching("\\d+"),
             createSymbol("WHITESPACE")
                 .matching("\\s+")
                 .notSignificant(),
@@ -47,12 +53,16 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code Program = PROGRAM IDENTIFIER {STATEMENT} END_PROGRAM}
+     * {@code Program = PROGRAM IDENTIFIER [Declarations] {Statement} END_PROGRAM}
      */
     protected Program program(Parser parser) throws ParseError {
         log.debug("Program");
         parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie!");
         Token nameToken = parser.accept("IDENTIFIER", "Hiányzik a program neve (egy azonosító).");
+
+        if(parser.actual().symbol().equals(parser.context().lookup("DECLARE"))) {
+            declarations(parser);
+        }
 
         List<Statement> statementList = new ArrayList<>();
         while(!parser.actual().symbol().equals(parser.context().lookup("END_PROGRAM"))) {
@@ -67,24 +77,61 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * @code Statement = FUNNY_STARE_LEFT | FUNNY_STARE_RIGHT
+     * {@code Declarations = DECLARE COLON {variableDeclaration} [{COMMA variableDeclaration}}
+     */
+    protected void declarations(Parser parser) throws ParseError {
+        parser.accept("DECLARE", "Hiányzik a VÁLTOZÓK kulcsszó");
+        parser.accept("COLON", "Hiányzik a VÁLTOZÓK kulcsszó után a kettőspont.");
+
+        variableDeclaration(parser);
+        while(parser.actual().symbol().equals(parser.context().lookup("COMMA"))) {
+            parser.advance();
+            variableDeclaration(parser);
+        }
+    }
+
+    /**
+     * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON INT_TYPE}
+     */
+    protected void variableDeclaration(Parser parser) throws ParseError {
+        List<Token> names = new ArrayList<>();
+
+        Token name = parser.accept("IDENTIFIER");
+        names.add(name);
+        while(parser.actual().symbol().equals(parser.context().lookup("COMMA"))) {
+            parser.advance(); // consume the comma
+            names.add(parser.accept("IDENTIFIER"));
+        }
+        parser.accept("COLON");
+        parser.accept("INT_TYPE");
+    }
+
+    /**
+     * @code Statement = Assignment
      */
     protected Statement statement(Parser parser) throws ParseError {
         log.debug("Statement");
         Symbol act = parser.actual().symbol();
-        if(act.equals(parser.context().lookup("FUNNY_STARE_LEFT"))) {
-            parser.advance();
-            return new Decrementation();
-        } else if(act.equals(parser.context().lookup("FUNNY_STARE_RIGHT"))) {
-            parser.advance();
-            return new Incrementation();
+        if(act.equals(parser.context().lookup("IDENTIFIER"))) {
+            return assignment(parser);
         }
 
         throw new SyntaxError(
-            Arrays.asList(
-                parser.context().lookup("FUNNY_STARE_LEFT"),
-                parser.context().lookup("FUNNY_STARE_RIGHT")
-            ), act, parser.actual()
+            parser.context().lookup("IDENTIFIER"), act, parser.actual()
+        );
+    }
+
+    /**
+     * {@code Assignment = IDENTIFIER ASSIGNMENT LITERAL_INT}
+     */
+    private Assignment assignment(Parser parser) throws LexerError, SyntaxError {
+        log.debug("Assignment");
+        Token var = parser.accept("IDENTIFIER");
+        parser.accept("ASSIGNMENT");
+        parser.accept("LITERAL_INT");
+        return new Assignment(
+            new VarRef(new VariableDeclaration(var.lexeme())), // FIXME this should come from Context, obviously
+            new IntegerLiteral()
         );
     }
 }
