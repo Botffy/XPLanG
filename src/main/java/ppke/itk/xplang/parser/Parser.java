@@ -104,6 +104,10 @@ public class Parser {
         return token;
     }
 
+    public Token accept(Symbol symbol) throws LexerError, SyntaxError {
+        return accept(symbol, null);
+    }
+
     /**
      * Convenient variant of {@link #accept(Symbol, String)}.
      * @param symbolName name of the expected symbol.
@@ -114,6 +118,10 @@ public class Parser {
      */
     public Token accept(String symbolName, String message) throws LexerError, SyntaxError {
         return accept(context.lookup(symbolName), message);
+    }
+
+    public Token accept(String symbolName) throws SyntaxError, LexerError {
+        return accept(symbolName, null);
     }
 
     public void recordError(CompilerMessage errorMessage) {
