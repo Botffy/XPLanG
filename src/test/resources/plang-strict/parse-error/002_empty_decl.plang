@@ -1,0 +1,5 @@
+**#Program with no statements should give syntax error
+program empty
+  Változók:
+    a, b: Egész
+program_vége
