@@ -17,6 +17,10 @@ class Memory {
             this.label = label;
             this.value = value;
         }
+
+        @Override public String toString() {
+            return value.toString();
+        }
     }
 
     private final Map<Object, Entry> memory = new HashMap<Object, Entry>();
@@ -40,7 +44,7 @@ class Memory {
         log.debug("Deallocated entry for {}", key);
     }
 
-    void put(Object key, Value value) throws InterpreterError {
+    void set(Object key, Value value) throws InterpreterError {
         if(!memory.containsKey(key)) {
             log.error("Unknown address '{}'", key);
             throw new InterpreterError("Unknown address");
@@ -49,6 +53,10 @@ class Memory {
         Entry entry = memory.get(key);
         entry.value = value;
         log.debug("Updated value of '{}' to '{}'", entry.label, entry.value);
+    }
+
+    void set(AddressValue addressValue, Value value) throws InterpreterError {
+        set(addressValue.getAddress(), value);
     }
 
     Value get(Object key) throws InterpreterError {
@@ -63,5 +71,9 @@ class Memory {
 
     Value dereference(AddressValue addressValue) throws InterpreterError {
         return get(addressValue.getAddress());
+    }
+
+    @Override public String toString() {
+        return memory.toString();
     }
 }

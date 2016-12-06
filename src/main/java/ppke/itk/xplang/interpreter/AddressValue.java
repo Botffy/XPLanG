@@ -12,7 +12,7 @@ class AddressValue extends Value {
     }
 
     @Override public String toString() {
-        return String.format("Memory address %s", address);
+        return String.format("[Memory address %s]", address);
     }
 
     @Override public int hashCode() {

@@ -12,7 +12,7 @@ class IntegerValue extends Value {
     }
 
     @Override public String toString() {
-        return String.valueOf(value);
+        return String.format("[Integer value %s]", 5);
     }
 
     @Override public int hashCode() {
