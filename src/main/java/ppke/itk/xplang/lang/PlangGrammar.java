@@ -155,8 +155,8 @@ public class PlangGrammar extends Grammar {
         log.debug("RValue");
         Symbol act = parser.actual().symbol();
         if(act.equals(parser.context().lookup("LITERAL_INT"))) {
-            parser.advance();
-            return new IntegerLiteral();
+            Token token = parser.accept("LITERAL_INT");
+            return new IntegerLiteral(Integer.valueOf(token.lexeme()));
         } else if(act.equals(parser.context().lookup("IDENTIFIER"))) {
             Token namTok = parser.accept("IDENTIFIER");
             return parser.context().getVariableValue(namTok);
