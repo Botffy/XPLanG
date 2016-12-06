@@ -1,0 +1,6 @@
+**#Missing type in variable declarations
+Program vardecl_3
+    Változók:
+        a
+    a := 5;
+Program_vége

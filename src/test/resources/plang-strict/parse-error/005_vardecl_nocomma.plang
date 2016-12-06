@@ -1,0 +1,7 @@
+**#Missing comma between variable names
+program vardecl_nocomma_1
+  Változók:
+    x y: Egész
+  x := 5
+  y := 6
+program_vége

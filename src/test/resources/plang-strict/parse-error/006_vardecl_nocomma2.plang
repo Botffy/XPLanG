@@ -1,0 +1,9 @@
+**#Missing comma between declaration blocks
+program vardecl_nocomma_2
+    Változók:
+        x, y: Egész
+        e: Egész
+    x := 1
+    y := 2
+    e := 5
+program_vége
