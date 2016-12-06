@@ -7,6 +7,8 @@ import ppke.itk.xplang.ast.*;
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
+    private final Memory memory = new Memory();
+
     @Override public void visit(Root root) {
         root.entryPoint().accept(this);
     }
