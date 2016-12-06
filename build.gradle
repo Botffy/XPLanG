@@ -1,5 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
 
 version = 'git describe --tags --always'.execute().text.trim()
 sourceCompatibility = 1.8
