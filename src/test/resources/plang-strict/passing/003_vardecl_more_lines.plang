@@ -1,0 +1,9 @@
+**#Variable declaration and assignments
+**Memory:a=Integer(10),b=Integer(5)
+program Vardecl
+  Változók:
+    a: Egész,
+    b: egész
+  a := 10
+  b := 5
+program_vége

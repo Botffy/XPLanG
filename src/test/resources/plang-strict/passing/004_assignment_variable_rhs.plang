@@ -1,0 +1,10 @@
+**#Assignments by value.
+**Memory:a=Integer(12),b=Integer(10)
+program Vardecl
+  Változók:
+    a, b: Egész
+
+  a := 10
+  b := a
+  a := 12
+program_vége

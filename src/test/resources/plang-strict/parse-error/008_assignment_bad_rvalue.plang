@@ -1,0 +1,6 @@
+**#Malformed RValue
+program vardecl_bad_rvalue
+  Változók:
+    x: Egész
+  x :=
+program_vége

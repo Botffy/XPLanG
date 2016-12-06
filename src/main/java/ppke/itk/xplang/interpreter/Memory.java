@@ -3,8 +3,10 @@ package ppke.itk.xplang.interpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 class Memory {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter.Memory");
@@ -16,6 +18,10 @@ class Memory {
         Entry(String label, Value value) {
             this.label = label;
             this.value = value;
+        }
+
+        public String describe() {
+            return String.format("%s=%s", label, value);
         }
 
         @Override public String toString() {
@@ -71,6 +77,14 @@ class Memory {
 
     Value dereference(AddressValue addressValue) throws InterpreterError {
         return get(addressValue.getAddress());
+    }
+
+    String dump() {
+        return memory.entrySet().stream()
+            .map(Map.Entry::getValue)
+            .sorted(Comparator.comparing(x -> x.label))
+            .map(Entry::describe)
+            .collect(Collectors.joining(","));
     }
 
     @Override public String toString() {

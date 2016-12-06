@@ -1,0 +1,7 @@
+**#Variable declaration
+**Memory:a=Integer(10)
+program Vardecl
+  Változók:
+    a: Egész
+  a := 10
+program_vége

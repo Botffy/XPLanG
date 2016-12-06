@@ -1,0 +1,7 @@
+**#Semantic error: name already in use
+program vardecl_nameclash
+    Változók:
+        x: Egész,
+        x: Egész
+    x := 1
+program_vége

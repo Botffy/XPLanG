@@ -13,3 +13,6 @@ trim_trailing_whitespace = true
 
 [*.{json,xml}]
 indent_size = 2
+
+[*.{plang,prog}]
+indent_size = 2
