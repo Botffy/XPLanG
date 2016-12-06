@@ -35,7 +35,7 @@ public class LanguageIT {
             ErrorLog errorLog = new ErrorLog();
             Parser parser = new Parser(errorLog);
             Root root = parser.parse(reader, grammar);
-            if(!errorLog.isEmpty()) {
+            if(errorLog.isEmpty()) {
                 fail(String.format("%s (%s)", errorMessage, this.fileName));
             }
         }

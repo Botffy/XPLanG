@@ -65,7 +65,8 @@ public class PlangGrammar extends Grammar {
         }
 
         List<Statement> statementList = new ArrayList<>();
-        while(!parser.actual().symbol().equals(parser.context().lookup("END_PROGRAM"))) {
+        List<Symbol> stoppers = Arrays.asList(parser.context().lookup("END_PROGRAM"), Symbol.EOF);
+        do {
             try {
                 statementList.add(statement(parser));
             } catch(ParseError error) {
@@ -74,7 +75,7 @@ public class PlangGrammar extends Grammar {
                 parser.advance();
                 if(parser.actual().symbol().equals(Symbol.EOF)) break;
             }
-        }
+        } while(!stoppers.contains(parser.actual().symbol()));
 
         parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
         Scope scope = parser.context().closeScope();
