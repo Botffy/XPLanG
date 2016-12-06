@@ -69,7 +69,10 @@ public class PlangGrammar extends Grammar {
             try {
                 statementList.add(statement(parser));
             } catch(ParseError error) {
+                log.error("Parse error: ", error);
                 parser.recordError(error.toErrorMessage());
+                parser.advance();
+                if(parser.actual().symbol().equals(Symbol.EOF)) break;
             }
         }
 
