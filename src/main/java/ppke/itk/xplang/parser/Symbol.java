@@ -22,14 +22,14 @@ public class Symbol {
         }
     }
 
-    /** Symbol denoting a lexer error */
+    /** Symbol denoting a lexer error. */
     public static final Symbol LEXER_ERROR = new Symbol("LEXER_ERROR", null);
 
     /** Symbol denoting the end of the input stream. */
     public static final Symbol EOF = new Symbol("EOF", null);
 
-    /** Symbol denoting end of line. FIXME it should not be insignificant for ALL grammars, always */
-    public static final Symbol EOL = new Symbol("EOL", null, Precedence.DEFAULT, false);
+    /** Cross-platform newline pattern. */
+    public static final String EOLPattern = "\\r\\n?|\\n";
 
     private final String name;
     private final Pattern pattern;
@@ -142,7 +142,7 @@ public class Symbol {
         }
 
         public Symbol register(Context context) {
-            int regexFlags = Pattern.UNICODE_CASE;
+            int regexFlags = Pattern.UNICODE_CASE | Pattern.DOTALL;
             if(caseInsensitive) {
                 regexFlags |= Pattern.CASE_INSENSITIVE;
             }

@@ -1,7 +1,11 @@
 package ppke.itk.xplang.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.Reader;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,34 +16,55 @@ import java.util.regex.Pattern;
  * stream.
  */
 class Lexer {
-    private final Iterable<Symbol> symbols;
-    private final Scanner input;
+    private final static Logger log = LoggerFactory.getLogger("Root.Parser.Lexer");
 
-    private String line = ""; // buffer
-    private int lineno = 0; // we are at this line of the source
+    /** The lexer will load this many characters from the Reader in one go. */
+    private final static int CHARBUF_SIZE = 1024;
+    /**
+     * The lexer will try to keep at least this many characters in the buffer. This is effectively the maximum token
+     * length.
+     */
+    private final static int MIN_BUFFER_SIZE = 128;
+
+    private final static Pattern EOL = Pattern.compile(String.format("(%s)+", Symbol.EOLPattern));
+    private final static Pattern SINGLE_EOL = Pattern.compile(Symbol.EOLPattern);
+
+    private final Iterable<Symbol> symbols;
+    private final Reader input;
+
+    private CharSequence buffer = "";
+    private int lineno = 1; // we are at this line of the source
     private int cursor = 0; // we are at this column in the current line;
 
-    private final Matcher matcher = Pattern.compile("dummy").matcher(line).useTransparentBounds(true).useAnchoringBounds(false);
+    private final Matcher matcher = Pattern.compile("dummy").matcher(buffer)
+        .useTransparentBounds(true)
+        .useAnchoringBounds(false);
 
     /**
-     * Create a new Lexer
-     * @param source The source text to be tokenize.
+     * Create a new Lexer.
+     * @param source The source text to be tokenized.
      * @param symbols An ordered set of the grammar's symbols.
      */
     Lexer(Reader source, Iterable<Symbol> symbols) {
-        this.input = new Scanner(source);
+        this.input = new BufferedReader(source);
         this.symbols = symbols;
 
         // initialize buffer
-        if(input.hasNextLine()) {
-            loadLine();
+        try {
+            readBuf();
+        } catch(IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void loadLine() {
-        line = input.nextLine();
-        matcher.reset(line);
-        ++lineno;
+    private void readBuf() throws IOException {
+        char[] charBuf = new char[1024];
+        int read = input.read(charBuf, 0, CHARBUF_SIZE);
+        if(read == -1) {
+            return;
+        }
+        buffer = new StringBuilder(buffer.subSequence(cursor, buffer.length())).append(charBuf, 0, read);
+        matcher.reset(buffer);
         cursor = 0;
     }
 
@@ -48,32 +73,29 @@ class Lexer {
      *
      * The rules of matching are similar to those of the GNU flex: it tries to match every rule, and hands up the
      * longest match. If two matches are of the same length, we choose the {@link Symbol} with the higher precedence.
-     * And when even the precedence is the same, we choose the symbol declared earlier (occuring earlier in the
+     * And when even the precedence is the same, we choose the symbol declared earlier (occurring earlier in the
      * {@code symbols} list).
-     *
-     * An important difference to the GNU flex behaviour is that the newline cannot be matched: Lexer automatically
-     * catches the EOL and loads a new line into its inner buffer. That's not perfect.
      */
     Token next() {
         Symbol matchSymbol;
         String matchLexeme;
         do {
-            // we've read the entire buffer?
-            while(line.length() <= cursor) {
-                // if no lines left, just hand up an EOF.
-                if(!input.hasNextLine()) return new Token(Symbol.EOF, "", lineno, cursor);
-
-                // otherwise read another line into the buffer (and hand up an EOL if it is significant)
-                int oldline = lineno;
-                int oldcurs = cursor;
-                loadLine();
-                if(Symbol.EOL.isSignificant()) {
-                    return new Token(Symbol.EOL, "", oldline, oldcurs);
+            // buffer maintenance
+            // if we have too few characters left in the buffer, try loading it up with some more.
+            if(buffer.length() - cursor < MIN_BUFFER_SIZE) {
+                try {
+                    readBuf();
+                } catch(IOException e) {
+                    e.printStackTrace();
                 }
             }
+            if(cursor >= buffer.length()) {
+                return new Token(Symbol.EOF, "", lineno, cursor);
+            }
+
             matchSymbol = null;
             matchLexeme = "";
-            matcher.region(cursor, line.length());
+            matcher.region(cursor, buffer.length());
             for(final Symbol s : symbols) {
                 // if there is a match,
                 //   or there's no earlier match
@@ -95,14 +117,51 @@ class Lexer {
 
             // any results?
             if(matchSymbol != null) {
-                cursor += matchLexeme.length();
+                advanceCursor(matchLexeme.length());
             } else {
                 int bakCursor = cursor;
-                cursor = line.length(); // skip to EOL and recover;
-                return new Token(Symbol.LEXER_ERROR, line.substring(bakCursor), lineno, bakCursor);
+                int bakLineno = lineno;
+                skipToNextLine();
+                return new Token(
+                    Symbol.LEXER_ERROR,
+                    buffer.subSequence(bakCursor, cursor).toString().trim(),
+                    bakLineno, bakCursor
+                );
             }
         } while(!matchSymbol.isSignificant()); // if the match isn't significant, continue.
 
         return new Token(matchSymbol, matchLexeme, lineno, cursor - matchLexeme.length());
+    }
+
+    /**
+     * Consume all characters up to and including the next sequence of newline characters.
+     *
+     * Used to recover from errors.
+     */
+    void skipToNextLine() {
+        Matcher matcher = EOL.matcher(buffer.subSequence(cursor, buffer.length()));
+        if(matcher.find()) {
+            advanceCursor(matcher.end());
+        } else {
+            advanceCursor(buffer.length() - cursor);
+        }
+    }
+
+    /**
+     * Advances the cursor by given {@code steps} characters, and advances the line counter if necessary. Use this
+     * instead of the + operator.
+     * @param steps The cursor should advance this many characters.
+     * @return the original position of the cursor.
+     */
+    private int advanceCursor(int steps) {
+        int bakCursor = cursor;
+        cursor += steps;
+
+        Matcher matcher = SINGLE_EOL.matcher(buffer.subSequence(bakCursor, cursor));
+        while(matcher.find()) {
+            ++lineno;
+        }
+
+        return bakCursor;
     }
 }

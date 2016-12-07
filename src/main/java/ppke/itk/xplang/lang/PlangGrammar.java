@@ -34,11 +34,14 @@ public class PlangGrammar extends Grammar {
             createSymbol("LITERAL_INT")
                 .withPrecedence(Symbol.Precedence.LITERAL)
                 .matching("\\d+"),
+            createSymbol("EOL")
+                .matching(Symbol.EOLPattern)
+                .notSignificant(),
             createSymbol("WHITESPACE")
                 .matching("\\s+")
                 .notSignificant(),
             createSymbol("COMMENT")
-                .matching("\\*\\*.*")
+                .matching("\\*\\*[^\\r\\n]*")
                 .notSignificant()
         ).forEach(x->x.register(ctx));
     }

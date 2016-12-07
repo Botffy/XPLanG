@@ -71,24 +71,14 @@ public class LexerTest {
 
     @Test public void eol() {
         Symbol keyword = new Symbol("if", Pattern.compile("if"));
+        Symbol eol = new Symbol("EOL", Pattern.compile("[\r\n]+"));
 
-        List<Symbol> symbols = singletonList(keyword);
+        List<Symbol> symbols = asList(keyword, eol);
 
         Reader source = new StringReader("if\nif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should hand up EOL at line end.", Symbol.EOL, lexer.next().symbol());
-    }
-
-    @Test public void eolAtEof() {
-        Symbol keyword = new Symbol("if", Pattern.compile("if"));
-
-        List<Symbol> symbols = singletonList(keyword);
-
-        Reader source = new StringReader("if\n");
-        Lexer lexer = new Lexer(source, symbols);
-        lexer.next();
-        assertEquals("Lexer should hand up EOF even if there's a final EOL.", Symbol.EOF, lexer.next().symbol());
+        assertEquals("Lexer should hand up EOL at line end.", eol, lexer.next().symbol());
     }
 
     @Test public void lackWS() {
@@ -120,11 +110,14 @@ public class LexerTest {
         Symbol keyword = new Symbol("if", Pattern.compile("if"));
 
         List<Symbol> symbols = singletonList(keyword);
-        Reader source = new StringReader("foo bar baz\nif");
+        Reader source = new StringReader("foo bar baz\nifif");
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
-        assertEquals("Lexer should recover from lexer error on the next line.", Symbol.EOL, lexer.next().symbol());
-        assertEquals("Lexer should work normally after recovery.", keyword, lexer.next().symbol());
+        assertEquals("Lexer should recover from lexer error on the next line.",
+            "if", lexer.next().lexeme()
+        );
+        assertEquals("Lexer should work normally after recovery.", "if", lexer.next().lexeme());
+        assertEquals("Lexer should work normally after recovery.", Symbol.EOF, lexer.next().symbol());
     }
 
     @Test public void insignificantSymbols() {
@@ -137,5 +130,18 @@ public class LexerTest {
         Lexer lexer = new Lexer(source, symbols);
         lexer.next();
         assertEquals("Non-significant symbols should be parsed, but not handed up.", keyword, lexer.next().symbol());
+    }
+
+    @Test public void shouldReportLineNoCorrectly() {
+        Symbol keyword = new Symbol("if", Pattern.compile("if"));
+        Symbol whitespace = new Symbol("ws", Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false);
+        List<Symbol> symbols = asList(keyword, whitespace);
+
+        Reader source = new StringReader("if\nif\n\nifif");
+        Lexer lexer = new Lexer(source, symbols);
+        assertEquals("The first if should be on the first line", 1, lexer.next().getLine());
+        assertEquals("The second if should be on the second line", 2, lexer.next().getLine());
+        assertEquals("The third if should be on the fourth line", 4, lexer.next().getLine());
+        assertEquals("The fourth if should be on the fourth line", 4, lexer.next().getLine());
     }
 }
