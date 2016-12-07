@@ -133,7 +133,9 @@
       <property name="checkMethods" value="false"/>
       <property name="validateOnlyOverlapping" value="true"/>
     </module>
-    <module name="ReturnCount"/>
+    <module name="ReturnCount">
+      <property name="max" value="3"/>
+    </module>
     <module name="SimplifyBooleanExpression"/>
     <module name="SimplifyBooleanReturn"/>
     <module name="StringLiteralEquality"/>
@@ -180,5 +182,18 @@
       <property name="allowEmptyLoops" value="true"/>
       <property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_RETURN,LOR,LT,MINUS,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS,PLUS_ASSIGN,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
     </module>
+    <module name="JavadocMethod">
+      <property name="scope" value="package"/>
+      <property name="minLineCount" value="6"/>
+      <property name="allowMissingParamTags" value="true"/>
+      <property name="allowMissingThrowsTags" value="true"/>
+      <property name="allowMissingReturnTag" value="true"/>
+      <property name="allowedAnnotations" value="Override, Test"/>
+      <property name="allowMissingPropertyJavadoc" value="true"/>
+    </module>
+    <module name="JavadocStyle">
+      <property name="scope" value="package"/>
+    </module>
+    <module name="NonEmptyAtclauseDescription"/>
   </module>
 </module>

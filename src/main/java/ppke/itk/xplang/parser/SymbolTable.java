@@ -85,7 +85,7 @@ class SymbolTable {
     }
 
     /**
-     *  Get a Name->Symbol mapping of all currently visible symbols.
+     *  Get a Name-&gt;Symbol mapping of all currently visible symbols.
      *
      *  @return the unmodifiable mapping of currently visible symbols. The returned object is guaranteed to be the same
      *  over executions, and never becomes invalid as long as the SymbolList is in a valid state. The returned map is

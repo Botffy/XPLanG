@@ -50,7 +50,10 @@ javadoc {
     destinationDir = file('docs/javadoc')
     options.noQualifiers = ["java", "com.sun"]
     options.links = ['http://docs.oracle.com/javase/8/docs/api/']
+    options.memberLevel = JavadocMemberLevel.PACKAGE;
     options.charSet = 'UTF-8'
+    options.encoding = 'UTF-8'
+    options.docEncoding = 'UTF-8'
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
