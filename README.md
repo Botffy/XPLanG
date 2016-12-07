@@ -13,14 +13,33 @@ The dream lives on.
 
 # Building
 
-Install [Gradle](https://gradle.org). I am using the 3.2.1 version. Once `gradle` is in your path, type `gradle classes` in your terminal: it downloads all dependencies and compiles the whole thing.
+## Prerequisites
 
-## Further build commands
+You will need
+
+- [Git](https://git-scm.com/downloads),
+- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [Gradle (version 3.2.1)](https://gradle.org).
+
+Make sure to have these in your PATH, then restart your terminal.
+
+## Getting the source code
+
+To get the source code, type `git clone https://github.com/Botffy/XPLanG.git` in your terminal, in the directory where you'd like your copy of the repo to be created.
+
+## Building in the command line
+
+Then enter the newly created `XPLanG` directory, and type `gradle classes` in your terminal: it downloads all dependencies and compiles the whole thing.
+
+### Further build commands
 
 - `gradle test` runs the JUnit tests.
 - `gradle javadoc` generates the Javadoc documentation, putting it in `docs/javadoc`.
-- `gradle check` invokes [Checkstyle](./config/checkstyle/README.md).
+- `gradle check` invokes [Checkstyle](./config/checkstyle/README.md) in addition to running the tests.
+- `gradle jacoco` invokes the [JaCoCo](http://www.eclemma.org/jacoco/) code coverage tool.
 
-# Running the thing
+You can find the build reports in `build/reports`.
+
+## Running the thing
 
 Type `gradle run` in your terminal. It will start XPLanG, but it will complain about getting too few arguments: it expects the path to a source file to interpret. Pass arguements to XPLanG via Gradle through the `-Pappargs` command line argument, which expects a list of strings. It's a bit hard to explain: just try `gradle run -PappArgs="['example.prog']"`.
