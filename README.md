@@ -12,6 +12,28 @@ But I'm kinda weird, you know, and while everybody else just wanted to forget th
 
 The dream lives on.
 
+# Running
+
+## Prerequisites
+
+You will need Java 8 Runtime Environment. Just install the latest JRE from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+
+## Command line
+
+Start XPLanG by running `bin/XPLanG` (Unix-like systems) or `bin/XPLanG.bat` (windows).
+
+## Usage
+
+`XPLanG [options] SOURCE_FILE`
+
+`SOURCE_FIE` should be a PLanG program.
+
+Valid options:
+
+- `--help` display usage information and exit
+- `--version` display version information and exit
+
+
 # Building
 
 ## Prerequisites
@@ -19,7 +41,7 @@ The dream lives on.
 You will need
 
 - [Git](https://git-scm.com/downloads),
-- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [Java 8 Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 - [Gradle (version 3.2.1)](https://gradle.org).
 
 Make sure to have these in your PATH, then restart your terminal.
@@ -30,17 +52,12 @@ To get the source code, type `git clone https://github.com/Botffy/XPLanG.git` in
 
 ## Building in the command line
 
-Then enter the newly created `XPLanG` directory, and type `gradle classes` in your terminal: it downloads all dependencies and compiles the whole thing.
-
-### Further build commands
-
+- `gradle classes` downloads all dependencies and compiles the whole thing.
+- `gradle assemble` creates the actual product. The distribution packages are put in the `build/distributions`.
 - `gradle test` runs the JUnit tests.
 - `gradle javadoc` generates the Javadoc documentation, putting it in `docs/javadoc`.
 - `gradle check` invokes [Checkstyle](./config/checkstyle/README.md) in addition to running the tests.
 - `gradle jacoco` invokes the [JaCoCo](http://www.eclemma.org/jacoco/) code coverage tool.
+- `gradle run` runs the interpreter. Pass arguements to XPLanG via Gradle through the `-Pappargs` command line argument as a list of strings. Try `gradle run -PappArgs="['example.prog']"`.
 
 You can find the build reports in `build/reports`.
-
-## Running the thing
-
-Type `gradle run` in your terminal. It will start XPLanG, but it will complain about getting too few arguments: it expects the path to a source file to interpret. Pass arguements to XPLanG via Gradle through the `-Pappargs` command line argument, which expects a list of strings. It's a bit hard to explain: just try `gradle run -PappArgs="['example.prog']"`.
