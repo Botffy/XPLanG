@@ -42,7 +42,7 @@ public class ParserErrorLoggingTest {
         List<CompilerMessage> messages = parser.getErrorLog().getErrorMessages();
         assertFalse("Error log should not be empty after a lexing error.", messages.isEmpty());
         assertEquals("Error log should give correct information about the error location.",
-            new Location(1,4),
+            new Location(1,5),
             messages.get(0).getLocation()
         );
     }
@@ -57,7 +57,7 @@ public class ParserErrorLoggingTest {
         System.out.println(messages);
         assertFalse("Error log should not be empty after a syntax error.", parser.getErrorLog().isEmpty());
         assertEquals("Error log should give correct information about the error location.",
-            new Location(1,8),
+            new Location(1,9),
             messages.get(0).getLocation()
         );
     }

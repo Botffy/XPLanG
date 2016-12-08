@@ -144,4 +144,18 @@ public class LexerTest {
         assertEquals("The third if should be on the fourth line", 4, lexer.next().getLine());
         assertEquals("The fourth if should be on the fourth line", 4, lexer.next().getLine());
     }
+
+    @Test public void shouldReportColumnCorrectly() {
+        Symbol keyword = new Symbol("if", Pattern.compile("HEART"));
+        Symbol whitespace = new Symbol("ws", Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false);
+        List<Symbol> symbols = asList(keyword, whitespace);
+
+        Reader source = new StringReader("  HEART\n HEART\n\nHEART     HEART  \n\n  HEART");
+        Lexer lexer = new Lexer(source, symbols);
+        assertEquals("The first HEART starts at column 3", 3, lexer.next().getCol());
+        assertEquals("The second HEART starts at column 2", 2, lexer.next().getCol());
+        assertEquals("The third HEART starts at column 1", 1, lexer.next().getCol());
+        assertEquals("The fourth HEART starts at column 11", 11, lexer.next().getCol());
+        assertEquals("The fifth HEART starts at column 3", 3, lexer.next().getCol());
+    }
 }

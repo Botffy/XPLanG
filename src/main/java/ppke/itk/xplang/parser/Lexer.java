@@ -34,7 +34,8 @@ class Lexer {
 
     private CharSequence buffer = "";
     private int lineno = 1; // we are at this line of the source
-    private int cursor = 0; // we are at this column in the current line;
+    private int column = 1; // we are at this column in the current line;
+    private int cursor = 0; // our location in the buffer.
 
     private final Matcher matcher = Pattern.compile("dummy").matcher(buffer)
         .useTransparentBounds(true)
@@ -119,18 +120,19 @@ class Lexer {
             if(matchSymbol != null) {
                 advanceCursor(matchLexeme.length());
             } else {
+                int bakColumn = column;
                 int bakCursor = cursor;
                 int bakLineno = lineno;
                 skipToNextLine();
                 return new Token(
                     Symbol.LEXER_ERROR,
                     buffer.subSequence(bakCursor, cursor).toString().trim(),
-                    bakLineno, bakCursor
+                    bakLineno, bakColumn
                 );
             }
         } while(!matchSymbol.isSignificant()); // if the match isn't significant, continue.
 
-        return new Token(matchSymbol, matchLexeme, lineno, cursor - matchLexeme.length());
+        return new Token(matchSymbol, matchLexeme, lineno, column - matchLexeme.length());
     }
 
     /**
@@ -156,10 +158,12 @@ class Lexer {
     private int advanceCursor(int steps) {
         int bakCursor = cursor;
         cursor += steps;
+        column += steps;
 
         Matcher matcher = SINGLE_EOL.matcher(buffer.subSequence(bakCursor, cursor));
         while(matcher.find()) {
             ++lineno;
+            column = steps - matcher.end() + 1;
         }
 
         return bakCursor;
