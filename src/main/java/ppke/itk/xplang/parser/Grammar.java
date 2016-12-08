@@ -41,7 +41,7 @@ abstract public class Grammar {
      *  The starting symbol of the grammar. This starts the recursive descent.
      *  @param parser The parser object.
      */
-    abstract protected Root S(Parser parser) throws ParseError;
+    abstract protected Root start(Parser parser) throws ParseError;
 
     protected Symbol.Builder createSymbol() {
         Symbol.Builder builder = Symbol.create();

@@ -8,6 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The memory of the {@link Interpreter}.
+ *
+ * A set of {@link Value}s mapped to arbitrary Object type addresses. The memory stores "labels" as well (the original
+ * variable names), but these are only used for debugging purposes.
+ */
 class Memory {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter.Memory");
 
@@ -20,7 +26,7 @@ class Memory {
             this.value = value;
         }
 
-        public String describe() {
+        String describe() {
             return String.format("%s=%s", label, value);
         }
 
@@ -31,6 +37,12 @@ class Memory {
 
     private final Map<Object, Entry> memory = new HashMap<Object, Entry>();
 
+    /**
+     * Allocate memory at a given address.
+     * @param key The memory address. Any object.
+     * @param name A human-readable name for this memory slot.
+     * @throws InterpreterError If the address is already occupied.
+     */
     void allocate(Object key, String name) throws InterpreterError {
         log.debug("Allocating space for '{}' @ '{}'", name, key);
         if(memory.containsKey(key)) {
@@ -50,6 +62,11 @@ class Memory {
         log.debug("Deallocated entry for {}", key);
     }
 
+    /**
+     * Set the content of a memory slot.
+     * @param key The memory address.
+     * @param value The value to put at this address.
+     */
     void set(Object key, Value value) throws InterpreterError {
         if(!memory.containsKey(key)) {
             log.error("Unknown address '{}'", key);
@@ -61,10 +78,20 @@ class Memory {
         log.debug("Updated value of '{}' to '{}'", entry.label, entry.value);
     }
 
+    /**
+     * Set the content of a memory slot referenced by a pointer.
+     * @param addressValue A pointer to a memory slot.
+     * @param value The value to put at this address.
+     */
     void set(AddressValue addressValue, Value value) throws InterpreterError {
         set(addressValue.getAddress(), value);
     }
 
+    /**
+     * Get the value stored in a memory slot.
+     * @param key The memory slot to be queried.
+     * @return The value in the given memory slot. May be NullValue.
+     */
     Value get(Object key) throws InterpreterError {
         if(!memory.containsKey(key)) {
             log.error("Unknown address '{}'", key);

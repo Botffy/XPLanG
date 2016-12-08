@@ -21,7 +21,7 @@ public class ParserTest {
             ctx.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
             ctx.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
         }
-        @Override protected Root S(Parser parser) throws ParseError {
+        @Override protected Root start(Parser parser) throws ParseError {
             return null;
         }
     };

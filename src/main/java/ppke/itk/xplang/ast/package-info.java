@@ -6,7 +6,7 @@
  * homogeneous interface.
  *
  * We don't keep track of a node's parent because it would only complicate maintaining the coherence of the hierarchy.
- * If an {@link ppke.itk.xplang.ast.ASTVisitor} would need parent information, that visitor should build an auxiliary structure for that.
- * Sue me.
+ * If an {@link ppke.itk.xplang.ast.ASTVisitor} would need parent information, that visitor should build an auxiliary
+ * structure for that.
  */
 package ppke.itk.xplang.ast;

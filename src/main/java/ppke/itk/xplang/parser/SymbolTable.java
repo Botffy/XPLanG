@@ -13,7 +13,7 @@ import java.util.*;
 class SymbolTable {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context.SymbolTable");
 
-    private static class Entry {
+    private static final class Entry {
         final Symbol symbol;
         final int ordinal;
 
@@ -36,14 +36,14 @@ class SymbolTable {
     private final Map<String, Symbol> symbolMap = new HashMap<>();
 
     /**
-     *	Opens a new lexical scope.
+     * Opens a new lexical scope.
      */
     void openScope() {
         table.openScope();
     }
 
     /**
-     *	Closes the current lexical scope. Symbols registered in this scope are invalidated.
+     * Closes the current lexical scope. Symbols registered in this scope are invalidated.
      */
     void closeScope() throws ScopedMap.NoScopeError {
         table.closeScope();
@@ -62,7 +62,7 @@ class SymbolTable {
     }
 
     /**
-     *  Look up a symbol by name
+     *  Look up a symbol by name.
      */
     Symbol lookup(String name) {
         if(!symbolMap.containsKey(name)) {
@@ -100,7 +100,7 @@ class SymbolTable {
         symbolList.clear();
         symbolMap.clear();
         Set<Pair<String, Entry>> set = table.entries();
-        set.stream().map(Pair::getValue).sorted(declarationOrder).forEach(x-> {
+        set.stream().map(Pair::getValue).sorted(declarationOrder).forEach(x -> {
             symbolList.add(x.symbol);
             symbolMap.put(x.symbol.getName(), x.symbol);
         });

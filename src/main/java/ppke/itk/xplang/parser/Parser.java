@@ -44,7 +44,7 @@ public class Parser {
             grammar.setup(context);
             this.lexer = new Lexer(source, context.getSymbols());
             advance();
-            return grammar.S(this);
+            return grammar.start(this);
         } catch(ParseError e) {
             recordError(e.toErrorMessage());
             return null;

@@ -10,7 +10,6 @@ import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.util.VersionInfo;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

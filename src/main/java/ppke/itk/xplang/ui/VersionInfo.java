@@ -1,4 +1,4 @@
-package ppke.itk.xplang.util;
+package ppke.itk.xplang.ui;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +13,16 @@ import java.util.Properties;
 public final class VersionInfo {
     private static final Logger log = LoggerFactory.getLogger("Root.System.VersionInfo");
 
-    /** The git commit hash */
+    /** The git commit hash. */
     public final String version;
 
-    /** Build date */
+    /** Build date. */
     public final String builtAt;
 
-    /** Name of the user starting the build */
+    /** Name of the user starting the build. */
     public final String builtBy;
 
-    /** The version of the JDK this was built with */
+    /** The version of the JDK this was built with. */
     public final String buildJDK;
 
 
@@ -42,7 +42,7 @@ public final class VersionInfo {
     }
 
     /**
-     * Describe the version
+     * Describe the version.
      * @return a human-readable string with information about the build.
      */
     public String describe() {

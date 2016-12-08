@@ -1,5 +1,8 @@
 package ppke.itk.xplang.interpreter;
 
+/**
+ * A value the {@link Interpreter} works on.
+ */
 abstract class Value {
     private static final Value NULL = new Value() {
         @Override public String toString() {

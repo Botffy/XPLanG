@@ -1,7 +1,5 @@
 package ppke.itk.xplang.ast;
 
-import ppke.itk.xplang.parser.Symbol;
-
 /**
  * The root node of the AST. Essentially the global scope.
  */

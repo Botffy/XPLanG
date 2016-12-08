@@ -25,7 +25,7 @@ public abstract class Node {
     }
 
     /**
-     * Gets the {@code index}th child of this node
+     * Gets the {@code index}th child of this node.
      * @param index the ordinal of the child.
      * @return the {@code index}th child if it exists.
      * @throws ArrayIndexOutOfBoundsException if the child does not exist.

@@ -23,7 +23,7 @@ public class ParserErrorLoggingTest {
             ctx.register(SYMBOL_FSL);
             ctx.register(SYMBOL_WS);
         }
-        @Override protected Root S(Parser parser) throws ParseError {
+        @Override protected Root start(Parser parser) throws ParseError {
             int iteration = 0;
             while(!parser.actual().symbol().equals(Symbol.EOF)) {
                 parser.accept(iteration %2 == 0? SYMBOL_FSL : SYMBOL_FSR, "Expected %s, got %s");

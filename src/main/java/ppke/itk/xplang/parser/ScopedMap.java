@@ -29,7 +29,7 @@ class ScopedMap<Key, Value> {
         }
     }
 
-    private static class Scope {
+    private static final class Scope {
         final int identifier;
 
         private Scope(int identifier) {
@@ -37,7 +37,7 @@ class ScopedMap<Key, Value> {
         }
     }
 
-    private static class Entry<T> {
+    private static final class Entry<T> {
         final int scopeId;
         final T data;
 
@@ -65,7 +65,7 @@ class ScopedMap<Key, Value> {
      */
     void closeScope() throws NoScopeError {
         if(scopeStack.isEmpty()) throw new NoScopeError();
-        scopeStack.remove(scopeStack.size()-1);
+        scopeStack.remove(scopeStack.size() - 1);
         log.debug("Closed scope");
     }
 
@@ -107,9 +107,9 @@ class ScopedMap<Key, Value> {
         if(!symtab.containsKey(name)) return null;
 
         Entry<Value> match = null;
-        List<Entry<Value>> chain=symtab.get(name);
+        List<Entry<Value>> chain = symtab.get(name);
         for(Entry<Value> entry : chain) {
-            for(int i=scopeStack.size(); i-->0;) {
+            for(int i = scopeStack.size(); i-- > 0;) {
                 if(entry.scopeId == scopeStack.get(i).identifier) {
                     match = entry;
                     break;
@@ -117,14 +117,18 @@ class ScopedMap<Key, Value> {
             }
         }
 
-        if(match != null) return match.data;
-        return null;
+        return match == null? null : match.data;
     }
 
+    /**
+     * Is the given name free in the current scope, or has there been something already registered by that name?
+     * @param name The name to be queried.
+     * @return True if the name hasn't been registered in the current scope, false otherwise.
+     */
     boolean isFree(Key name) {
         if(!symtab.containsKey(name)) return true;
         List<Entry<Value>> chain = symtab.get(name);
-        return !(!chain.isEmpty() && (top(chain).scopeId==currentScope().identifier));
+        return !(!chain.isEmpty() && (top(chain).scopeId == currentScope().identifier));
     }
 
     /**
@@ -136,7 +140,7 @@ class ScopedMap<Key, Value> {
             List<Entry<Value>> chain = mapEntry.getValue();
             Entry<Value> match = null;
             for(Entry<Value> entry : chain) {
-                for(int i=scopeStack.size(); i-->0;) {
+                for(int i = scopeStack.size(); i-- > 0;) {
                     if(entry.scopeId == scopeStack.get(i).identifier) {
                         match = entry;
                         break;
@@ -175,11 +179,11 @@ class ScopedMap<Key, Value> {
 
     private Scope currentScope() {
         if(scopeStack.isEmpty()) throw new NoScopeError();
-        return scopeStack.get(scopeStack.size()-1);
+        return scopeStack.get(scopeStack.size() - 1);
     }
 
     private static <T> T top(List<T> stack) {
         if(stack.isEmpty()) return null;
-        return stack.get(stack.size()-1);
+        return stack.get(stack.size() - 1);
     }
 }

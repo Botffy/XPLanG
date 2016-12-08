@@ -47,10 +47,10 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code S = Program}
+     * {@code start = Program}
      */
-    @Override protected Root S(Parser parser) throws ParseError {
-        log.debug("S");
+    @Override protected Root start(Parser parser) throws ParseError {
+        log.debug("start");
         Program program = program(parser);
         return new Root(program);
     }

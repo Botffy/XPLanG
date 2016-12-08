@@ -58,7 +58,7 @@ class Lexer {
     }
 
     private void readBuf() throws IOException {
-        char[] charBuf = new char[1024];
+        char[] charBuf = new char[CHARBUF_SIZE];
         int read = input.read(charBuf, 0, CHARBUF_SIZE);
         if(read == -1) {
             return;
