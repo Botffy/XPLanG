@@ -1,3 +1,4 @@
 **#Program with no statements should give syntax error
+**FirstErrorLoc:4,1
 program empty
 program_vége

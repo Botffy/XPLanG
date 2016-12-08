@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Simple value class to hold location information about a piece of text in a file.
  */
-public final class Location {
+public final class Location implements Comparable<Location> {
     public final int line;
     public final int column;
 
@@ -26,5 +26,10 @@ public final class Location {
 
     @Override public int hashCode() {
         return Objects.hash(line, column);
+    }
+
+    @Override public int compareTo(Location that) {
+        int result = this.line - that.line;
+        return result == 0? this.column - that.column : result;
     }
 }

@@ -1,4 +1,5 @@
 **#Missing type in variable declarations
+**FirstErrorLoc:6,5
 Program vardecl_3
     Változók:
         a

@@ -1,4 +1,5 @@
 **#Missing comma between variable names
+**FirstErrorLoc:5,7
 program vardecl_nocomma_1
   Változók:
     x y: Egész

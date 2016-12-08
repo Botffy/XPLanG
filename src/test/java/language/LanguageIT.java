@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.ErrorLog;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
@@ -49,11 +50,16 @@ public class LanguageIT {
             reader.mark(1024);
             String errorMessage = reader.readLine().substring(3);
             String expectedMemory = null;
+            Location firstErrorLoc = null;
 
             String secLine = reader.readLine().substring(2);
             if(secLine.startsWith("Memory:")) {
                 expectedMemory = secLine.substring(7);
                 log.info(expectedMemory);
+            } else if(secLine.startsWith("FirstErrorLoc:")) {
+                secLine = secLine.substring(14);
+                String[] loc = secLine.split(",");
+                firstErrorLoc = new Location(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
             }
             reader.reset();
 
@@ -64,6 +70,10 @@ public class LanguageIT {
                 if(errorLog.isEmpty()) {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
+                if(firstErrorLoc != null) {
+                    assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getLocation());
+                }
+
             } else {
                 if(!errorLog.isEmpty()) {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));

@@ -1,4 +1,5 @@
 **#Program with no statements should give syntax error
+**FirstErrorLoc:6,1
 program empty
   Változók:
     a, b: Egész

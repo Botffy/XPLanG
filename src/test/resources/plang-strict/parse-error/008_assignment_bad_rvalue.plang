@@ -1,4 +1,5 @@
 **#Malformed RValue
+**FirstErrorLoc:7,1
 program vardecl_bad_rvalue
   Változók:
     x: Egész

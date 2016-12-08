@@ -1,4 +1,5 @@
 **#Missing variable names
+**FirstErrorLoc:5,5
 Program vardecl_4
   Változók:
   a := 5;
