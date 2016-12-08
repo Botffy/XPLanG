@@ -18,6 +18,10 @@ The dream lives on.
 
 You will need Java 8 Runtime Environment. Just install the latest JRE from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
+## Download
+
+Download the latest build from our [meager homepage](http://users.itk.ppke.hu/~sciar/XPLanG/downloads/).
+
 ## Command line
 
 Start XPLanG by running `bin/XPLanG` (Unix-like systems) or `bin/XPLanG.bat` (windows).
