@@ -44,6 +44,12 @@ tasks.withType(Checkstyle) {
     }
 }
 
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
 javadoc {
     source = sourceSets.main.allJava
     classpath = configurations.compile
