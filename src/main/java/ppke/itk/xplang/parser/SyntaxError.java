@@ -1,6 +1,8 @@
 package ppke.itk.xplang.parser;
 
 
+import ppke.itk.xplang.common.Translator;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -8,8 +10,7 @@ import java.util.Collections;
  * Thrown when the source code does not conform the expected structure of the language.
  */
 public class SyntaxError extends ParseError {
-    private static final String EXPECT_MANY_MSG = "Expected any symbol of %s, encountered %s";
-    private static final String EXPECT_ONE_MSG  = "Expected symbol %s, encountered %s";
+    private final static Translator translator = Translator.getInstance("parser");
 
     /**
      * Signal a syntax error with the given message.
@@ -33,7 +34,10 @@ public class SyntaxError extends ParseError {
      * @param token The token causing the error.
      */
     public SyntaxError(Collection<Symbol> expected, Symbol actual, Token token) {
-        this(expected.size() > 1? EXPECT_MANY_MSG : EXPECT_ONE_MSG, expected, actual, token);
+        this(translator.translate(expected.size() > 1?
+                "parser.SyntaxError.message.expectMany" :
+                "parser.SyntaxError.message.expectOne"
+            ), expected, actual, token);
     }
 
     /**
@@ -43,7 +47,7 @@ public class SyntaxError extends ParseError {
      * @param token The token causing the error.
      */
     public SyntaxError(Symbol expected, Symbol actual, Token token) {
-        this(EXPECT_ONE_MSG, expected, actual, token);
+        this(translator.translate("parser.SyntaxError.message.expectOne"), expected, actual, token);
     }
 
     /**

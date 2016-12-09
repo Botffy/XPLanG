@@ -3,6 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class PlangGrammar extends Grammar {
+    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     public PlangGrammar() {
@@ -60,8 +62,10 @@ public class PlangGrammar extends Grammar {
      */
     protected Program program(Parser parser) throws ParseError {
         log.debug("Program");
-        parser.accept("PROGRAM", "A programnak a PROGRAM kulcsszóval kell keződnie!");
-        Token nameToken = parser.accept("IDENTIFIER", "Hiányzik a program neve (egy azonosító).");
+        parser.accept("PROGRAM",
+            translator.translate("plang.program_keyword_missing", "PROGRAM"));
+        Token nameToken = parser.accept("IDENTIFIER",
+            translator.translate("plang.missing_program_name"));
 
         if(parser.actual().symbol().equals(parser.context().lookup("DECLARE"))) {
             declarations(parser);
@@ -80,7 +84,8 @@ public class PlangGrammar extends Grammar {
             }
         } while(!stoppers.contains(parser.actual().symbol()));
 
-        parser.accept("END_PROGRAM", "A programot a PROGRAM_VÉGE kulcsszóval kell lezárni.");
+        parser.accept("END_PROGRAM",
+            translator.translate("plang.missing_end_program", "PROGRAM_VÉGE"));
         Scope scope = parser.context().closeScope();
         Sequence sequence = new Sequence(statementList);
 
@@ -92,8 +97,10 @@ public class PlangGrammar extends Grammar {
      */
     protected void declarations(Parser parser) throws ParseError {
         log.debug("Declarations");
-        parser.accept("DECLARE", "Hiányzik a VÁLTOZÓK kulcsszó");
-        parser.accept("COLON", "Hiányzik a VÁLTOZÓK kulcsszó után a kettőspont.");
+        parser.accept("DECLARE",
+            translator.translate("plang.missing_declarations_keyword", "VÁLTOZÓK"));
+        parser.accept("COLON",
+            translator.translate("plang.missing_colon_after_declarations_keyword", "VÁLTOZÓK"));
 
         variableDeclaration(parser);
         while(parser.actual().symbol().equals(parser.context().lookup("COMMA"))) {

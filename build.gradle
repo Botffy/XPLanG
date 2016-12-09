@@ -16,6 +16,7 @@ dependencies {
     compile group: 'com.github.stefanbirkner', name: 'fishbowl', version: '1.4.0'
     compile group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.7.0'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    compile group: 'com.google.guava', name: 'guava', version: '20.0'
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'
@@ -72,13 +73,18 @@ javadoc {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-processResources {
-   filter(ReplaceTokens, tokens: [
-      "version": version,
-      "built.at": (new Date()).format("yyyy-MM-dd HH:mm:ssZ"),
-      "built.by": System.getProperty('user.name'),
-      "build.JDK": System.getProperty('java.version')
-   ])
+import org.apache.tools.ant.filters.EscapeUnicode
+tasks.withType(ProcessResources).each { task ->
+    task.from(task.getSource()) {
+        include '**/*.properties'
+        filter(EscapeUnicode)
+        filter(ReplaceTokens, tokens: [
+            "version": version,
+            "built.at": (new Date()).format("yyyy-MM-dd HH:mm:ssZ"),
+            "built.by": System.getProperty('user.name'),
+            "build.JDK": System.getProperty('java.version')
+        ])
+    }
 }
 
 run {
