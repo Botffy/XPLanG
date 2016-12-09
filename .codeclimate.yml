@@ -7,6 +7,10 @@ engines:
     enabled: true
     config: config/checkstyle/checkstyle.xml
     channel: "beta"
+  pmd:
+    enabled: true
+    config: config/pmd/pmd.xml
+    channel: "beta"
 ratings:
   paths:
   - src/**

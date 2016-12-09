@@ -1,5 +1,6 @@
 apply plugin: 'application'
 apply plugin: 'checkstyle'
+apply plugin: 'pmd'
 apply plugin: 'jacoco'
 
 version = 'git describe --tags --always'.execute().text.trim()
@@ -33,6 +34,13 @@ checkstyle {
     sourceSets = [sourceSets.main]
     showViolations = true
     ignoreFailures = true
+}
+
+pmd {
+    ignoreFailures = true
+    ruleSets = [
+        "config/pmd/pmd.xml"
+    ]
 }
 
 checkstyleTest {
