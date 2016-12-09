@@ -1,0 +1,10 @@
+**#Conditionals
+**Memory:a=Integer(3)
+Program testing
+  Változók:
+    a: Egész
+
+  ha igaz akkor:
+    a := 3
+  ha_vége
+program_vége

@@ -1,0 +1,11 @@
+**#Multidimensional arrays
+**Memory:a=Array(Array(Integer(1),Integer(2)),Array(Integer(3),Integer(4)))
+Program testing
+  Változók:
+    a: Egész[2][2]
+
+  a[0][0] := 1
+  a[0][1] := 2
+  a[1][0] := 3
+  a[1][1] := 4
+program_vége

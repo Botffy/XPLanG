@@ -1,0 +1,12 @@
+**#Conditionals, else branch
+**Memory:a=Integer(5)
+Program testing
+  Változók:
+    a: Egész
+
+  ha hamis akkor:
+    a := 3
+  különben:
+    a := 5
+  ha_vége
+program_vége
