@@ -1,5 +1,6 @@
 package language;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,15 +53,20 @@ public class LanguageIT {
             String expectedMemory = null;
             Location firstErrorLoc = null;
 
-            String secLine = reader.readLine().substring(2);
-            if(secLine.startsWith("Memory:")) {
-                expectedMemory = secLine.substring(7);
-                log.info(expectedMemory);
-            } else if(secLine.startsWith("FirstErrorLoc:")) {
-                secLine = secLine.substring(14);
-                String[] loc = secLine.split(",");
-                firstErrorLoc = new Location(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
-            }
+            String line = reader.readLine();
+            do {
+                line = line.substring(2);
+
+                if(line.startsWith("Memory:")) {
+                    expectedMemory = line.substring(7);
+                    log.info(expectedMemory);
+                } else if(line.startsWith("FirstErrorLoc:")) {
+                    line = line.substring(14);
+                    String[] loc = line.split(",");
+                    firstErrorLoc = new Location(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
+                }
+                line = reader.readLine();
+            } while(line.startsWith("**"));
             reader.reset();
 
             ErrorLog errorLog = new ErrorLog();
