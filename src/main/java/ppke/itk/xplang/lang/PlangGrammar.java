@@ -38,6 +38,9 @@ public class PlangGrammar extends Grammar {
                 createSymbol("LITERAL_INT")
                     .withPrecedence(Symbol.Precedence.LITERAL)
                     .matching("\\d+"),
+                createSymbol("LITERAL_BOOL")
+                    .withPrecedence(Symbol.Precedence.LITERAL)
+                    .matching("(igaz)|(hamis)"),
                 createSymbol("EOL")
                     .matching(Symbol.EOLPattern)
                     .notSignificant(),
@@ -188,6 +191,10 @@ public class PlangGrammar extends Grammar {
         if(act.equals(parser.context().lookup("LITERAL_INT"))) {
             Token token = parser.accept("LITERAL_INT");
             return new IntegerLiteral(Integer.valueOf(token.lexeme()));
+        } else if(act.equals(parser.context().lookup("LITERAL_BOOL"))) {
+            Token token = parser.accept("LITERAL_BOOL");
+            // FIXME, but this should be taken care of by operators and expressions
+            return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz")? true : false);
         } else if(act.equals(parser.context().lookup("IDENTIFIER"))) {
             Token namTok = parser.accept("IDENTIFIER");
             return parser.context().getVariableValue(namTok);

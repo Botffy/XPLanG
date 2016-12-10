@@ -1,9 +1,0 @@
-**#Boolean variables
-**Memory:a=Boolean(true),b=Boolean(false)
-Program testing
-  Változók:
-    a, b: Logikai
-
-  a := Igaz
-  b := Hamis
-program_vége

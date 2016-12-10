@@ -3,19 +3,19 @@ package ppke.itk.xplang.ast;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
-public class IntegerLiteral extends RValue {
-    private final int value;
+public class BooleanLiteral extends RValue {
+    private final boolean value;
 
-    public IntegerLiteral(int value) {
+    public BooleanLiteral(boolean value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public boolean getValue() {
         return value;
     }
 
     @Override public Type getType() {
-        return Scalar.INTEGER;
+        return Scalar.BOOLEAN;
     }
 
     @Override public void accept(ASTVisitor visitor) {
@@ -23,6 +23,6 @@ public class IntegerLiteral extends RValue {
     }
 
     @Override public String toString() {
-        return String.format("INTEGERLITERAL[%s]", value);
+        return String.format("BOOLEANLITERAL[%s]", value);
     }
 }

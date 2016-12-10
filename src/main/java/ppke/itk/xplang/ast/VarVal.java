@@ -7,7 +7,7 @@ import ppke.itk.xplang.type.Type;
  *
  * This tells the interpreter to load the value of the referenced variable.
  */
-public class VarVal extends RValue {
+public final class VarVal extends RValue {
     private final VariableDeclaration var;
 
     /**
@@ -23,7 +23,11 @@ public class VarVal extends RValue {
     }
 
     public String getName() {
-        return getVariable().getName();
+        return this.var.getName();
+    }
+
+    @Override public Type getType() {
+        return var.getType();
     }
 
     @Override public void accept(ASTVisitor visitor) {

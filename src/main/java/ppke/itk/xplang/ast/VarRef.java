@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.type.Type;
+
 /**
  * Reference to a variable. Its memory address.
  *
@@ -22,7 +24,11 @@ public final class VarRef extends LValue {
     }
 
     public String getName() {
-        return getVariable().getName();
+        return this.var.getName();
+    }
+
+    @Override public Type getType() {
+        return this.var.getType();
     }
 
     @Override public void accept(ASTVisitor visitor) {
