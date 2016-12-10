@@ -57,7 +57,9 @@ public class Interpreter implements ASTVisitor {
         conditional.getCondition().accept(this);
         Value value = valueStack.pop();
         if(value.equals(BooleanValue.TRUE)) {
-            conditional.getSequence().accept(this);
+            conditional.getTrueSequence().accept(this);
+        } else {
+            conditional.getElseSequence().accept(this);
         }
     }
 

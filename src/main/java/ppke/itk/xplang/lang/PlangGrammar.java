@@ -33,6 +33,7 @@ public class PlangGrammar extends Grammar {
                 createSymbol("DECLARE")    .matchingLiteral("változók"),
                 createSymbol("IF")         .matchingLiteral("HA"),
                 createSymbol("THEN")       .matchingLiteral("AKKOR"),
+                createSymbol("ELSE")       .matchingLiteral("KÜLÖNBEN"),
                 createSymbol("ENDIF")      .matchingLiteral("HA_VÉGE"),
                 createSymbol("ASSIGNMENT") .matchingLiteral(":="),
                 createSymbol("COLON")      .matchingLiteral(":"),
@@ -149,10 +150,10 @@ public class PlangGrammar extends Grammar {
     /**
      * {@code Sequence = { Statement }}
      */
-    private Sequence sequence(Parser parser, Symbol stopSymbol) throws LexerError {
+    private Sequence sequence(Parser parser, Symbol... stopSymbols) throws LexerError {
         log.debug("Sequence");
         List<Statement> statementList = new ArrayList<>();
-        List<Symbol> stoppers = asList(stopSymbol, Symbol.EOF);
+        List<Symbol> stoppers = asList(stopSymbols);
         do {
             try {
                 statementList.add(statement(parser));
@@ -162,7 +163,7 @@ public class PlangGrammar extends Grammar {
                 parser.advance();
                 if(parser.actual().symbol().equals(Symbol.EOF)) break;
             }
-        } while(!stoppers.contains(parser.actual().symbol()));
+        } while(!parser.actual().symbol().equals(Symbol.EOF) && !stoppers.contains(parser.actual().symbol()));
 
         return new Sequence(statementList);
     }
@@ -217,9 +218,16 @@ public class PlangGrammar extends Grammar {
             throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), loc);
         }
         parser.accept(parser.context().lookup("THEN"));
-        Sequence ifBranch = sequence(parser, parser.context().lookup("ENDIF"));
+        Sequence ifBranch = sequence(parser, parser.context().lookup("ENDIF"), parser.context().lookup("ELSE"));
+
+        Sequence elseBranch = null;
+        if(parser.actual().symbol().equals(parser.context().lookup("ELSE"))) {
+            parser.advance();
+            elseBranch = sequence(parser, parser.context().lookup("ENDIF"));
+        }
+
         parser.accept(parser.context().lookup("ENDIF"));
-        return new Conditional(condition, ifBranch);
+        return new Conditional(condition, ifBranch, elseBranch);
     }
 
     /**

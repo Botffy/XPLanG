@@ -4,9 +4,9 @@ Program testing
   Változók:
     a: Egész
 
-  ha hamis akkor:
+  ha hamis akkor
     a := 3
-  különben:
+  különben
     a := 5
   ha_vége
 program_vége
