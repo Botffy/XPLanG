@@ -54,7 +54,11 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(Conditional conditional) {
-
+        conditional.getCondition().accept(this);
+        Value value = valueStack.pop();
+        if(value.equals(BooleanValue.TRUE)) {
+            conditional.getSequence().accept(this);
+        }
     }
 
     @Override public void visit(VarRef varRef) {
@@ -70,7 +74,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(BooleanLiteral booleanLiteral) {
-        valueStack.push(new BooleanValue(booleanLiteral.getValue()));
+        valueStack.push(BooleanValue.valueOf(booleanLiteral.getValue()));
     }
 
     public String memoryDump() {

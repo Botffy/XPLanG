@@ -1,9 +1,12 @@
 package ppke.itk.xplang.interpreter;
 
-class BooleanValue extends Value {
+final class BooleanValue extends Value {
+    final static BooleanValue TRUE = new BooleanValue(true);
+    final static BooleanValue FALSE = new BooleanValue(false);
+
     private final boolean value;
 
-    BooleanValue(boolean value) {
+    private BooleanValue(boolean value) {
         this.value = value;
     }
 
@@ -21,5 +24,9 @@ class BooleanValue extends Value {
 
     @Override public boolean equals(Object object) {
         return object instanceof BooleanValue && this.value == ((BooleanValue) object).value;
+    }
+
+    static BooleanValue valueOf(boolean value) {
+        return value? TRUE : FALSE;
     }
 }

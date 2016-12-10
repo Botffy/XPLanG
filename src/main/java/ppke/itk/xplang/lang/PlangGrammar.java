@@ -204,11 +204,11 @@ public class PlangGrammar extends Grammar {
     private Statement conditional(Parser parser) throws ParseError {
         log.debug("Conditional");
         parser.accept(parser.context().lookup("IF"));
-        rValue(parser);
+        RValue condition = rValue(parser);
         parser.accept(parser.context().lookup("THEN"));
-        sequence(parser, parser.context().lookup("ENDIF"));
+        Sequence ifBranch = sequence(parser, parser.context().lookup("ENDIF"));
         parser.accept(parser.context().lookup("ENDIF"));
-        return new Conditional();
+        return new Conditional(condition, ifBranch);
     }
 
     /**
