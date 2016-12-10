@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.type.Type;
+
 /**
  * A variable declaration.
  *
@@ -8,9 +10,11 @@ package ppke.itk.xplang.ast;
  */
 public final class VariableDeclaration extends Node {
     private final String variableName;
+    private final Type type;
 
-    public VariableDeclaration(String variableName) {
+    public VariableDeclaration(String variableName, Type type) {
         this.variableName = variableName;
+        this.type = type;
     }
 
     /**
@@ -20,6 +24,13 @@ public final class VariableDeclaration extends Node {
      */
     public String getName() {
         return variableName;
+    }
+
+    /**
+     * The type of the variable.
+     */
+    public Type getType() {
+        return type;
     }
 
     @Override public void accept(ASTVisitor visitor) {

@@ -49,10 +49,10 @@ public class Context {
         return scope;
     }
 
-    public void declareVariable(Token token) throws NameClashError {
+    public void declareVariable(Token token, Type type) throws NameClashError {
         String name = token.lexeme();
         if(nameTable.isFree(name)) {
-            VariableDeclaration declaration = new VariableDeclaration(name);
+            VariableDeclaration declaration = new VariableDeclaration(name, type);
             nameTable.add(name, declaration);
             log.debug("Declared variable '{}'", name);
         } else {

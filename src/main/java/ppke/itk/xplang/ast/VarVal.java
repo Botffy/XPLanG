@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.type.Type;
+
 /**
  * The value of some variable.
  *

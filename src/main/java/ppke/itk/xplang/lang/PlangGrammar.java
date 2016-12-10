@@ -130,11 +130,11 @@ public class PlangGrammar extends Grammar {
             variables.add(parser.accept("IDENTIFIER"));
         }
         parser.accept("COLON");
-        typename(parser);
+        Type type = typename(parser);
 
         for(Token name : variables) {
             try {
-                parser.context().declareVariable(name);
+                parser.context().declareVariable(name, type);
             } catch(NameClashError error) {
                 parser.recordError(error.toErrorMessage());
             }

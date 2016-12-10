@@ -5,6 +5,7 @@ import org.junit.Test;
 import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.VariableDeclaration;
 import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Type;
 
 import java.util.HashSet;
 
@@ -16,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class ContextTest {
     private Context context;
     private Symbol dSymbol;
+    private Type dType = new Scalar("Dummy");
 
     @Before
     public void setUp() {
@@ -26,9 +28,9 @@ public class ContextTest {
     @Test
     public void variableDeclarationsInScope() throws NameClashError {
         context.openScope();
-        context.declareVariable(new Token(dSymbol, "egyes", 1, 1));
-        context.declareVariable(new Token(dSymbol, "kettes", 2, 1));
-        context.declareVariable(new Token(dSymbol, "hármas", 3, 1));
+        context.declareVariable(new Token(dSymbol, "egyes", 1, 1), dType);
+        context.declareVariable(new Token(dSymbol, "kettes", 2, 1), dType);
+        context.declareVariable(new Token(dSymbol, "hármas", 3, 1), dType);
 
         Scope scope = context.closeScope();
 
@@ -41,9 +43,9 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws NameClashError {
         context.openScope();
-        context.declareVariable(new Token(dSymbol, "egyes", 1, 1));
+        context.declareVariable(new Token(dSymbol, "egyes", 1, 1), dType);
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(new Token(dSymbol, "egyes", 2, 1))
+            context.declareVariable(new Token(dSymbol, "egyes", 2, 1), dType)
         );
         assertEquals(NameClashError.class, throwable.getClass());
     }
@@ -53,7 +55,7 @@ public class ContextTest {
         context.openScope();
         context.declareType("Egész", new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(new Token(dSymbol, "Egész", 2, 1))
+            context.declareVariable(new Token(dSymbol, "Egész", 2, 1), dType)
         );
         assertEquals(NameClashError.class, throwable.getClass());
     }
