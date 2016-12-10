@@ -24,35 +24,35 @@ public class PlangGrammar extends Grammar {
     @Override
     public void setup(Context ctx) {
         log.debug("Setting up context");
-        Stream.of(
-            createSymbol("PROGRAM")    .matchingLiteral("program"),
-            createSymbol("END_PROGRAM").matchingLiteral("program_vége"),
-            createSymbol("DECLARE")    .matchingLiteral("változók"),
-            createSymbol("ASSIGNMENT") .matchingLiteral(":="),
-            createSymbol("COLON")      .matchingLiteral(":"),
-            createSymbol("COMMA")      .matchingLiteral(","),
-            createSymbol("IDENTIFIER")
-                .matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*")
-                .withPrecedence(Symbol.Precedence.IDENTIFIER),
-            createSymbol("LITERAL_INT")
-                .withPrecedence(Symbol.Precedence.LITERAL)
-                .matching("\\d+"),
-            createSymbol("EOL")
-                .matching(Symbol.EOLPattern)
-                .notSignificant(),
-            createSymbol("WHITESPACE")
-                .matching("\\s+")
-                .notSignificant(),
-            createSymbol("COMMENT")
-                .matching("\\*\\*[^\\r\\n]*")
-                .notSignificant()
-        ).forEach(x->x.register(ctx));
-
         try {
+            Stream.of(
+                createSymbol("PROGRAM")    .matchingLiteral("program"),
+                createSymbol("END_PROGRAM").matchingLiteral("program_vége"),
+                createSymbol("DECLARE")    .matchingLiteral("változók"),
+                createSymbol("ASSIGNMENT") .matchingLiteral(":="),
+                createSymbol("COLON")      .matchingLiteral(":"),
+                createSymbol("COMMA")      .matchingLiteral(","),
+                createSymbol("IDENTIFIER")
+                    .matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*")
+                    .withPrecedence(Symbol.Precedence.IDENTIFIER),
+                createSymbol("LITERAL_INT")
+                    .withPrecedence(Symbol.Precedence.LITERAL)
+                    .matching("\\d+"),
+                createSymbol("EOL")
+                    .matching(Symbol.EOLPattern)
+                    .notSignificant(),
+                createSymbol("WHITESPACE")
+                    .matching("\\s+")
+                    .notSignificant(),
+                createSymbol("COMMENT")
+                    .matching("\\*\\*[^\\r\\n]*")
+                    .notSignificant()
+            ).forEach(x -> x.register(ctx));
+
             ctx.declareType("Egész", new Scalar("IntegerType"));
             ctx.declareType("Logikai", new Scalar("BooleanType"));
-        } catch(NameClashError nameClashError) {
-            throw new RuntimeException("Failed to initialise PlangGrammar", nameClashError);
+        } catch(ParseError error) {
+            throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
     }
 

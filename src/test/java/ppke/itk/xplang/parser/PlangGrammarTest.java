@@ -11,7 +11,7 @@ public class PlangGrammarTest {
         Context ctx = new Context();
         try {
             plang.setup(ctx);
-        } catch(Exception e) {
+        } catch(IllegalStateException e) {
             Assert.fail("Setup of grammar on context should not cause errors.");
         }
     }
