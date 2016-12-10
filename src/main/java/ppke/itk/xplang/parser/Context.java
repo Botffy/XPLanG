@@ -7,6 +7,9 @@ import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.VarRef;
 import ppke.itk.xplang.ast.VarVal;
 import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.common.Translator;
+import ppke.itk.xplang.type.Type;
 
 import static java.util.stream.Collectors.toList;
 
@@ -14,6 +17,7 @@ import static java.util.stream.Collectors.toList;
  * Parsing context. The state of the parser, encapsulating the symbol table.
  */
 public class Context {
+    private final static Translator translator = Translator.getInstance("Parser");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
     private SymbolTable symbolTable = new SymbolTable();
@@ -45,7 +49,7 @@ public class Context {
         return scope;
     }
 
-    public void declare(Token token) throws NameClashError {
+    public void declareVariable(Token token) throws NameClashError {
         String name = token.lexeme();
         if(nameTable.isFree(name)) {
             VariableDeclaration declaration = new VariableDeclaration(name);
@@ -79,6 +83,35 @@ public class Context {
         // TODO mention it if it exist but it's not a variable
         log.error("Lookup of variable '{}' failed.", variableName);
         throw new NameError("No variable named %s", token);
+    }
+
+    public void declareType(String name, Type type) throws NameClashError {
+        if(nameTable.isFree(name)) {
+            nameTable.add(name, type);
+            log.debug("Declared type {] as '{}'", type, name);
+        } else {
+            Object offending = nameTable.lookup(name);
+            log.error(
+                "Could not register type by name '{}': name already taken in this scope by {}",
+                name, offending
+            );
+            throw new NameClashError(
+                translator.translate("parser.TypeNameAlreadyTaken.message", name, offending),
+                new Location(-1, -1) // FIXME, massive fixme
+            );
+        }
+    }
+
+    public Type lookupType(Token token) throws NameError {
+        String typeName = token.lexeme();
+        Object obj = nameTable.lookup(typeName);
+        if(obj instanceof Type) {
+            Type typ = (Type) obj;
+            log.trace("Looked up type for name '{}'", typeName);
+            return typ;
+        }
+        log.error("Lookup of type '{}' failed.", typeName);
+        throw new NameError("No type named %s", token);
     }
 
     public void register(Symbol symbol) {

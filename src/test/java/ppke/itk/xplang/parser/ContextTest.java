@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.type.Scalar;
 
 import java.util.HashSet;
 
@@ -25,9 +26,9 @@ public class ContextTest {
     @Test
     public void variableDeclarationsInScope() throws NameClashError {
         context.openScope();
-        context.declare(new Token(dSymbol, "egyes", 1, 1));
-        context.declare(new Token(dSymbol, "kettes", 2, 1));
-        context.declare(new Token(dSymbol, "hármas", 3, 1));
+        context.declareVariable(new Token(dSymbol, "egyes", 1, 1));
+        context.declareVariable(new Token(dSymbol, "kettes", 2, 1));
+        context.declareVariable(new Token(dSymbol, "hármas", 3, 1));
 
         Scope scope = context.closeScope();
 
@@ -40,9 +41,19 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws NameClashError {
         context.openScope();
-        context.declare(new Token(dSymbol, "egyes", 1, 1));
+        context.declareVariable(new Token(dSymbol, "egyes", 1, 1));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declare(new Token(dSymbol, "egyes", 2, 1))
+            context.declareVariable(new Token(dSymbol, "egyes", 2, 1))
+        );
+        assertEquals(NameClashError.class, throwable.getClass());
+    }
+
+    @Test
+    public void variableTypeNameClash() throws NameClashError {
+        context.openScope();
+        context.declareType("Egész", new Scalar("ExampleType"));
+        Throwable throwable = exceptionThrownBy(() ->
+            context.declareVariable(new Token(dSymbol, "Egész", 2, 1))
         );
         assertEquals(NameClashError.class, throwable.getClass());
     }

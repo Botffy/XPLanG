@@ -3,7 +3,7 @@
 program Vardecl
   Változók:
     a: Egész,
-    b: egész
+    b: Egész
   a := 10
   b := 5
 program_vége

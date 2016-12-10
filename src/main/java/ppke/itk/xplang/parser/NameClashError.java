@@ -1,5 +1,6 @@
 package ppke.itk.xplang.parser;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 
 /**
@@ -14,5 +15,9 @@ public class NameClashError extends SemanticError {
 
     NameClashError(String message, Token token) {
         super(String.format(message, token.lexeme()), token.location());
+    }
+
+    NameClashError(String message, Location location) {
+        super(message, location);
     }
 }

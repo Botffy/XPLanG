@@ -1,0 +1,9 @@
+**#'Nonesuch' is not a valid typename, should cause an error
+**FirstErrorLoc:5,8
+Program testing
+  Változók:
+    a: Nonesuch,
+    b: Egész
+
+  b := 4
+program_vége

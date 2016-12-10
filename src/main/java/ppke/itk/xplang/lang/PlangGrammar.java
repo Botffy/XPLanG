@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +28,6 @@ public class PlangGrammar extends Grammar {
             createSymbol("PROGRAM")    .matchingLiteral("program"),
             createSymbol("END_PROGRAM").matchingLiteral("program_vége"),
             createSymbol("DECLARE")    .matchingLiteral("változók"),
-            createSymbol("INT_TYPE")   .matchingLiteral("egész"),
             createSymbol("ASSIGNMENT") .matchingLiteral(":="),
             createSymbol("COLON")      .matchingLiteral(":"),
             createSymbol("COMMA")      .matchingLiteral(","),
@@ -46,6 +47,13 @@ public class PlangGrammar extends Grammar {
                 .matching("\\*\\*[^\\r\\n]*")
                 .notSignificant()
         ).forEach(x->x.register(ctx));
+
+        try {
+            ctx.declareType("Egész", new Scalar("IntegerType"));
+            ctx.declareType("Logikai", new Scalar("BooleanType"));
+        } catch(NameClashError nameClashError) {
+            throw new RuntimeException("Failed to initialise PlangGrammar", nameClashError);
+        }
     }
 
     /**
@@ -110,7 +118,7 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON INT_TYPE}
+     * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON Typename}
      */
     protected void variableDeclaration(Parser parser) throws ParseError {
         log.debug("VariableDeclaration");
@@ -122,15 +130,24 @@ public class PlangGrammar extends Grammar {
             variables.add(parser.accept("IDENTIFIER"));
         }
         parser.accept("COLON");
-        parser.accept("INT_TYPE");
+        typename(parser);
 
-        for(Token variable : variables) {
+        for(Token name : variables) {
             try {
-                parser.context().declare(variable);
+                parser.context().declareVariable(name);
             } catch(NameClashError error) {
                 parser.recordError(error.toErrorMessage());
             }
         }
+    }
+
+    /**
+     *  {@code Typename = Identifier}
+     */
+    private Type typename(Parser parser) throws ParseError{
+        log.debug("Typename");
+        Token name = parser.accept("IDENTIFIER");
+        return parser.context().lookupType(name);
     }
 
     /**

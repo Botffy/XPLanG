@@ -1,0 +1,8 @@
+**#'Logikai' should be accepted as valid typename
+Program testing
+  Változók:
+    a: Logikai,
+    b: Egész
+
+  b := 4
+program_vége
