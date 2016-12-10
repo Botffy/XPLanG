@@ -1,0 +1,8 @@
+**#Typesafe assignments
+**FirstErrorLoc:7,8
+Program testing
+  Változók:
+    a: Logikai
+
+  a := 34
+program_vége

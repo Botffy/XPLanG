@@ -15,7 +15,7 @@ public class BooleanLiteral extends RValue {
     }
 
     @Override public Type getType() {
-        return Scalar.BOOLEAN;
+        return Scalar.BOOLEAN_TYPE;
     }
 
     @Override public void accept(ASTVisitor visitor) {

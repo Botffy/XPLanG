@@ -3,6 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Scalar;
@@ -56,8 +57,8 @@ public class PlangGrammar extends Grammar {
                     .notSignificant()
             ).forEach(x -> x.register(ctx));
 
-            ctx.declareType("Egész", new Scalar("IntegerType"));
-            ctx.declareType("Logikai", new Scalar("BooleanType"));
+            ctx.declareType("Egész", Scalar.INTEGER_TYPE);
+            ctx.declareType("Logikai", Scalar.BOOLEAN_TYPE);
         } catch(ParseError error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
@@ -187,13 +188,19 @@ public class PlangGrammar extends Grammar {
     /**
      * {@code Assignment = IDENTIFIER ASSIGNMENT RValue}
      */
-    private Assignment assignment(Parser parser) throws LexerError, SyntaxError, NameError {
+    private Assignment assignment(Parser parser) throws ParseError {
         log.debug("Assignment");
         Token var = parser.accept("IDENTIFIER");
+        LValue lhs = parser.context().getVariableReference(var);
+
         parser.accept("ASSIGNMENT");
+        Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
         RValue rhs = rValue(parser);
+        if(!lhs.getType().accepts(rhs.getType())) {
+            throw new TypeError(translator.translate("plang.assignments_must_match"), loc);
+        }
         return new Assignment(
-            parser.context().getVariableReference(var),
+            lhs,
             rhs
         );
     }
@@ -204,7 +211,11 @@ public class PlangGrammar extends Grammar {
     private Statement conditional(Parser parser) throws ParseError {
         log.debug("Conditional");
         parser.accept(parser.context().lookup("IF"));
+        Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
         RValue condition = rValue(parser);
+        if(!Scalar.BOOLEAN_TYPE.accepts(condition.getType())) {
+            throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), loc);
+        }
         parser.accept(parser.context().lookup("THEN"));
         Sequence ifBranch = sequence(parser, parser.context().lookup("ENDIF"));
         parser.accept(parser.context().lookup("ENDIF"));

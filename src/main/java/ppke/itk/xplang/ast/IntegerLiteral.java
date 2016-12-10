@@ -15,7 +15,7 @@ public class IntegerLiteral extends RValue {
     }
 
     @Override public Type getType() {
-        return Scalar.INTEGER;
+        return Scalar.INTEGER_TYPE;
     }
 
     @Override public void accept(ASTVisitor visitor) {

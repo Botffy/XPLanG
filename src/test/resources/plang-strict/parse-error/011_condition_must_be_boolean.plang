@@ -1,0 +1,10 @@
+**#Condition must be boolean
+**FirstErrorLoc:7,6
+Program testing
+  Változók:
+    a: Logikai
+
+  ha 34 akkor
+    a := igaz
+  ha_vége
+program_vége
