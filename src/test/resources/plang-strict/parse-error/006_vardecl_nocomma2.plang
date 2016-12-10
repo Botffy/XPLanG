@@ -1,5 +1,5 @@
 **#Missing comma between declaration blocks
-**FirstErrorLoc:6,10
+**FirstErrorLoc:6,9
 program vardecl_nocomma_2
     Változók:
         x, y: Egész
