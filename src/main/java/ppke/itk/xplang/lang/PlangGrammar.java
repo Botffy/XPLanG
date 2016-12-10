@@ -9,9 +9,10 @@ import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
 
 public class PlangGrammar extends Grammar {
     private final static Translator translator = Translator.getInstance("Plang");
@@ -29,6 +30,9 @@ public class PlangGrammar extends Grammar {
                 createSymbol("PROGRAM")    .matchingLiteral("program"),
                 createSymbol("END_PROGRAM").matchingLiteral("program_vége"),
                 createSymbol("DECLARE")    .matchingLiteral("változók"),
+                createSymbol("IF")         .matchingLiteral("HA"),
+                createSymbol("THEN")       .matchingLiteral("AKKOR"),
+                createSymbol("ENDIF")      .matchingLiteral("HA_VÉGE"),
                 createSymbol("ASSIGNMENT") .matchingLiteral(":="),
                 createSymbol("COLON")      .matchingLiteral(":"),
                 createSymbol("COMMA")      .matchingLiteral(","),
@@ -69,7 +73,7 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
-     * {@code Program = PROGRAM IDENTIFIER [Declarations] {Statement} END_PROGRAM}
+     * {@code Program = PROGRAM IDENTIFIER [Declarations] Sequence END_PROGRAM}
      */
     protected Program program(Parser parser) throws ParseError {
         log.debug("Program");
@@ -82,23 +86,11 @@ public class PlangGrammar extends Grammar {
             declarations(parser);
         }
 
-        List<Statement> statementList = new ArrayList<>();
-        List<Symbol> stoppers = Arrays.asList(parser.context().lookup("END_PROGRAM"), Symbol.EOF);
-        do {
-            try {
-                statementList.add(statement(parser));
-            } catch(ParseError error) {
-                log.error("Parse error: ", error);
-                parser.recordError(error.toErrorMessage());
-                parser.advance();
-                if(parser.actual().symbol().equals(Symbol.EOF)) break;
-            }
-        } while(!stoppers.contains(parser.actual().symbol()));
+        Sequence sequence = sequence(parser, parser.context().lookup("END_PROGRAM"));
 
         parser.accept("END_PROGRAM",
             translator.translate("plang.missing_end_program", "PROGRAM_VÉGE"));
         Scope scope = parser.context().closeScope();
-        Sequence sequence = new Sequence(statementList);
 
         return new Program(nameToken.lexeme(), new Block(scope, sequence));
     }
@@ -154,6 +146,27 @@ public class PlangGrammar extends Grammar {
     }
 
     /**
+     * {@code Sequence = { Statement }}
+     */
+    private Sequence sequence(Parser parser, Symbol stopSymbol) throws LexerError {
+        log.debug("Sequence");
+        List<Statement> statementList = new ArrayList<>();
+        List<Symbol> stoppers = asList(stopSymbol, Symbol.EOF);
+        do {
+            try {
+                statementList.add(statement(parser));
+            } catch(ParseError error) {
+                log.error("Parse error: ", error);
+                parser.recordError(error.toErrorMessage());
+                parser.advance();
+                if(parser.actual().symbol().equals(Symbol.EOF)) break;
+            }
+        } while(!stoppers.contains(parser.actual().symbol()));
+
+        return new Sequence(statementList);
+    }
+
+    /**
      * {@code Statement = Assignment}
      */
     protected Statement statement(Parser parser) throws ParseError {
@@ -161,11 +174,14 @@ public class PlangGrammar extends Grammar {
         Symbol act = parser.actual().symbol();
         if(act.equals(parser.context().lookup("IDENTIFIER"))) {
             return assignment(parser);
+        } else if(act.equals(parser.context().lookup("IF"))) {
+            return conditional(parser);
         }
 
-        throw new SyntaxError(
-            parser.context().lookup("IDENTIFIER"), act, parser.actual()
-        );
+        throw new SyntaxError(asList(
+            parser.context().lookup("IDENTIFIER"),
+            parser.context().lookup("IF")
+        ), act, parser.actual());
     }
 
     /**
@@ -180,6 +196,19 @@ public class PlangGrammar extends Grammar {
             parser.context().getVariableReference(var),
             rhs
         );
+    }
+
+    /**
+     * {@code Conditional = IF RValue THEN {Statement} ENDIF}
+     */
+    private Statement conditional(Parser parser) throws ParseError {
+        log.debug("Conditional");
+        parser.accept(parser.context().lookup("IF"));
+        rValue(parser);
+        parser.accept(parser.context().lookup("THEN"));
+        sequence(parser, parser.context().lookup("ENDIF"));
+        parser.accept(parser.context().lookup("ENDIF"));
+        return new Conditional();
     }
 
     /**
@@ -200,7 +229,7 @@ public class PlangGrammar extends Grammar {
             return parser.context().getVariableValue(namTok);
         }
         throw new SyntaxError(
-            Arrays.asList(
+            asList(
                 parser.context().lookup("IDENTIFIER"),
                 parser.context().lookup("LITERAL_INT")
             ), act, parser.actual()

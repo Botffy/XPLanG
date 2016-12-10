@@ -53,6 +53,10 @@ public class Interpreter implements ASTVisitor {
         memory.set(address, value);
     }
 
+    @Override public void visit(Conditional conditional) {
+
+    }
+
     @Override public void visit(VarRef varRef) {
         valueStack.push(new AddressValue(varRef.getVariable()));
     }

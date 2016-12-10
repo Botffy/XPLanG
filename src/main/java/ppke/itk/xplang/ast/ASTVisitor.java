@@ -13,6 +13,7 @@ public interface ASTVisitor {
     void visit(Sequence sequence);
     void visit(Block block);
     void visit(Assignment assignment);
+    void visit(Conditional conditional);
     void visit(VarRef varRef);
     void visit(VarVal varVal);
     void visit(IntegerLiteral integerLiteral);
