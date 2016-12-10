@@ -90,7 +90,7 @@ public class Parser {
      */
     public Token accept(Symbol symbol, String message) throws LexerError, SyntaxError {
         if(!act.symbol().equals(symbol)) {
-            log.error(message, symbol, act.symbol());
+            log.error("Expected symbol {}, found {} ('{}')", symbol.getName(), act.symbol().getName(), act.lexeme());
             if(message != null) {
                 throw new SyntaxError(message, symbol, act.symbol(), act);
             } else {
