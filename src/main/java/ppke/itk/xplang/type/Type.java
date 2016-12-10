@@ -35,7 +35,7 @@ public abstract class Type {
      * The ACCEPTS(T1,T2) is a fundamental property of the type system. It determines eligibility for assignment, but
      * also determines whether a function accepts a certain value as parameter, etc.
      *
-     * This can be also viewed as a subtyping relationship, T2<=T1. If T2<=T1 and T1<=T1, that implies equivalence,
+     * This can be also viewed as a subtyping relationship, T2&lt;=T1. If T22&lt;=T1 and T12&lt;=T1, that implies equivalence,
      * making the type system a partial order.
      *
      * @param that The type we compare to ourselves. Would we accept that value as ours?
