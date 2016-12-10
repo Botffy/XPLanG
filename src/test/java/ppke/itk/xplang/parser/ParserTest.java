@@ -17,7 +17,7 @@ public class ParserTest {
         @Override protected void setup(Context ctx) {
             ctx.register(new Symbol("FUNNY_STARE_RIGHT", Pattern.compile(">_>")));
             ctx.register(new Symbol("FUNNY_STARE_LEFT",  Pattern.compile("<_<")));
-            ctx.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(ツ\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
+            ctx.register(new Symbol("SHRUGGIE",  Pattern.compile("¯\\\\_\\(-.-\\)_\\/¯", Pattern.UNICODE_CHARACTER_CLASS)));
             ctx.register(new Symbol("DISAPPROVAL_LOOK",  Pattern.compile("ಠ_ಠ", Pattern.UNICODE_CHARACTER_CLASS)));
             ctx.register(new Symbol("WS",  Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false));
         }
@@ -44,7 +44,7 @@ public class ParserTest {
 
     @Test
     public void advanceShouldAdvance() throws ParseError {
-        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
+        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(-.-)_/¯");
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
         parser.advance();
@@ -70,7 +70,7 @@ public class ParserTest {
 
     @Test
     public void acceptShouldAcceptAndAdvance() throws ParseError {
-        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
+        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(-.-)_/¯");
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
 
@@ -89,7 +89,7 @@ public class ParserTest {
 
     @Test
     public void acceptingWrongSymbolShouldCauseError() throws ParseError {
-        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(ツ)_/¯");
+        Reader source = new StringReader("<_< >_> ಠ_ಠ ¯\\_(-.-)_/¯");
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
 
@@ -100,7 +100,7 @@ public class ParserTest {
 
     @Test
     public void lexerErrorShouldBeThrownOnLexerError() throws ParseError {
-        Reader source = new StringReader(">_> öö\n¯\\_(ツ)_/¯");
+        Reader source = new StringReader(">_> öö\n¯\\_(-.-)_/¯");
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
 
