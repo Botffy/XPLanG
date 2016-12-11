@@ -1,5 +1,7 @@
 package ppke.itk.xplang.interpreter;
 
+import ppke.itk.xplang.ast.VariableDeclaration;
+
 /**
  * A value the {@link Interpreter} works on.
  */
@@ -19,6 +21,13 @@ abstract class Value {
     };
 
     static Value nullValue() {
+        return NULL;
+    }
+
+    static Value initialise(VariableDeclaration var) {
+        if(!var.getType().isScalar()) {
+            return new ArrayValue(var.getType().size());
+        }
         return NULL;
     }
 

@@ -16,15 +16,15 @@ public class MemoryTest {
 
     @Test
     public void allocateNull() {
-        memory.allocate("key", "label");
+        memory.allocate("key", "label", Value.nullValue());
         Value value = memory.get("key");
         assertEquals("Memory should be initialised with a NULL value", Value.nullValue(), value);
     }
 
     @Test
     public void putTwice() {
-        memory.allocate("key", "label1");
-        Throwable exception = exceptionThrownBy(() -> memory.allocate("key", "label2"));
+        memory.allocate("key", "label1", Value.nullValue());
+        Throwable exception = exceptionThrownBy(() -> memory.allocate("key", "label2", Value.nullValue()));
         assertEquals("Allocating to the same key twice should throw an InterpreterError",
             InterpreterError.class, exception.getClass()
         );
@@ -41,7 +41,7 @@ public class MemoryTest {
     @Test
     public void putGet() {
         Value put = new IntegerValue(5);
-        memory.allocate("key", "label");
+        memory.allocate("key", "label", Value.nullValue());
         memory.set("key", put);
         Value got = memory.get("key");
         assertEquals(put, got);

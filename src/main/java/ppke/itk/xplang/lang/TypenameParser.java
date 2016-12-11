@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -18,7 +19,14 @@ final class TypenameParser {
     static Type parse(Parser parser) throws ParseError {
         log.debug("Typename");
         Token name = parser.accept(PlangSymbol.IDENTIFIER.symbol());
-        return parser.context().lookupType(name);
-    }
+        Type type = parser.context().lookupType(name);
+        if(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
+            parser.advance();
+            int n = Integer.parseInt(parser.accept(PlangSymbol.LITERAL_INT.symbol()).lexeme());
+            parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
+            type = FixArray.of(n, type);
+        }
 
+        return type;
+    }
 }

@@ -43,6 +43,36 @@ public abstract class Type {
      */
     public abstract boolean accepts(Type that);
 
+    /**
+     *  The type of the components of this type, or {@link Type#NONE} if the type is scalar.
+     */
+    public Type elementType() {
+        return Type.NONE;
+    }
+
+    /**
+     *  Returns the type of the indexing elements of this type, or {@link Type#NONE} if the type is a scalar.
+     */
+    public Type indexType() {
+        return Type.NONE;
+    }
+
+    /**
+     * The dimensions of this type. 0 for scalars.
+     */
+    public int size() {
+        return 0;
+    }
+
+    /**
+     * Is this type a scalar type?
+     *
+     * By default, a type is scalar if it has no elements.
+     */
+    public boolean isScalar() {
+        return indexType() == Type.NONE;
+    }
+
     @Override public String toString() {
         return label;
     }

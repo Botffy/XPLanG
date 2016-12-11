@@ -18,4 +18,12 @@ public class Scalar extends Type {
     @Override public boolean accepts(Type that) {
         return this == that;
     }
+
+    @Override public int size() {
+        return 0;
+    }
+
+    @Override public boolean isScalar() {
+        return true;
+    }
 }

@@ -41,15 +41,16 @@ class Memory {
      * Allocate memory at a given address.
      * @param key The memory address. Any object.
      * @param name A human-readable name for this memory slot.
+     * @param value The initial value of the memory slot.
      * @throws InterpreterError If the address is already occupied.
      */
-    void allocate(Object key, String name) throws InterpreterError {
+    void allocate(Object key, String name, Value value) throws InterpreterError {
         log.debug("Allocating space for '{}' @ '{}'", name, key);
         if(memory.containsKey(key)) {
             log.error("Allocation failed, address '{}' already in use");
             throw new InterpreterError("Address already in use");
         }
-        memory.put(key, new Entry(name, Value.nullValue()));
+        memory.put(key, new Entry(name, value));
     }
 
     void deallocate(Object key) throws InterpreterError {

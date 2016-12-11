@@ -16,6 +16,8 @@ enum PlangSymbol {
     ASSIGNMENT(matchingLiteral(":=")),
     COLON(matchingLiteral(":")),
     COMMA(matchingLiteral(",")),
+    BRACKET_OPEN(matchingLiteral("[")),
+    BRACKET_CLOSE(matchingLiteral("]")),
     IDENTIFIER(matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*").withPrecedence(Symbol.Precedence.IDENTIFIER)),
     LITERAL_INT(matching("\\d+").withPrecedence(Symbol.Precedence.LITERAL)),
     LITERAL_BOOL(matching("(igaz)|(hamis)").withPrecedence(Symbol.Precedence.LITERAL)),

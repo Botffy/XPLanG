@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.util.Stack;
 
+import static ppke.itk.xplang.interpreter.Value.initialise;
+
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
@@ -29,8 +31,12 @@ public class Interpreter implements ASTVisitor {
         }
     }
 
-    @Override public void visit(VariableDeclaration variableDeclaration) {
-        memory.allocate(variableDeclaration, variableDeclaration.getName());
+    @Override public void visit(VariableDeclaration variable) {
+        memory.allocate(
+            variable,
+            variable.getName(),
+            initialise(variable)
+        );
     }
 
     @Override public void visit(Sequence sequence) {
