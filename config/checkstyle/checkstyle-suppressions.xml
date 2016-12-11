@@ -4,4 +4,5 @@
 <suppressions>
   <suppress checks="Javadoc" files=".*[\\/]src[\\/](test|it)[\\/]"/>
   <suppress checks="MagicNumber" files=".*[\\/]src[\\/](test|it)[\\/]"/>
+  <suppress checks="MultipleStringLiterals" files=".*[\\/]src[\\/](test|it)[\\/]"/>
 </suppressions>
