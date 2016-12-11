@@ -22,8 +22,7 @@ class LValueParser {
         LValue Result = parser.context().getVariableReference(var);
         if(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
             parser.advance();
-            int n = Integer.parseInt(parser.accept(PlangSymbol.LITERAL_INT.symbol()).lexeme());
-            RValue address = new IntegerLiteral(n);
+            RValue address = RValueParser.parse(parser);
             parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
             Result = new ElementRef(toRValue(Result), address);
         }
