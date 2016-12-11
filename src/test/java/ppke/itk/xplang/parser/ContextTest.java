@@ -22,7 +22,8 @@ public class ContextTest {
     @Before
     public void setUp() {
         this.context = new Context();
-        this.dSymbol = Symbol.create().named("VAR").matchingLiteral("dummy").register(context);
+        this.dSymbol = Symbol.create().named("VAR").matchingLiteral("dummy").build();
+        context.register(dSymbol);
     }
 
     @Test

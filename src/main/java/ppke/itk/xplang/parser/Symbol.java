@@ -23,7 +23,7 @@ public class Symbol {
     }
 
     /** Symbol denoting a lexer error. */
-    public static final Symbol LEXER_ERROR = new Symbol("LEXER_ERROR", null);
+    static final Symbol LEXER_ERROR = new Symbol("LEXER_ERROR", null);
 
     /** Symbol denoting the end of the input stream. */
     public static final Symbol EOF = new Symbol("EOF", null);
@@ -141,7 +141,7 @@ public class Symbol {
             return this;
         }
 
-        public Symbol register(Context context) {
+        public Symbol build() {
             int regexFlags = Pattern.UNICODE_CASE | Pattern.DOTALL;
             if(caseInsensitive) {
                 regexFlags |= Pattern.CASE_INSENSITIVE;
@@ -149,14 +149,12 @@ public class Symbol {
             if(isLiteralPattern) {
                 regexFlags |= Pattern.LITERAL;
             }
-            Symbol symbol = new Symbol(
+            return new Symbol(
                 this.name,
                 Pattern.compile(this.pattern, regexFlags),
                 this.precedence,
                 this.significant
             );
-            context.register(symbol);
-            return symbol;
         }
     }
 }
