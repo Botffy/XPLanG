@@ -1,11 +1,11 @@
 **#Arrays
-**Memory:a=Array(DEADBEEF,DEADBEEF,DEADBEEF,DEADBEEF),c=Integer(3)
+**Memory:a=Array(Integer(1),DEADBEEF,DEADBEEF,Integer(3)),c=Integer(3)
 Program testing
   Változók:
     a: Egész[4],
     c: Egész
 
   c := 3
-**  a[1] := 1
-**  a[c] := c
+  a[0] := 1
+  a[3] := c
 program_vége

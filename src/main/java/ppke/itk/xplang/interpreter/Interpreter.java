@@ -54,9 +54,9 @@ public class Interpreter implements ASTVisitor {
         assignment.getRHS().accept(this);
         assignment.getLHS().accept(this);
 
-        AddressValue address = valueStack.pop(AddressValue.class);
+        ReferenceValue ref = valueStack.pop(ReferenceValue.class);
         Value value = valueStack.pop();
-        memory.set(address, value);
+        ref.assign(value);
     }
 
     @Override public void visit(Conditional conditional) {
@@ -70,11 +70,21 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(VarRef varRef) {
-        valueStack.push(new AddressValue(varRef.getVariable()));
+        valueStack.push(memory.getReference(varRef.getVariable()));
+    }
+
+    @Override public void visit(ElementRef elementRef) {
+        elementRef.getAddress().accept(this);
+        elementRef.getAddressable().accept(this);
+
+        Addressable addressable = valueStack.pop(AddressableValue.class);
+        Value address = valueStack.pop();
+
+        valueStack.push(addressable.getReference(address));
     }
 
     @Override public void visit(VarVal varVal) {
-        valueStack.push(memory.get(varVal.getVariable()));
+        valueStack.push(memory.getComponent(varVal.getVariable()));
     }
 
     @Override public void visit(IntegerLiteral integerLiteral) {

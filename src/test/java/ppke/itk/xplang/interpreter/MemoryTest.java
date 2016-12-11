@@ -17,7 +17,7 @@ public class MemoryTest {
     @Test
     public void allocateNull() {
         memory.allocate("key", "label", Value.nullValue());
-        Value value = memory.get("key");
+        Value value = memory.getComponent("key");
         assertEquals("Memory should be initialised with a NULL value", Value.nullValue(), value);
     }
 
@@ -32,7 +32,7 @@ public class MemoryTest {
 
     @Test
     public void putUnallocated() {
-        Throwable exception = exceptionThrownBy(() -> memory.set("unallocated", new IntegerValue(5)));
+        Throwable exception = exceptionThrownBy(() -> memory.setComponent("unallocated", new IntegerValue(5)));
         assertEquals("Trying to set to an unallocated address should throw an InterpreterError",
             InterpreterError.class, exception.getClass()
         );
@@ -42,8 +42,8 @@ public class MemoryTest {
     public void putGet() {
         Value put = new IntegerValue(5);
         memory.allocate("key", "label", Value.nullValue());
-        memory.set("key", put);
-        Value got = memory.get("key");
+        memory.setComponent("key", put);
+        Value got = memory.getComponent("key");
         assertEquals(put, got);
     }
 }

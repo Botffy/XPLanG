@@ -9,11 +9,10 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.parser.TypeError;
 
 /**
- * {@code Assignment = IDENTIFIER ASSIGNMENT RValue}
+ * {@code Assignment = LValue ASSIGNMENT RValue}
  */
 final class AssignmentParser {
     private final static Translator translator = Translator.getInstance("Plang");
@@ -23,9 +22,7 @@ final class AssignmentParser {
 
     static Assignment parse(Parser parser) throws ParseError {
         log.debug("Assignment");
-        Token var = parser.accept(PlangSymbol.IDENTIFIER.symbol());
-        LValue lhs = parser.context().getVariableReference(var);
-
+        LValue lhs = LValueParser.parse(parser);
         parser.accept(PlangSymbol.ASSIGNMENT.symbol());
         Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
         RValue rhs = RValueParser.parse(parser);

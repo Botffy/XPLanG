@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A set of {@link Value}s mapped to arbitrary Object type addresses. The memory stores "labels" as well (the original
  * variable names), but these are only used for debugging purposes.
  */
-class Memory {
+class Memory implements Addressable{
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter.Memory");
 
     private final static class Entry {
@@ -39,72 +39,62 @@ class Memory {
 
     /**
      * Allocate memory at a given address.
-     * @param key The memory address. Any object.
+     * @param address The memory address. Any object.
      * @param name A human-readable name for this memory slot.
      * @param value The initial value of the memory slot.
      * @throws InterpreterError If the address is already occupied.
      */
-    void allocate(Object key, String name, Value value) throws InterpreterError {
-        log.debug("Allocating space for '{}' @ '{}'", name, key);
-        if(memory.containsKey(key)) {
+    void allocate(Object address, String name, Value value) throws InterpreterError {
+        log.debug("Allocating space for '{}' @ '{}'", name, address);
+        if(memory.containsKey(address)) {
             log.error("Allocation failed, address '{}' already in use");
             throw new InterpreterError("Address already in use");
         }
-        memory.put(key, new Entry(name, value));
+        memory.put(address, new Entry(name, value));
     }
 
-    void deallocate(Object key) throws InterpreterError {
-        log.debug("Deallocating space @ '{}'");
-        if(!memory.containsKey(key)) {
-            log.error("Deallocation failed, unknown address '{}'", key);
-            throw new InterpreterError("Unknown address");
-        }
-        Entry entry = memory.remove(key);
-        log.debug("Deallocated entry for {}", key);
+    @Override public ReferenceValue getReference(Object address) throws InterpreterError {
+        return new MemoryAddress(this, address);
     }
 
     /**
      * Set the content of a memory slot.
-     * @param key The memory address.
+     * @param address The memory address.
      * @param value The value to put at this address.
      */
-    void set(Object key, Value value) throws InterpreterError {
-        if(!memory.containsKey(key)) {
-            log.error("Unknown address '{}'", key);
+    @Override public void setComponent(Object address, Value value) throws InterpreterError {
+        if(!memory.containsKey(address)) {
+            log.error("Unknown address '{}'", address);
             throw new InterpreterError("Unknown address");
         }
 
-        Entry entry = memory.get(key);
+        Entry entry = memory.get(address);
         entry.value = value;
         log.debug("Updated value of '{}' to '{}'", entry.label, entry.value);
     }
 
     /**
      * Set the content of a memory slot referenced by a pointer.
-     * @param addressValue A pointer to a memory slot.
+     * @param memoryAddress A pointer to a memory slot.
      * @param value The value to put at this address.
      */
-    void set(AddressValue addressValue, Value value) throws InterpreterError {
-        set(addressValue.getAddress(), value);
+    void set(MemoryAddress memoryAddress, Value value) throws InterpreterError {
+        setComponent(memoryAddress.getAddress(), value);
     }
 
     /**
      * Get the value stored in a memory slot.
-     * @param key The memory slot to be queried.
+     * @param address The memory slot to be queried.
      * @return The value in the given memory slot. May be NullValue.
      */
-    Value get(Object key) throws InterpreterError {
-        if(!memory.containsKey(key)) {
-            log.error("Unknown address '{}'", key);
+    @Override public Value getComponent(Object address) throws InterpreterError {
+        if(!memory.containsKey(address)) {
+            log.error("Unknown address '{}'", address);
             throw new InterpreterError("Unknown address");
         }
 
-        Entry entry = memory.get(key);
+        Entry entry = memory.get(address);
         return entry.value;
-    }
-
-    Value dereference(AddressValue addressValue) throws InterpreterError {
-        return get(addressValue.getAddress());
     }
 
     String dump() {

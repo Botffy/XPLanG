@@ -1,14 +1,20 @@
 package ppke.itk.xplang.interpreter;
 
-class AddressValue extends Value {
+class MemoryAddress extends ReferenceValue {
+    private final Memory memory;
     private final Object address;
 
-    AddressValue(Object address) {
+    MemoryAddress(Memory memory, Object address) {
+        this.memory = memory;
         this.address = address;
     }
 
     Object getAddress() {
         return address;
+    }
+
+    @Override void assign(Value value) {
+        memory.set(this, value);
     }
 
     @Override public String toString() {
@@ -20,6 +26,6 @@ class AddressValue extends Value {
     }
 
     @Override public boolean equals(Object object) {
-        return object instanceof AddressValue && ((AddressValue) object).address == this.address;
+        return object instanceof MemoryAddress && ((MemoryAddress) object).address == this.address;
     }
 }
