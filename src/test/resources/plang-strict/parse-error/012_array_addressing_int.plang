@@ -1,0 +1,10 @@
+**#Arrays are addressed by integers
+**FirstErrorLoc:9,5
+Program testing
+  Változók:
+    a: Logikai[4],
+    c: Logikai
+
+  c := Igaz
+  a[c] := 5
+program_vége
