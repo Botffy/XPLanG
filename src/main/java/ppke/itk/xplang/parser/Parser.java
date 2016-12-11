@@ -108,6 +108,11 @@ public class Parser {
         return accept(symbol, null);
     }
 
+    public void skipToNextLine() throws LexerError {
+        lexer.skipToNextLine();
+        advance();
+    }
+
     public void recordError(CompilerMessage errorMessage) {
         errorLog.add(errorMessage);
     }

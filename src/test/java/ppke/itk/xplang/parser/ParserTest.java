@@ -128,4 +128,13 @@ public class ParserTest {
         parser.parse(source, grammar);
         assertSame(this.ctx, parser.context());
     }
+
+    @Test
+    public void skippingToNextLine() throws ParseError {
+        Reader source = new StringReader(">_> >_> >_>\n<_< >_>");
+        Parser parser = new Parser(this.ctx);
+        parser.parse(source, grammar);
+        parser.skipToNextLine();
+        assertEquals(ctx.lookup("FUNNY_STARE_LEFT"), parser.actual().symbol());
+    }
 }

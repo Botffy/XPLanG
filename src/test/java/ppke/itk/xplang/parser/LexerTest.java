@@ -158,4 +158,16 @@ public class LexerTest {
         assertEquals("The fourth HEART starts at column 11", 11, lexer.next().getCol());
         assertEquals("The fifth HEART starts at column 3", 3, lexer.next().getCol());
     }
+
+    @Test public void skipToNextLine() {
+        Symbol heart = new Symbol("heart", Pattern.compile("HEART"));
+        Symbol broken_heart = new Symbol("broken heart", Pattern.compile("BROKEN_HEART"));
+        Symbol whitespace = new Symbol("ws", Pattern.compile("\\s+"), Symbol.Precedence.DEFAULT, false);
+        List<Symbol> symbols = asList(heart, broken_heart, whitespace);
+
+        Reader source = new StringReader("  HEART\nBROKEN_HEART");
+        Lexer lexer = new Lexer(source, symbols);
+        lexer.skipToNextLine();
+        assertEquals("Lexer should skip to next line when told so", broken_heart, lexer.next().symbol());
+    }
 }

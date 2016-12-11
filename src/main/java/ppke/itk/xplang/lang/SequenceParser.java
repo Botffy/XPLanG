@@ -33,7 +33,7 @@ final class SequenceParser {
             } catch(ParseError error) {
                 log.error("Parse error: ", error);
                 parser.recordError(error.toErrorMessage());
-                parser.advance();
+                parser.skipToNextLine();
                 if(parser.actual().symbol().equals(Symbol.EOF)) break;
             }
         } while(!parser.actual().symbol().equals(Symbol.EOF) && !stoppers.contains(parser.actual().symbol()));
