@@ -21,14 +21,14 @@ final class RValueParser {
         log.debug("RValue");
         Symbol act = parser.actual().symbol();
         if(act.equals(PlangSymbol.LITERAL_INT.symbol())) {
-            Token token = parser.accept("LITERAL_INT");
+            Token token = parser.accept(PlangSymbol.LITERAL_INT.symbol());
             return new IntegerLiteral(Integer.valueOf(token.lexeme()));
         } else if(act.equals(PlangSymbol.LITERAL_BOOL.symbol())) {
-            Token token = parser.accept("LITERAL_BOOL");
+            Token token = parser.accept(PlangSymbol.LITERAL_BOOL.symbol());
             // FIXME, but this should be taken care of by operators and expressions
             return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz")? true : false);
         } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
-            Token namTok = parser.accept("IDENTIFIER");
+            Token namTok = parser.accept(PlangSymbol.IDENTIFIER.symbol());
             return parser.context().getVariableValue(namTok);
         }
         throw new SyntaxError(

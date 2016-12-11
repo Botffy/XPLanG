@@ -108,22 +108,6 @@ public class Parser {
         return accept(symbol, null);
     }
 
-    /**
-     * Convenient variant of {@link #accept(Symbol, String)}.
-     * @param symbolName name of the expected symbol.
-     * @param message The message the exception should contain if the actual symbol does not match the expected one.
-     * @return the accepted token.
-     * @throws LexerError if an invalid token is under the head.
-     * @throws SyntaxError if the actual symbol under tape head does not match the expected one.
-     */
-    public Token accept(String symbolName, String message) throws LexerError, SyntaxError {
-        return accept(context.lookup(symbolName), message);
-    }
-
-    public Token accept(String symbolName) throws SyntaxError, LexerError {
-        return accept(symbolName, null);
-    }
-
     public void recordError(CompilerMessage errorMessage) {
         errorLog.add(errorMessage);
     }
