@@ -1,0 +1,11 @@
+**#Array element as RValue
+**Memory:a=Array(Integer(103),DEADBEEF,DEADBEEF,DEADBEEF),c=Integer(101)
+Program testing
+  Változók:
+    a: Egész[4],
+    c: Egész
+
+  a[0] := 101
+  c := a[0]
+  a[0] := 103
+program_vége

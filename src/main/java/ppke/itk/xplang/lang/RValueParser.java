@@ -2,17 +2,19 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.BooleanLiteral;
-import ppke.itk.xplang.ast.IntegerLiteral;
-import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Scalar;
 
 import static java.util.Arrays.asList;
 
 /**
- * {@code RValue = IDENTIFIER | LITERAL_INT}
+ * {@code RValue = IDENTIFIER [{ BRACKET_OPEN RValue BRACKET_CLOSE }] | LITERAL_INT | LITERAL_BOOL}
  */
 final class RValueParser {
+    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private RValueParser() { /* empty private ctor */ }
@@ -29,7 +31,23 @@ final class RValueParser {
             return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz")? true : false);
         } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
             Token namTok = parser.accept(PlangSymbol.IDENTIFIER.symbol());
-            return parser.context().getVariableValue(namTok);
+            RValue Result = parser.context().getVariableValue(namTok);
+
+            while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
+                parser.advance();
+                Location location = parser.actual().location();
+                RValue address = RValueParser.parse(parser);
+                if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
+                    throw new TypeError(
+                        translator.translate("plang.array_indextype_mismatch", address.getType()),
+                        location
+                    );
+                }
+                parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
+                Result = new ElementVal(Result, address);
+            }
+
+            return Result;
         }
         throw new SyntaxError(
             asList(

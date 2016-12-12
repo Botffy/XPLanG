@@ -1,0 +1,9 @@
+**#Array element as index
+**Memory:a=Array(Integer(2),DEADBEEF,Integer(103),DEADBEEF)
+Program testing
+  Változók:
+    a: Egész[4]
+
+  a[0] := 2
+  a[a[0]] := 103
+program_vége
