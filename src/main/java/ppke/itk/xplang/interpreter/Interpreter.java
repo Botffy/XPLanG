@@ -104,6 +104,10 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(BooleanValue.valueOf(booleanLiteral.getValue()));
     }
 
+    @Override public void visit(CharacterLiteral characterLiteral) {
+        valueStack.push(new CharacterValue(characterLiteral.getValue()));
+    }
+
     public String memoryDump() {
         return this.memory.dump();
     }

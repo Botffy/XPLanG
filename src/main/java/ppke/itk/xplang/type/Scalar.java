@@ -7,6 +7,9 @@ public class Scalar extends Type {
     /** Boolean archetype. */
     public static final Scalar BOOLEAN_TYPE = new Scalar("BooleanType");
 
+    /** Character archetype. */
+    public static final Scalar CHARACTER_TYPE = new Scalar("CharacterType");
+
     public Scalar(String label) {
         super(label);
     }

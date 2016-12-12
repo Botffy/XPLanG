@@ -1,0 +1,10 @@
+**#Character variables
+**Memory:a=Character(a),b=Character(b)
+Program testing
+  Változók:
+    a, b: Karakter
+
+  a := 'b'
+  b := a
+  a := 'a'
+program_vége

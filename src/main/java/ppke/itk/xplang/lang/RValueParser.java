@@ -28,7 +28,10 @@ final class RValueParser {
         } else if(act.equals(PlangSymbol.LITERAL_BOOL.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_BOOL.symbol());
             // FIXME, but this should be taken care of by operators and expressions
-            return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz")? true : false);
+            return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz") ? true : false);
+        } else if(act.equals(PlangSymbol.LITERAL_CHAR.symbol())) {
+            Token token = parser.accept(PlangSymbol.LITERAL_CHAR.symbol());
+            return new CharacterLiteral(token.lexeme().charAt(1));
         } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
             Token namTok = parser.accept(PlangSymbol.IDENTIFIER.symbol());
             RValue Result = parser.context().getVariableValue(namTok);
