@@ -1,8 +1,6 @@
 package ppke.itk.xplang.ast;
 
 public class Program extends Node {
-    @Override public void accept(ASTVisitor visitor) { visitor.visit(this); }
-
     private final String name;
 
     public Program(String name, Block block) {
@@ -16,5 +14,9 @@ public class Program extends Node {
 
     @Override public String toString() {
         return String.format("%s[%s]", super.toString(), name == null? "main" : name);
+    }
+
+    @Override public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

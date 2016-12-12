@@ -8,12 +8,6 @@ import java.util.List;
  * A node in the abstract syntax tree.
  */
 public abstract class Node {
-    /**
-     * Accept the visitor.
-     * @param visitor The algorithm applied to this node.
-     */
-    abstract public void accept(ASTVisitor visitor);
-
     protected List<Node> children = new ArrayList<>();
 
     /**
@@ -45,4 +39,10 @@ public abstract class Node {
     @Override public String toString() {
         return this.getClass().getSimpleName().toUpperCase();
     }
+
+    /**
+     * Accept the visitor.
+     * @param visitor The algorithm applied to this node.
+     */
+    abstract public void accept(ASTVisitor visitor);
 }

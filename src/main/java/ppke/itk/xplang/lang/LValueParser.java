@@ -14,7 +14,7 @@ import ppke.itk.xplang.type.Scalar;
 /**
  * {@code LValue = IDENTIFIER [BRACKET_OPEN INT_LITERAL BRACKET_CLOSE] }
  */
-class LValueParser {
+final class LValueParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
     private final static Translator translator = Translator.getInstance("Plang");
 

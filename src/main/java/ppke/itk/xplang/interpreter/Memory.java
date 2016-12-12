@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A set of {@link Value}s mapped to arbitrary Object type addresses. The memory stores "labels" as well (the original
  * variable names), but these are only used for debugging purposes.
  */
-class Memory implements Addressable{
+class Memory implements Addressable {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter.Memory");
 
     private final static class Entry {
@@ -93,8 +93,7 @@ class Memory implements Addressable{
             throw new InterpreterError("Unknown address");
         }
 
-        Entry entry = memory.get(address);
-        return entry.value;
+        return memory.get(address).value;
     }
 
     String dump() {

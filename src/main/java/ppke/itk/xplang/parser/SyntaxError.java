@@ -35,8 +35,7 @@ public class SyntaxError extends ParseError {
      */
     public SyntaxError(Collection<Symbol> expected, Symbol actual, Token token) {
         this(translator.translate(expected.size() > 1?
-                "parser.SyntaxError.message.expectMany" :
-                "parser.SyntaxError.message.expectOne"
+                "parser.SyntaxError.message.expectMany" : "parser.SyntaxError.message.expectOne"
             ), expected, actual, token);
     }
 
@@ -51,7 +50,7 @@ public class SyntaxError extends ParseError {
     }
 
     /**
-     * Signal a syntax error with a custom message
+     * Signal a syntax error with a custom message.
      * @param message A custom message to show the programmer. May include two conversion characters, the first
      *                converting {@code expected}, the other converting {@code actual}
      * @param expected The symbol we expected.

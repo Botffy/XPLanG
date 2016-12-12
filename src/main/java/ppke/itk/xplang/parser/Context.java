@@ -20,8 +20,8 @@ public class Context {
     private final static Translator translator = Translator.getInstance("Parser");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
-    private SymbolTable symbolTable = new SymbolTable();
-    private ScopedMap<String, Object> nameTable = new ScopedMap<>();
+    private final SymbolTable symbolTable = new SymbolTable();
+    private final ScopedMap<String, Object> nameTable = new ScopedMap<>();
 
     public Context() {
         log.debug("New context created.");

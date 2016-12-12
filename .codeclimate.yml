@@ -20,3 +20,5 @@ ratings:
   - "**.properties"
 exclude_paths:
 - docs/**/*
+- "**.prog"
+- "**.plang"

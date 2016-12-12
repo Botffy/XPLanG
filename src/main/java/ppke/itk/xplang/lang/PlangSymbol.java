@@ -21,7 +21,7 @@ enum PlangSymbol {
     IDENTIFIER(matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*").withPrecedence(Symbol.Precedence.IDENTIFIER)),
     LITERAL_INT(matching("\\d+").withPrecedence(Symbol.Precedence.LITERAL)),
     LITERAL_BOOL(matching("(igaz)|(hamis)").withPrecedence(Symbol.Precedence.LITERAL)),
-    EOL(matching(Symbol.EOLPattern).notSignificant()),
+    EOL(matching(Symbol.EOL_PATTERN).notSignificant()),
     WHITESPACE(matching("\\s+").notSignificant()),
     COMMENT(matching("\\*\\*[^\\r\\n]*").notSignificant());
 

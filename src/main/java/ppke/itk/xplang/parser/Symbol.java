@@ -7,21 +7,6 @@ import java.util.regex.Pattern;
  * A regular expression describing a terminal symbol of the language.
  */
 public class Symbol {
-    /**
-     * Predefined precedence levels for Symbols.  Note that the actual precedence is really just an int, these are
-     * defined only for convenience.
-     */
-    public static final class Precedence {
-        public final static int IDENTIFIER = 0;
-        public final static int LITERAL = 5;
-        public final static int KEYWORD = 10;
-        public final static int DEFAULT = 10;
-
-        private Precedence() {
-            // private ctor to hide default one.
-        }
-    }
-
     /** Symbol denoting a lexer error. */
     static final Symbol LEXER_ERROR = new Symbol("LEXER_ERROR", null);
 
@@ -29,7 +14,7 @@ public class Symbol {
     public static final Symbol EOF = new Symbol("EOF", null);
 
     /** Cross-platform newline pattern. */
-    public static final String EOLPattern = "\\r\\n?|\\n";
+    public static final String EOL_PATTERN = "\\r\\n?|\\n";
 
     private final String name;
     private final Pattern pattern;
@@ -68,8 +53,12 @@ public class Symbol {
         return name;
     }
 
-    Pattern getPattern() {
+    public Pattern getPattern() {
         return pattern;
+    }
+
+    public String getPatternAsString() {
+        return pattern.toString();
     }
 
     boolean isSignificant() {
@@ -84,14 +73,32 @@ public class Symbol {
         return String.format("%s[%s]", name, pattern);
     }
 
+    /**
+     * Create a new Symbol using a {@link Symbol.Builder}.
+     */
     public static Builder create() {
         return new Builder();
     }
 
     /**
+     * Predefined precedence levels for Symbols.  Note that the actual precedence is really just an int, these are
+     * defined only for convenience.
+     */
+    public static final class Precedence {
+        public final static int IDENTIFIER = 0;
+        public final static int LITERAL = 5;
+        public final static int KEYWORD = 10;
+        public final static int DEFAULT = 10;
+
+        private Precedence() {
+            // private ctor to hide default one.
+        }
+    }
+
+    /**
      * A comfy builder.
      */
-    public static class Builder {
+    public static final class Builder {
         private boolean caseInsensitive = false;
         private boolean isLiteralPattern = false;
         private String name = null;
@@ -109,12 +116,20 @@ public class Symbol {
             return this;
         }
 
+        /**
+         * Set the regular expression pattern the Symbol is to match. Make sure to escape things.
+         * @see Pattern#compile(String)
+         */
         public Builder matching(String pattern) {
             this.pattern = pattern;
             this.isLiteralPattern = false;
             return this;
         }
 
+        /**
+         * The Symbol is described by a literal string, not a regular expression.
+         * @see Pattern#LITERAL
+         */
         public Builder matchingLiteral(String pattern) {
             this.pattern = pattern;
             this.isLiteralPattern = true;
@@ -141,6 +156,9 @@ public class Symbol {
             return this;
         }
 
+        /**
+         * Finalise the built symbol.
+         */
         public Symbol build() {
             int regexFlags = Pattern.UNICODE_CASE | Pattern.DOTALL;
             if(caseInsensitive) {

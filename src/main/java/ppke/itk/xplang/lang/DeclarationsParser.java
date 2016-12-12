@@ -18,9 +18,15 @@ final class DeclarationsParser {
     static void parse(Parser parser) throws ParseError {
         log.debug("Declarations");
         parser.accept(PlangSymbol.DECLARE.symbol(),
-            translator.translate("plang.missing_declarations_keyword", "VÁLTOZÓK"));        // FIXME reverse lookup
+            translator.translate(
+                "plang.missing_declarations_keyword", PlangSymbol.DECLARE.symbol().getPatternAsString()
+            )
+        );
         parser.accept(PlangSymbol.COLON.symbol(),
-            translator.translate("plang.missing_colon_after_declarations_keyword", "VÁLTOZÓK"));
+            translator.translate(
+                "plang.missing_colon_after_declarations_keyword", PlangSymbol.DECLARE.symbol().getPatternAsString()
+            )
+        );
 
         VariableDeclarationParser.parse(parser);
         while(parser.actual().symbol().equals(PlangSymbol.COMMA.symbol())) {

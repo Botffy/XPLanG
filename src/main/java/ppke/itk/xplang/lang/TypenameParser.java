@@ -22,9 +22,9 @@ final class TypenameParser {
         Type type = parser.context().lookupType(name);
         while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
             parser.advance();
-            int n = Integer.parseInt(parser.accept(PlangSymbol.LITERAL_INT.symbol()).lexeme());
+            int length = Integer.parseInt(parser.accept(PlangSymbol.LITERAL_INT.symbol()).lexeme());
             parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
-            type = FixArray.of(n, type);
+            type = FixArray.of(length, type);
         }
 
         log.debug("Resolved type: {}", type);

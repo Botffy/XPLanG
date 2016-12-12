@@ -1,6 +1,10 @@
 package ppke.itk.xplang.ui;
 
-public class Main {
+public final class Main {
+    private Main() {
+        // private ctor
+    }
+
     /**
      * CLI entry point.
      *

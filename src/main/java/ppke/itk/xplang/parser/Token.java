@@ -18,12 +18,18 @@ public class Token {
         this.location = new Location(line, col);
     }
 
+    Token(Symbol symbol, String lexeme, Location location) {
+        this.symbol = symbol;
+        this.lexeme = lexeme;
+        this.location = location;
+    }
+
     /** The terminal symbol this token is an instance of. */
     public Symbol symbol() {
         return symbol;
     }
 
-    /** The realisation of the symbol, the way it occurs in the source */
+    /** The realisation of the symbol, the way it occurs in the source. */
     public String lexeme() {
         return lexeme;
     }
@@ -37,7 +43,7 @@ public class Token {
         return location.line;
     }
 
-    /** The lexeme starts at this column of the line */
+    /** The lexeme starts at this column of the line. */
     public int getCol() {
         return location.column;
     }

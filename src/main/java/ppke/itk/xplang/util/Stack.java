@@ -6,9 +6,11 @@ import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
 public class Stack<T> {
-    private Deque<T> list = new LinkedList<T>();
+    private final Deque<T> list = new LinkedList<T>();
 
-    public Stack() {}
+    public Stack() {
+        // just create the underlying list.
+    }
 
     public Stack(T initialValue) {
         list.add(initialValue);

@@ -26,8 +26,8 @@ class Lexer {
      */
     private final static int MIN_BUFFER_SIZE = 128;
 
-    private final static Pattern EOL = Pattern.compile(String.format("(%s)+", Symbol.EOLPattern));
-    private final static Pattern SINGLE_EOL = Pattern.compile(Symbol.EOLPattern);
+    private final static Pattern EOL = Pattern.compile(String.format("(%s)+", Symbol.EOL_PATTERN));
+    private final static Pattern SINGLE_EOL = Pattern.compile(Symbol.EOL_PATTERN);
 
     private final Iterable<Symbol> symbols;
     private final Reader input;

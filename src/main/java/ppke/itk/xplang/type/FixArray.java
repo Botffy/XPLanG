@@ -3,12 +3,12 @@ package ppke.itk.xplang.type;
 /**
  *  A fixed length array.
  */
-public class FixArray extends Type {
+public final class FixArray extends Type {
     private final Type elemType;
     private final int length;
 
     public static FixArray of(int length, Type elemType) {
-        return new FixArray(length,elemType);
+        return new FixArray(length, elemType);
     }
 
     private FixArray(int length, Type elemType) {
