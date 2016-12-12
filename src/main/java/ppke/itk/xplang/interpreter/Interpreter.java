@@ -100,6 +100,10 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(new IntegerValue(integerLiteral.getValue()));
     }
 
+    @Override public void visit(RealLiteral realLiteral) {
+        valueStack.push(new RealValue(realLiteral.getValue()));
+    }
+
     @Override public void visit(BooleanLiteral booleanLiteral) {
         valueStack.push(BooleanValue.valueOf(booleanLiteral.getValue()));
     }

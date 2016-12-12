@@ -10,6 +10,9 @@ public class Scalar extends Type {
     /** Character archetype. */
     public static final Scalar CHARACTER_TYPE = new Scalar("CharacterType");
 
+    /** Real archetype. */
+    public static final Scalar REAL_TYPE = new Scalar("RealType");
+
     public Scalar(String label) {
         super(label);
     }

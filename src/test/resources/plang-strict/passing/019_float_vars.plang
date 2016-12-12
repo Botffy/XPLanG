@@ -1,0 +1,10 @@
+**#Floating point variables
+**Memory:a=Real(0.1250),b=Real(3.1400)
+Program testing
+  Változók:
+    a, b: Valós
+
+  a := 3.14
+  b := a
+  a := 0.125
+program_vége
