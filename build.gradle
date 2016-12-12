@@ -5,8 +5,11 @@ apply plugin: 'jacoco'
 
 version = 'git describe --tags --always'.execute().text.trim()
 sourceCompatibility = 1.8
-compileJava.options.encoding = 'UTF-8'
 mainClassName = "ppke.itk.xplang.ui.Main"
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
 
 repositories {
     mavenCentral()
