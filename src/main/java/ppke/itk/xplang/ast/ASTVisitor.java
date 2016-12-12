@@ -17,6 +17,7 @@ public interface ASTVisitor {
     void visit(VarRef varRef);
     void visit(ElementRef elementRef);
     void visit(VarVal varVal);
+    void visit(ElementVal elementVal);
     void visit(IntegerLiteral integerLiteral);
     void visit(BooleanLiteral booleanLiteral);
 }

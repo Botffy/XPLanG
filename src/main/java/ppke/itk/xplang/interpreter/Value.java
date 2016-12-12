@@ -1,6 +1,11 @@
 package ppke.itk.xplang.interpreter;
 
-import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.type.Type;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * A value the {@link Interpreter} works on.
@@ -24,9 +29,11 @@ abstract class Value {
         return NULL;
     }
 
-    static Value initialise(VariableDeclaration var) {
-        if(!var.getType().isScalar()) {
-            return new ArrayValue(var.getType().size());
+    static Value initialise(Type type) {
+        if(!type.isScalar()) {
+            return new ArrayValue(
+                Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(Collectors.toList())
+            );
         }
         return NULL;
     }

@@ -10,13 +10,24 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
 public class ValueInitialisationTest {
-    @Test public void ArrayValuesShouldInitialiseToSize() {
+    @Test public void arrayValuesShouldInitialise() {
         Type type = FixArray.of(6, Scalar.BOOLEAN_TYPE);
         VariableDeclaration var = new VariableDeclaration("a", type);
 
-        Value initialValue = Value.initialise(var);
+        Value initialValue = Value.initialise(var.getType());
         assertThat("Composite types should be initialised with ArrayValues",
             initialValue, instanceOf(ArrayValue.class)
+        );
+    }
+
+    @Test public void multiDimensionalArraysShouldInitialiseRecursively() {
+        Type type = FixArray.of(6, FixArray.of(2, Scalar.BOOLEAN_TYPE));
+        VariableDeclaration var = new VariableDeclaration("a", type);
+
+        Value initialValue = Value.initialise(var.getType());
+        ArrayValue value = (ArrayValue) initialValue;
+        assertThat("Composite types should be initialised with ArrayValues",
+            value.getComponent(new IntegerValue(0)), instanceOf(ArrayValue.class)
         );
     }
 }

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -14,9 +13,9 @@ class ArrayValue extends AddressableValue {
 
     private final List<Value> values;
 
-    ArrayValue(int size) {
+    ArrayValue(List<Value> initValues) {
         values = new ArrayList<>();
-        values.addAll(Collections.nCopies(size, Value.nullValue()));
+        values.addAll(initValues);
     }
 
     @Override public ReferenceValue getReference(Object address) throws InterpreterError {

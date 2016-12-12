@@ -27,7 +27,10 @@ final class AssignmentParser {
         Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
         RValue rhs = RValueParser.parse(parser);
         if(!lhs.getType().accepts(rhs.getType())) {
-            throw new TypeError(translator.translate("plang.assignments_must_match"), loc);
+            throw new TypeError(
+                translator.translate("plang.assignments_must_match", lhs.getType(), rhs.getType()),
+                loc
+            );
         }
         return new Assignment(
             lhs,

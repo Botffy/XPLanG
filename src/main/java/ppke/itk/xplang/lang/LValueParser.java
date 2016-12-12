@@ -25,7 +25,8 @@ class LValueParser {
         Token var = parser.accept(PlangSymbol.IDENTIFIER.symbol());
 
         LValue Result = parser.context().getVariableReference(var);
-        if(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
+        log.trace("LValue {}", Result.getType());
+        while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
             parser.advance();
             Location location = parser.actual().location();
             RValue address = RValueParser.parse(parser);
@@ -37,14 +38,17 @@ class LValueParser {
             }
             parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
             Result = new ElementRef(toRValue(Result), address);
+            log.trace("LValue {}", Result.getType());
         }
-
         return Result;
     }
 
     private static RValue toRValue(LValue lValue) {
         if(lValue instanceof VarRef) {
             return new VarVal(((VarRef) lValue).getVariable());
+        } else if(lValue instanceof ElementRef) {
+            ElementRef ref = (ElementRef) lValue;
+            return new ElementVal(ref.getAddressable(), ref.getAddress());
         }
 
         throw new IllegalStateException("Could not convert LValue to RValue");

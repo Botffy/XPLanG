@@ -35,7 +35,7 @@ public class Interpreter implements ASTVisitor {
         memory.allocate(
             variable,
             variable.getName(),
-            initialise(variable)
+            initialise(variable.getType())
         );
     }
 
@@ -85,6 +85,15 @@ public class Interpreter implements ASTVisitor {
 
     @Override public void visit(VarVal varVal) {
         valueStack.push(memory.getComponent(varVal.getVariable()));
+    }
+
+    @Override public void visit(ElementVal elementVal) {
+        elementVal.getAddress().accept(this);
+        elementVal.getAddressable().accept(this);
+
+        Addressable addressable = valueStack.pop(AddressableValue.class);
+        Value address = valueStack.pop();
+        valueStack.push(addressable.getComponent(address));
     }
 
     @Override public void visit(IntegerLiteral integerLiteral) {

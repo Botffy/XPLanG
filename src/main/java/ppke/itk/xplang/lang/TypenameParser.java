@@ -20,12 +20,14 @@ final class TypenameParser {
         log.debug("Typename");
         Token name = parser.accept(PlangSymbol.IDENTIFIER.symbol());
         Type type = parser.context().lookupType(name);
-        if(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
+        while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
             parser.advance();
             int n = Integer.parseInt(parser.accept(PlangSymbol.LITERAL_INT.symbol()).lexeme());
             parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
             type = FixArray.of(n, type);
         }
+
+        log.debug("Resolved type: {}", type);
 
         return type;
     }
