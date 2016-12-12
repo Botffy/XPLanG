@@ -17,6 +17,10 @@ class MemoryAddress extends ReferenceValue {
         memory.set(this, value);
     }
 
+    @Override Value copy() {
+        return null;
+    }
+
     @Override public String toString() {
         return String.format("[Memory address %s]", address);
     }

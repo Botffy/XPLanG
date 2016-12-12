@@ -14,6 +14,10 @@ final class BooleanValue extends Value {
         return value;
     }
 
+    @Override BooleanValue copy() {
+        return this;
+    }
+
     @Override public String toString() {
         return String.format("Boolean(%s)", value);
     }

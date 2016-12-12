@@ -15,6 +15,10 @@ public class ComponentReference extends ReferenceValue {
         this.composite.setComponent(this.address, value);
     }
 
+    @Override ComponentReference copy() {
+        return this;
+    }
+
     @Override public String toString() {
         return String.format("[Component reference to %s:%s]", composite, address);
     }

@@ -11,6 +11,10 @@ class IntegerValue extends Value {
         return value;
     }
 
+    @Override IntegerValue copy() {
+        return this;
+    }
+
     @Override public String toString() {
         return String.format("Integer(%s)", value);
     }

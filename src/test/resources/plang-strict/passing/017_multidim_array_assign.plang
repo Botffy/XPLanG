@@ -1,4 +1,4 @@
-**#Assignment of arrays
+**#Array assignment by value
 **Memory:a=Array(Array(Integer(1),Integer(6)),Array(Integer(15),Integer(16))),b=Array(Integer(15),Integer(16))
 Program testing
   Változók:
@@ -7,7 +7,7 @@ Program testing
 
   b[0] := 5
   b[1] := 6
-  a[0] = b
+  a[0] := b
 
   b[0] := 15
   b[1] := 16

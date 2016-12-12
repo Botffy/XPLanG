@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 class ArrayValue extends AddressableValue {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
@@ -37,6 +38,10 @@ class ArrayValue extends AddressableValue {
         }
 
         return (IntegerValue) index;
+    }
+
+    @Override ArrayValue copy() {
+        return new ArrayValue(values.stream().map(Value::copy).collect(toList()));
     }
 
     @Override public String toString() {

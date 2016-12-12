@@ -2,8 +2,6 @@ package ppke.itk.xplang.interpreter;
 
 import ppke.itk.xplang.type.Type;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,6 +10,10 @@ import java.util.stream.Stream;
  */
 abstract class Value {
     private static final Value NULL = new Value() {
+        @Override Value copy() {
+            return this;
+        }
+
         @Override public String toString() {
             return "DEADBEEF";
         }
@@ -38,6 +40,7 @@ abstract class Value {
         return NULL;
     }
 
+    abstract Value copy();
     @Override public abstract String toString();
     @Override public abstract int hashCode();
     @Override public abstract boolean equals(Object object);

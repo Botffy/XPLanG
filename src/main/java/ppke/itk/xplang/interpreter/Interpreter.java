@@ -56,7 +56,7 @@ public class Interpreter implements ASTVisitor {
 
         ReferenceValue ref = valueStack.pop(ReferenceValue.class);
         Value value = valueStack.pop();
-        ref.assign(value);
+        ref.assign(value.copy());
     }
 
     @Override public void visit(Conditional conditional) {
