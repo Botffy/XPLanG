@@ -2,15 +2,14 @@ package ppke.itk.xplang.ui;
 
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.impl.Arguments;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.inf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 class OptionParser {
     private static final Logger log = LoggerFactory.getLogger("Root.UI.ArgumentParser");
@@ -18,7 +17,7 @@ class OptionParser {
     private final ArgumentParser parser;
 
     OptionParser() {
-        parser = ArgumentParsers.newArgumentParser("xplang", true)
+        parser = ArgumentParsers.newArgumentParser("xplang", false)
             .version(String.format("This is XPLanG version %s", Program.getVersion().describe()))
             .defaultHelp(true);
 
@@ -28,8 +27,13 @@ class OptionParser {
             .nargs(1)
             .help("Source file");
 
+        parser.addArgument("-h", "-?", "--help")
+            .action(new Helplike(ParserInterrupt.Type.HELP))
+            .help("Display this help and exit.");
+
         parser.addArgument("--version")
-            .action(Arguments.version()); // FIXME this exists with a System.exit(0). That's sort of not ideal.
+            .action(new Helplike(ParserInterrupt.Type.VERSION))
+            .help("Display version information and exit.");
     }
 
     RunConfig parseOptions(String[] args) {
@@ -39,10 +43,47 @@ class OptionParser {
             Namespace res = parser.parseArgs(args);
             List<File> files = res.get("source");
             return new RunConfig(Program.Action.getDefaultAction(), files.get(0));
+        } catch(ParserInterrupt interrupt) {
+            switch(interrupt.type) {
+                case HELP:
+                    System.out.println(parser.formatHelp());
+                    break;
+                case VERSION:
+                    System.out.println(parser.formatVersion());
+                    break;
+            }
+            return new RunConfig(Program.Action.NONE, null);
         } catch(ArgumentParserException e) {
             log.error("Argument error: {}", e.getMessage());
             parser.handleError(e);
             return new RunConfig(Program.Action.NONE, null);
+        }
+    }
+
+    private static class ParserInterrupt extends RuntimeException {
+        private enum Type {
+            HELP,
+            VERSION
+        }
+
+        private final Type type;
+        ParserInterrupt(Type type) {
+            super(type.name());
+            this.type = type;
+        }
+    }
+
+    private static class Helplike implements ArgumentAction {
+        private final ParserInterrupt.Type type;
+        private Helplike(ParserInterrupt.Type type) {
+            this.type = type;
+        }
+        @Override public void run(ArgumentParser parser, Argument arg, Map<String, Object> attrs, String flag, Object value) {
+            throw new ParserInterrupt(this.type);
+        }
+        @Override public void onAttach(Argument arg) {}
+        @Override public boolean consumeArgument() {
+            return false;
         }
     }
 }

@@ -29,7 +29,7 @@ public class OptionParserTest {
         );
     }
 
-    //@Test // FIXME don't run until --version does System.exit(1)
+    @Test
     public void getVersion() {
         RunConfig config = parser.parseOptions(new String[]{"--version"});
         assertSame("Requesting the version screen should result in NONE action",
