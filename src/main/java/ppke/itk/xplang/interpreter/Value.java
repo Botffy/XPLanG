@@ -40,6 +40,21 @@ abstract class Value {
         return NULL;
     }
 
+    /**
+     * Attempt to cast a value to a specific value type, or die trying.
+     */
+    static <T extends Value> T convert(Object value, Class<T> clazz) throws InterpreterError {
+        try {
+            return clazz.cast(value);
+        } catch(ClassCastException cce) {
+            throw new InterpreterError(
+                String.format(
+                    "Type error: could not convert %s to %s", value.getClass().getSimpleName(), clazz.getSimpleName()
+                ), cce
+            );
+        }
+    }
+
     abstract Value copy();
     @Override public abstract String toString();
     @Override public abstract int hashCode();

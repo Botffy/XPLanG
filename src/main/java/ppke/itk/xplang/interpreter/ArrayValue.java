@@ -24,20 +24,11 @@ class ArrayValue extends AddressableValue {
     }
 
     @Override public void setComponent(Object index, Value value) throws InterpreterError {
-        values.set(toAddressValue(index).getValue(), value);
+        values.set(convert(index, IntegerValue.class).getValue(), value);
     }
 
     @Override public Value getComponent(Object index) throws InterpreterError {
-        return values.get(toAddressValue(index).getValue());
-    }
-
-    private IntegerValue toAddressValue(Object index) throws InterpreterError {
-        if(!(index instanceof IntegerValue)) {
-            log.error("Could cast {} into an IntegerValue", index);
-            throw new InterpreterError(String.format("Could not cast %s into an IntegerValue", index));
-        }
-
-        return (IntegerValue) index;
+        return values.get(convert(index, IntegerValue.class).getValue());
     }
 
     @Override ArrayValue copy() {

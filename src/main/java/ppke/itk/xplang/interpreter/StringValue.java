@@ -18,19 +18,11 @@ class StringValue extends AddressableValue {
     }
 
     @Override public void setComponent(Object index, Value value) throws InterpreterError {
-        chars[toAddressValue(index).getValue()] = ((CharacterValue) value).getValue();
+        chars[convert(index, IntegerValue.class).getValue()] = convert(value, CharacterValue.class).getValue();
     }
 
     @Override public CharacterValue getComponent(Object index) throws InterpreterError {
-        return new CharacterValue(chars[toAddressValue(index).getValue()]);
-    }
-
-    private IntegerValue toAddressValue(Object index) throws InterpreterError {
-        if(!(index instanceof IntegerValue)) {
-            throw new InterpreterError(String.format("Could not cast %s into an IntegerValue", index));
-        }
-
-        return (IntegerValue) index;
+        return new CharacterValue(chars[convert(index, IntegerValue.class).getValue()]);
     }
 
     @Override StringValue copy() {
