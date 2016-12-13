@@ -23,7 +23,7 @@ final class ProgramParser {
     static Program parse(Parser parser) throws ParseError {
         log.debug("Program");
         parser.accept(PlangSymbol.PROGRAM.symbol(),
-            translator.translate("plang.program_keyword_missing", "PROGRAM"));  // TODO reverse lookup
+            translator.translate("plang.program_keyword_missing", PlangSymbol.PROGRAM.symbol().getPatternAsString()));
         Token nameToken = parser.accept(PlangSymbol.IDENTIFIER.symbol(),
             translator.translate("plang.missing_program_name"));
 
