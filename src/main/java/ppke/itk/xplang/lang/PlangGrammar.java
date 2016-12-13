@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.parser.Context;
-import ppke.itk.xplang.parser.Grammar;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Scalar;
 
 import java.util.EnumSet;
@@ -21,11 +18,11 @@ public class PlangGrammar extends Grammar {
         try {
             EnumSet.allOf(PlangSymbol.class).stream().map(PlangSymbol::symbol).forEach(ctx::register);
 
-            ctx.declareType("Egész", Scalar.INTEGER_TYPE);
-            ctx.declareType("Logikai", Scalar.BOOLEAN_TYPE);
-            ctx.declareType("Karakter", Scalar.CHARACTER_TYPE);
-            ctx.declareType("Valós", Scalar.REAL_TYPE);
-            ctx.declareType("Szöveg", Scalar.STRING_TYPE);
+            ctx.declareType(name("Egész"), Scalar.INTEGER_TYPE);
+            ctx.declareType(name("Logikai"), Scalar.BOOLEAN_TYPE);
+            ctx.declareType(name("Karakter"), Scalar.CHARACTER_TYPE);
+            ctx.declareType(name("Valós"), Scalar.REAL_TYPE);
+            ctx.declareType(name("Szöveg"), Scalar.STRING_TYPE);
         } catch(ParseError error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
@@ -38,5 +35,9 @@ public class PlangGrammar extends Grammar {
         log.debug("start");
         Program program = ProgramParser.parse(parser);
         return new Root(program);
+    }
+
+    static PlangName name(String name) {
+        return new PlangName(name);
     }
 }

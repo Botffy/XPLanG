@@ -1,0 +1,7 @@
+**#Variable names are case-insensitive
+**Memory:a=Integer(10)
+program ci_varnames
+  Változók:
+    a: Egész
+  A := 10
+program_vége

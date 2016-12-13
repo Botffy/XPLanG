@@ -1,0 +1,11 @@
+**#Typenames should be case-insensitive
+**Memory:a=Integer(10),b=DEADBEEF,c=DEADBEEF,d=DEADBEEF,e=DEADBEEF
+program ci_typenames
+  Változók:
+    a: egésZ,
+    b: logIkai,
+    c: szÖveg,
+    d: KARAKTER,
+    e: vaLós
+  a := 10
+program_vége

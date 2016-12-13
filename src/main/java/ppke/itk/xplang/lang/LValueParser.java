@@ -22,9 +22,9 @@ final class LValueParser {
 
     static LValue parse(Parser parser) throws ParseError {
         log.debug("LValue");
-        Token var = parser.accept(PlangSymbol.IDENTIFIER.symbol());
+        Token token = parser.accept(PlangSymbol.IDENTIFIER.symbol());
 
-        LValue Result = parser.context().getVariableReference(var);
+        LValue Result = parser.context().getVariableReference(PlangGrammar.name(token.lexeme()), token);
         log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
             parser.advance();

@@ -31,9 +31,9 @@ final class VariableDeclarationParser {
         parser.accept(PlangSymbol.COLON.symbol());
         Type type = TypenameParser.parse(parser);
 
-        for(Token name : variables) {
+        for(Token token : variables) {
             try {
-                parser.context().declareVariable(name, type);
+                parser.context().declareVariable(PlangGrammar.name(token.lexeme()), token, type);
             } catch(NameClashError error) {
                 parser.recordError(error.toErrorMessage());
             }

@@ -21,7 +21,7 @@ public class Context {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
     private final SymbolTable symbolTable = new SymbolTable();
-    private final ScopedMap<String, Object> nameTable = new ScopedMap<>();
+    private final ScopedMap<Name, Object> nameTable = new ScopedMap<>();
 
     public Context() {
         log.debug("New context created.");
@@ -49,10 +49,9 @@ public class Context {
         return scope;
     }
 
-    public void declareVariable(Token token, Type type) throws NameClashError {
-        String name = token.lexeme();
+    public void declareVariable(Name name, Token token, Type type) throws NameClashError {
         if(nameTable.isFree(name)) {
-            VariableDeclaration declaration = new VariableDeclaration(name, type);
+            VariableDeclaration declaration = new VariableDeclaration(token.lexeme(), type);
             nameTable.add(name, declaration);
             log.debug("Declared variable '{}'", name);
         } else {
@@ -64,28 +63,27 @@ public class Context {
         }
     }
 
-    public VarRef getVariableReference(Token variableName) throws NameError {
-        return new VarRef(lookupVariable(variableName));
+    public VarRef getVariableReference(Name name, Token token) throws NameError {
+        return new VarRef(lookupVariable(name, token));
     }
 
-    public VarVal getVariableValue(Token variableName) throws NameError {
-        return new VarVal(lookupVariable(variableName));
+    public VarVal getVariableValue(Name name, Token token) throws NameError {
+        return new VarVal(lookupVariable(name, token));
     }
 
-    private VariableDeclaration lookupVariable(Token token) throws NameError {
-        String variableName = token.lexeme();
-        Object obj = nameTable.lookup(variableName);
+    private VariableDeclaration lookupVariable(Name name, Token token) throws NameError {
+        Object obj = nameTable.lookup(name);
         if(obj instanceof VariableDeclaration) {
             VariableDeclaration var = (VariableDeclaration) obj;
-            log.trace("Looked up variable for name '{}'", variableName);
+            log.trace("Looked up variable for name '{}'", name);
             return var;
         }
         // TODO mention it if it exist but it's not a variable
-        log.error("Lookup of variable '{}' failed.", variableName);
+        log.error("Lookup of variable '{}' failed.", name);
         throw new NameError("No variable named %s", token);
     }
 
-    public void declareType(String name, Type type) throws NameClashError {
+    public void declareType(Name name, Type type) throws NameClashError {
         if(nameTable.isFree(name)) {
             nameTable.add(name, type);
             log.debug("Declared type {] as '{}'", type, name);
@@ -102,15 +100,14 @@ public class Context {
         }
     }
 
-    public Type lookupType(Token token) throws NameError {
-        String typeName = token.lexeme();
-        Object obj = nameTable.lookup(typeName);
+    public Type lookupType(Name name, Token token) throws NameError {
+        Object obj = nameTable.lookup(name);
         if(obj instanceof Type) {
             Type typ = (Type) obj;
-            log.trace("Looked up type for name '{}'", typeName);
+            log.trace("Looked up type for name '{}'", name);
             return typ;
         }
-        log.error("Lookup of type '{}' failed.", typeName);
+        log.error("Lookup of type '{}' failed.", name);
         throw new NameError("No type named %s", token);
     }
 

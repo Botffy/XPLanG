@@ -19,6 +19,7 @@ public class ContextTest {
     private Symbol dSymbol;
     private Type dType = new Scalar("Dummy");
 
+
     @Before
     public void setUp() {
         this.context = new Context();
@@ -29,9 +30,9 @@ public class ContextTest {
     @Test
     public void variableDeclarationsInScope() throws NameClashError {
         context.openScope();
-        context.declareVariable(new Token(dSymbol, "egyes", 1, 1), dType);
-        context.declareVariable(new Token(dSymbol, "kettes", 2, 1), dType);
-        context.declareVariable(new Token(dSymbol, "hármas", 3, 1), dType);
+        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 1, 1), dType);
+        context.declareVariable(name("kettes"), new Token(dSymbol, "kettes", 2, 1), dType);
+        context.declareVariable(name("hármas"), new Token(dSymbol, "hármas", 3, 1), dType);
 
         Scope scope = context.closeScope();
 
@@ -44,9 +45,9 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws NameClashError {
         context.openScope();
-        context.declareVariable(new Token(dSymbol, "egyes", 1, 1), dType);
+        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 1, 1), dType);
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(new Token(dSymbol, "egyes", 2, 1), dType)
+            context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 2, 1), dType)
         );
         assertEquals(NameClashError.class, throwable.getClass());
     }
@@ -54,10 +55,30 @@ public class ContextTest {
     @Test
     public void variableTypeNameClash() throws NameClashError {
         context.openScope();
-        context.declareType("Egész", new Scalar("ExampleType"));
+        context.declareType(name("Egész"), new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(new Token(dSymbol, "Egész", 2, 1), dType)
+            context.declareVariable(name("Egész"), new Token(dSymbol, "Egész", 2, 1), dType)
         );
         assertEquals(NameClashError.class, throwable.getClass());
     }
+
+    private static final class TestName implements Name {
+        private final String value;
+
+        TestName(String name) {
+            this.value = name;
+        }
+
+        @Override public boolean equals(Object obj) {
+            return obj instanceof TestName && this.value.equals(((TestName) obj).value);
+        }
+
+        @Override public int hashCode() {
+            return value.hashCode();
+        }
+    }
+
+    private static TestName name(String str) {
+        return new TestName(str);
+    };
 }
