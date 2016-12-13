@@ -1,0 +1,11 @@
+**#Assign string element to char variable
+**Memory:a=String(Pillanat),b=Character(V)
+Program testing
+  Változók:
+    a: Szöveg,
+    b: Karakter
+
+  a := "Villanás"
+  b := a[0]
+  a := "Pillanat"
+program_vége

@@ -1,0 +1,10 @@
+**#String variables
+**Memory:a=String(Ez a ház is ledőlhet),b=String(csak lopta az időmet)
+Program testing
+  Változók:
+    a, b: Szöveg
+
+  a := "csak lopta az időmet"
+  b := a
+  a := "Ez a ház is ledőlhet"
+program_vége

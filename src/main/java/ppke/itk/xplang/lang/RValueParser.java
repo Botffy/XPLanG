@@ -35,6 +35,9 @@ final class RValueParser {
         } else if(act.equals(PlangSymbol.LITERAL_REAL.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_REAL.symbol());
             return new RealLiteral(Double.valueOf(token.lexeme()));
+        } else if(act.equals(PlangSymbol.LITERAL_STRING.symbol())) {
+            Token token = parser.accept(PlangSymbol.LITERAL_STRING.symbol());
+            return new StringLiteral(token.lexeme().substring(1, token.lexeme().length() - 1));
         } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
             Token namTok = parser.accept(PlangSymbol.IDENTIFIER.symbol());
             RValue Result = parser.context().getVariableValue(namTok);

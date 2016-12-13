@@ -112,6 +112,10 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(new CharacterValue(characterLiteral.getValue()));
     }
 
+    @Override public void visit(StringLiteral stringLiteral) {
+        valueStack.push(new StringValue(stringLiteral.getValue()));
+    }
+
     public String memoryDump() {
         return this.memory.dump();
     }

@@ -1,0 +1,9 @@
+**#String element assignment
+**Memory:a=String(Pillanás)
+Program testing
+  Változók:
+    a: Szöveg
+
+  a := "Villanás"
+  a[0] := 'P'
+program_vége

@@ -22,4 +22,5 @@ public interface ASTVisitor {
     void visit(RealLiteral realLiteral);
     void visit(BooleanLiteral booleanLiteral);
     void visit(CharacterLiteral characterLiteral);
+    void visit(StringLiteral stringLiteral);
 }

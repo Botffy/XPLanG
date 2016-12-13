@@ -1,0 +1,10 @@
+**#String to char array assignment should cause type error
+**FirstErrorLoc:9,8
+Program testing
+  Változók:
+    a: Szöveg,
+    b: Karakter[5]
+
+  a := "12345"
+  b := a
+program_vége

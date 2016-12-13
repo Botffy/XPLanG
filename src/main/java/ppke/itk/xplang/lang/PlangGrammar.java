@@ -25,6 +25,7 @@ public class PlangGrammar extends Grammar {
             ctx.declareType("Logikai", Scalar.BOOLEAN_TYPE);
             ctx.declareType("Karakter", Scalar.CHARACTER_TYPE);
             ctx.declareType("Valós", Scalar.REAL_TYPE);
+            ctx.declareType("Szöveg", Scalar.STRING_TYPE);
         } catch(ParseError error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
