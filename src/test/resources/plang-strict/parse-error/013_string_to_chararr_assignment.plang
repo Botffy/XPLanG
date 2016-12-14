@@ -1,5 +1,5 @@
 **#String to char array assignment should cause type error
-**FirstErrorLoc:9,8
+**FirstErrorLoc:9,5
 Program testing
   Változók:
     a: Szöveg,

@@ -51,7 +51,7 @@ public class Context {
 
     public void declareVariable(Name name, Token token, Type type) throws NameClashError {
         if(nameTable.isFree(name)) {
-            VariableDeclaration declaration = new VariableDeclaration(token.lexeme(), type);
+            VariableDeclaration declaration = new VariableDeclaration(token.location(), token.lexeme(), type);
             nameTable.add(name, declaration);
             log.debug("Declared variable '{}'", name);
         } else {
@@ -64,11 +64,11 @@ public class Context {
     }
 
     public VarRef getVariableReference(Name name, Token token) throws NameError {
-        return new VarRef(lookupVariable(name, token));
+        return new VarRef(token.location(), lookupVariable(name, token));
     }
 
     public VarVal getVariableValue(Name name, Token token) throws NameError {
-        return new VarVal(lookupVariable(name, token));
+        return new VarVal(token.location(), lookupVariable(name, token));
     }
 
     private VariableDeclaration lookupVariable(Name name, Token token) throws NameError {

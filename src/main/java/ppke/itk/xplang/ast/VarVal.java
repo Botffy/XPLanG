@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -14,7 +15,8 @@ public final class VarVal extends RValue {
      * Constructor.
      * @param var The variable this reference refers to.
      */
-    public VarVal(VariableDeclaration var) {
+    public VarVal(Location location, VariableDeclaration var) {
+        super(location);
         this.var = var;
     }
 

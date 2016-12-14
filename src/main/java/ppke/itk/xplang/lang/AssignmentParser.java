@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Assignment;
 import ppke.itk.xplang.ast.LValue;
 import ppke.itk.xplang.ast.RValue;
-import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.parser.TypeError;
 
 /**
@@ -23,16 +23,16 @@ final class AssignmentParser {
     static Assignment parse(Parser parser) throws ParseError {
         log.debug("Assignment");
         LValue lhs = LValueParser.parse(parser);
-        parser.accept(PlangSymbol.ASSIGNMENT.symbol());
-        Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
+        Token token = parser.accept(PlangSymbol.ASSIGNMENT.symbol());
         RValue rhs = RValueParser.parse(parser);
         if(!lhs.getType().accepts(rhs.getType())) {
             throw new TypeError(
                 translator.translate("plang.assignments_must_match", lhs.getType(), rhs.getType()),
-                loc
+                token.location()
             );
         }
         return new Assignment(
+            token.location(),
             lhs,
             rhs
         );

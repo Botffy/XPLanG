@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -11,6 +13,7 @@ import static java.util.stream.Collectors.toList;
  */
 public final class Scope extends Node {
     public Scope(List<VariableDeclaration> variables) {
+        super(Location.definedBy(variables));
         this.children.addAll(0, variables);
     }
 

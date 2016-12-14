@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -7,5 +8,9 @@ import ppke.itk.xplang.type.Type;
  * a memory address, as opposed to the content, value found at that address. The value would be the {@link RValue}.
  */
 public abstract class LValue extends Node {
+    public LValue(Location location) {
+        super(location);
+    }
+
     abstract public Type getType();
 }

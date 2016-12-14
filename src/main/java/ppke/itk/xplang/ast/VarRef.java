@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -13,9 +14,11 @@ public final class VarRef extends LValue {
 
     /**
      * Constructor.
+     * @param location The position of the referencing in the source code.
      * @param var The variable this reference refers to.
      */
-    public VarRef(VariableDeclaration var) {
+    public VarRef(Location location, VariableDeclaration var) {
+        super(location);
         this.var = var;
     }
 

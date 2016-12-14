@@ -1,10 +1,13 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 /**
  * Assign a value to a memory location.
  */
 public class Assignment extends Statement {
-    public Assignment(LValue lhs, RValue rhs) {
+    public Assignment(Location location, LValue lhs, RValue rhs) {
+        super(location);
         this.children.add(0, lhs);
         this.children.add(1, rhs);
     }

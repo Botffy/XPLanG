@@ -1,9 +1,12 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 public class Program extends Node {
     private final String name;
 
-    public Program(String name, Block block) {
+    public Program(Location location, String name, Block block) {
+        super(location);
         this.name = name;
         children.add(0, block);
     }

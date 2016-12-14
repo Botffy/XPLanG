@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 /**
  * The root node of the AST. Essentially the global scope.
  */
@@ -7,7 +9,8 @@ package ppke.itk.xplang.ast;
 public class Root extends Node {
     @Override public void accept(ASTVisitor visitor) { visitor.visit(this); }
 
-    public Root(Program entryPoint) {
+    public Root(Location location, Program entryPoint) {
+        super(location);
         children.add(0, entryPoint);
     }
 

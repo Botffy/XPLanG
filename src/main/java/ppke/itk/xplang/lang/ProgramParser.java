@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.Block;
 import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.Sequence;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
@@ -22,8 +23,11 @@ final class ProgramParser {
 
     static Program parse(Parser parser) throws ParseError {
         log.debug("Program");
-        parser.accept(PlangSymbol.PROGRAM.symbol(),
-            translator.translate("plang.program_keyword_missing", PlangSymbol.PROGRAM.symbol().getPatternAsString()));
+
+        Token startToken = parser.accept(PlangSymbol.PROGRAM.symbol(),
+            translator.translate("plang.program_keyword_missing", PlangSymbol.PROGRAM.symbol().getPatternAsString())
+        );
+
         Token nameToken = parser.accept(PlangSymbol.IDENTIFIER.symbol(),
             translator.translate("plang.missing_program_name"));
 
@@ -33,10 +37,14 @@ final class ProgramParser {
 
         Sequence sequence = SequenceParser.parse(parser, PlangSymbol.END_PROGRAM.symbol());
 
-        parser.accept(PlangSymbol.END_PROGRAM.symbol(),
+        Token endToken = parser.accept(PlangSymbol.END_PROGRAM.symbol(),
             translator.translate("plang.missing_end_program", "PROGRAM_VÉGE"));
         Scope scope = parser.context().closeScope();
 
-        return new Program(nameToken.lexeme(), new Block(scope, sequence));
+        return new Program(
+            Location.between(startToken.location(), endToken.location()),
+            nameToken.lexeme(),
+            new Block(scope, sequence)
+        );
     }
 }

@@ -34,7 +34,7 @@ public class PlangGrammar extends Grammar {
     @Override protected Root start(Parser parser) throws ParseError {
         log.debug("start");
         Program program = ProgramParser.parse(parser);
-        return new Root(program);
+        return new Root(program.location(), program);
     }
 
     static PlangName name(String name) {

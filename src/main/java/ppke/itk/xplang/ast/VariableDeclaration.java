@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -12,7 +13,8 @@ public final class VariableDeclaration extends Node {
     private final String variableName;
     private final Type type;
 
-    public VariableDeclaration(String variableName, Type type) {
+    public VariableDeclaration(Location location, String variableName, Type type) {
+        super(location);
         this.variableName = variableName;
         this.type = type;
     }

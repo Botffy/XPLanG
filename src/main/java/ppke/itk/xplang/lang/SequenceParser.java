@@ -4,10 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.ast.Statement;
-import ppke.itk.xplang.parser.LexerError;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
+import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +23,7 @@ final class SequenceParser {
 
     static Sequence parse(Parser parser, Symbol... stopSymbols) throws LexerError {
         log.debug("Sequence");
+        Location startLoc = parser.actual().location();
         List<Statement> statementList = new ArrayList<>();
         List<Symbol> stoppers = asList(stopSymbols);
         do {
@@ -38,6 +37,8 @@ final class SequenceParser {
             }
         } while(!parser.actual().symbol().equals(Symbol.EOF) && !stoppers.contains(parser.actual().symbol()));
 
-        return new Sequence(statementList);
+        Location endLoc = parser.actual().location();
+
+        return new Sequence(Location.between(startLoc, endLoc), statementList);
     }
 }

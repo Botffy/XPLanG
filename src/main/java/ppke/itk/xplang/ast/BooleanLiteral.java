@@ -1,11 +1,12 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 public class BooleanLiteral extends Literal<Boolean> {
-    public BooleanLiteral(boolean value) {
-        super(value);
+    public BooleanLiteral(Location location, boolean value) {
+        super(location, value);
     }
 
     @Override public Type getType() {

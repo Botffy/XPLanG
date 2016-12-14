@@ -1,5 +1,7 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -12,7 +14,8 @@ public class Sequence extends Node {
         visitor.visit(this);
     }
 
-    public Sequence(List<Statement> statements) {
+    public Sequence(Location location, List<Statement> statements) {
+        super(location);
         this.children.addAll(statements);
     }
 

@@ -1,11 +1,12 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 public class StringLiteral extends Literal<String> {
-    public StringLiteral(String value) {
-        super(value);
+    public StringLiteral(Location location, String value) {
+        super(location, value);
     }
 
     @Override public Type getType() {

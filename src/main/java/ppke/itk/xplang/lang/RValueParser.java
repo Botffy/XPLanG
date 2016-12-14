@@ -24,36 +24,37 @@ final class RValueParser {
         Symbol act = parser.actual().symbol();
         if(act.equals(PlangSymbol.LITERAL_INT.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_INT.symbol());
-            return new IntegerLiteral(Integer.valueOf(token.lexeme()));
+            return new IntegerLiteral(token.location(), Integer.valueOf(token.lexeme()));
         } else if(act.equals(PlangSymbol.LITERAL_BOOL.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_BOOL.symbol());
             // FIXME, but this should be taken care of by operators and expressions
-            return new BooleanLiteral(token.lexeme().equalsIgnoreCase("igaz") ? true : false);
+            return new BooleanLiteral(token.location(), token.lexeme().equalsIgnoreCase("igaz") ? true : false);
         } else if(act.equals(PlangSymbol.LITERAL_CHAR.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_CHAR.symbol());
-            return new CharacterLiteral(token.lexeme().charAt(1));
+            return new CharacterLiteral(token.location(), token.lexeme().charAt(1));
         } else if(act.equals(PlangSymbol.LITERAL_REAL.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_REAL.symbol());
-            return new RealLiteral(Double.valueOf(token.lexeme()));
+            return new RealLiteral(token.location(), Double.valueOf(token.lexeme()));
         } else if(act.equals(PlangSymbol.LITERAL_STRING.symbol())) {
             Token token = parser.accept(PlangSymbol.LITERAL_STRING.symbol());
-            return new StringLiteral(token.lexeme().substring(1, token.lexeme().length() - 1));
+            return new StringLiteral(token.location(), token.lexeme().substring(1, token.lexeme().length() - 1));
         } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
             Token token = parser.accept(PlangSymbol.IDENTIFIER.symbol());
             RValue Result = parser.context().getVariableValue(PlangGrammar.name(token.lexeme()), token);
 
             while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
-                parser.advance();
-                Location location = parser.actual().location();
+                Location start = parser.advance().location();
                 RValue address = RValueParser.parse(parser);
+                Location end = parser.accept(PlangSymbol.BRACKET_CLOSE.symbol()).location();
+
+                Location location = Location.between(start, end);
                 if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
                     throw new TypeError(
                         translator.translate("plang.array_indextype_mismatch", address.getType()),
                         location
                     );
                 }
-                parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
-                Result = new ElementVal(Result, address);
+                Result = new ElementVal(location, Result, address);
             }
 
             return Result;

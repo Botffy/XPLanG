@@ -6,7 +6,6 @@ import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.ast.Statement;
-import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
@@ -25,11 +24,11 @@ final class ConditionalParser {
 
     static Statement parse(Parser parser) throws ParseError {
         log.debug("Conditional");
-        parser.accept(PlangSymbol.IF.symbol());
-        Location loc = parser.actual().location(); // FIXME this should be queried from RValue.
+        Location startLoc = parser.accept(PlangSymbol.IF.symbol()).location();
+
         RValue condition = RValueParser.parse(parser);
         if(!Scalar.BOOLEAN_TYPE.accepts(condition.getType())) {
-            throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), loc);
+            throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), condition.location());
         }
         parser.accept(PlangSymbol.THEN.symbol());
         Sequence ifBranch = SequenceParser.parse(parser, PlangSymbol.ENDIF.symbol(), PlangSymbol.ELSE.symbol());
@@ -40,7 +39,7 @@ final class ConditionalParser {
             elseBranch = SequenceParser.parse(parser, PlangSymbol.ENDIF.symbol());
         }
 
-        parser.accept(PlangSymbol.ENDIF.symbol());
-        return new Conditional(condition, ifBranch, elseBranch);
+        Location endLoc = parser.accept(PlangSymbol.ENDIF.symbol()).location();
+        return new Conditional(new Location(startLoc.start, endLoc.end), condition, ifBranch, elseBranch);
     }
 }

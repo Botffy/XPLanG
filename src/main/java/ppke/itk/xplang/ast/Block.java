@@ -1,11 +1,14 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
+
 /**
  * A block statement: contains a series of declarations ({@link Scope}) and a list of commands (a {@link Sequence}) of
  * {@link Statement}s.
  */
 public class Block extends Statement {
     public Block(Scope scope, Sequence sequence) {
+        super(Location.definedBy(scope, sequence));
         children.add(0, scope);
         children.add(1, sequence);
     }

@@ -1,5 +1,8 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Locatable;
+import ppke.itk.xplang.common.Location;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,8 +10,13 @@ import java.util.List;
 /**
  * A node in the abstract syntax tree.
  */
-public abstract class Node {
+public abstract class Node implements Locatable {
+    private final Location location;
     protected List<Node> children = new ArrayList<>();
+
+    protected Node(Location location) {
+        this.location = location;
+    }
 
     /**
      * Get the children of this Node.
@@ -45,4 +53,8 @@ public abstract class Node {
      * @param visitor The algorithm applied to this node.
      */
     abstract public void accept(ASTVisitor visitor);
+
+    @Override public Location location() {
+        return location;
+    }
 }

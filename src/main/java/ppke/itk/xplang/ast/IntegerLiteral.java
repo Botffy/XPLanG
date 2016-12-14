@@ -1,11 +1,12 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 public class IntegerLiteral extends Literal<Integer> {
-    public IntegerLiteral(int value) {
-        super(value);
+    public IntegerLiteral(Location location, int value) {
+        super(location, value);
     }
 
     @Override public Type getType() {

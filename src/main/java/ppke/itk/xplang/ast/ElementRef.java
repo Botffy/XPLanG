@@ -1,5 +1,6 @@
 package ppke.itk.xplang.ast;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 /**
@@ -11,7 +12,8 @@ public class ElementRef extends LValue {
      * @param addressable An addressable value: an expression resolving to a composite type.
      * @param address A value that addresses the addressable.
      */
-    public ElementRef(RValue addressable, RValue address) {
+    public ElementRef(Location location, RValue addressable, RValue address) {
+        super(location);
         this.children.add(0, addressable);
         this.children.add(1, address);
     }

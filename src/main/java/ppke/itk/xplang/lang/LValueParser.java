@@ -27,17 +27,19 @@ final class LValueParser {
         LValue Result = parser.context().getVariableReference(PlangGrammar.name(token.lexeme()), token);
         log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
-            parser.advance();
-            Location location = parser.actual().location();
+            Token startToken = parser.accept(PlangSymbol.BRACKET_OPEN.symbol());
             RValue address = RValueParser.parse(parser);
             if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
                 throw new TypeError(
                     translator.translate("plang.array_indextype_mismatch", address.getType()),
-                    location
+                    address.location()
                 );
             }
-            parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
-            Result = new ElementRef(toRValue(Result), address);
+            Token endToken = parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
+            Result = new ElementRef(
+                new Location(startToken.location().start, endToken.location().end),
+                toRValue(Result), address
+            );
             log.trace("LValue {}", Result.getType());
         }
         return Result;
@@ -45,10 +47,10 @@ final class LValueParser {
 
     private static RValue toRValue(LValue lValue) {
         if(lValue instanceof VarRef) {
-            return new VarVal(((VarRef) lValue).getVariable());
+            return new VarVal(lValue.location(), ((VarRef) lValue).getVariable());
         } else if(lValue instanceof ElementRef) {
             ElementRef ref = (ElementRef) lValue;
-            return new ElementVal(ref.getAddressable(), ref.getAddress());
+            return new ElementVal(lValue.location(), ref.getAddressable(), ref.getAddress());
         }
 
         throw new IllegalStateException("Could not convert LValue to RValue");

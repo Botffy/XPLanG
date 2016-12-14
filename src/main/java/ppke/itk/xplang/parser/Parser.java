@@ -70,7 +70,7 @@ public class Parser {
      *  Advances the tape head.
      *  @throws  LexerError if meets an unrecognized token.
      */
-    public void advance() throws LexerError {
+    public Token advance() throws LexerError {
         log.trace("Advance");
         act = lexer.next();
 
@@ -78,6 +78,7 @@ public class Parser {
             log.error("Lexer error: invalid token {}", actual());
             throw new LexerError(actual());
         }
+        return act;
     }
 
     /**
