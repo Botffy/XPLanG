@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.common.CursorPosition;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
@@ -15,10 +17,11 @@ import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 
 public class ContextTest {
+    private final static Location LOCATION = new CursorPosition(1,1).toUnaryLocation();
+
     private Context context;
     private Symbol dSymbol;
     private Type dType = new Scalar("Dummy");
-
 
     @Before
     public void setUp() {
@@ -30,13 +33,13 @@ public class ContextTest {
     @Test
     public void variableDeclarationsInScope() throws NameClashError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 1, 1), dType);
-        context.declareVariable(name("kettes"), new Token(dSymbol, "kettes", 2, 1), dType);
-        context.declareVariable(name("hármas"), new Token(dSymbol, "hármas", 3, 1), dType);
+        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
+        context.declareVariable(name("kettes"), new Token(dSymbol, "kettes", LOCATION), dType);
+        context.declareVariable(name("hármas"), new Token(dSymbol, "hármas", LOCATION), dType);
 
         Scope scope = context.closeScope();
 
-        assertEquals(
+        assertEquals("Variables declared should be in the scope",
             new HashSet<>(asList("egyes", "kettes", "hármas")),
             scope.variables().stream().map(VariableDeclaration::getName).collect(toSet())
         );
@@ -45,11 +48,13 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws NameClashError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 1, 1), dType);
+        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", 2, 1), dType)
+            context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType)
         );
-        assertEquals(NameClashError.class, throwable.getClass());
+        assertEquals("Registering two variables by the same name should cause a name clash",
+            NameClashError.class, throwable.getClass()
+        );
     }
 
     @Test
@@ -57,9 +62,11 @@ public class ContextTest {
         context.openScope();
         context.declareType(name("Egész"), new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("Egész"), new Token(dSymbol, "Egész", 2, 1), dType)
+            context.declareVariable(name("Egész"), new Token(dSymbol, "Egész", LOCATION), dType)
         );
-        assertEquals(NameClashError.class, throwable.getClass());
+        assertEquals("Registering a variable by a name taken by a type should cause a name clash",
+            NameClashError.class, throwable.getClass()
+        );
     }
 
     private static final class TestName implements Name {

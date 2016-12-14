@@ -3,7 +3,7 @@ package ppke.itk.xplang.parser;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
-import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.common.CursorPosition;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -42,8 +42,8 @@ public class ParserErrorLoggingTest {
         List<CompilerMessage> messages = parser.getErrorLog().getErrorMessages();
         assertFalse("Error log should not be empty after a lexing error.", messages.isEmpty());
         assertEquals("Error log should give correct information about the error location.",
-            new Location(1,5),
-            messages.get(0).getLocation()
+            new CursorPosition(1,5),
+            messages.get(0).getCursorPosition()
         );
     }
 
@@ -57,8 +57,8 @@ public class ParserErrorLoggingTest {
         System.out.println(messages);
         assertFalse("Error log should not be empty after a syntax error.", parser.getErrorLog().isEmpty());
         assertEquals("Error log should give correct information about the error location.",
-            new Location(1,9),
-            messages.get(0).getLocation()
+            new CursorPosition(1,9),
+            messages.get(0).getCursorPosition()
         );
     }
 }

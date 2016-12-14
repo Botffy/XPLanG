@@ -1,14 +1,13 @@
 package language;
 
-import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.ErrorLog;
-import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
@@ -51,7 +50,7 @@ public class LanguageIT {
             reader.mark(1024);
             String errorMessage = reader.readLine().substring(3);
             String expectedMemory = null;
-            Location firstErrorLoc = null;
+            CursorPosition firstErrorLoc = null;
 
             String line = reader.readLine();
             do {
@@ -63,7 +62,7 @@ public class LanguageIT {
                 } else if(line.startsWith("FirstErrorLoc:")) {
                     line = line.substring(14);
                     String[] loc = line.split(",");
-                    firstErrorLoc = new Location(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
+                    firstErrorLoc = new CursorPosition(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
                 }
                 line = reader.readLine();
             } while(line.startsWith("**"));
@@ -77,7 +76,7 @@ public class LanguageIT {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
                 if(firstErrorLoc != null) {
-                    assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getLocation());
+                    assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getCursorPosition());
                 }
 
             } else {

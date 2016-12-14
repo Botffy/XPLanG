@@ -2,6 +2,8 @@ package ppke.itk.xplang.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.common.CursorPosition;
+import ppke.itk.xplang.common.Location;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +35,7 @@ class Lexer {
     private final Reader input;
 
     private CharSequence buffer = "";
+    private CursorPosition prevPosition = new CursorPosition(1, 1);
     private int lineno = 1; // we are at this line of the source
     private int column = 1; // we are at this column in the current line;
     private int cursor = 0; // our location in the buffer.
@@ -91,7 +94,7 @@ class Lexer {
                 }
             }
             if(cursor >= buffer.length()) {
-                return new Token(Symbol.EOF, "", lineno, cursor);
+                return new Token(Symbol.EOF, "", new CursorPosition(lineno, column).toUnaryLocation());
             }
 
             matchSymbol = null;
@@ -120,19 +123,17 @@ class Lexer {
             if(matchSymbol != null) {
                 advanceCursor(matchLexeme.length());
             } else {
-                int bakColumn = column;
                 int bakCursor = cursor;
-                int bakLineno = lineno;
                 skipToNextLine();
                 return new Token(
                     Symbol.LEXER_ERROR,
                     buffer.subSequence(bakCursor, cursor).toString().trim(),
-                    bakLineno, bakColumn
+                    new Location(prevPosition, new CursorPosition(lineno, column))
                 );
             }
         } while(!matchSymbol.isSignificant()); // if the match isn't significant, continue.
 
-        return new Token(matchSymbol, matchLexeme, lineno, column - matchLexeme.length());
+        return new Token(matchSymbol, matchLexeme, new Location(prevPosition, new CursorPosition(lineno, column)));
     }
 
     /**
@@ -141,6 +142,7 @@ class Lexer {
      * Used to recover from errors.
      */
     void skipToNextLine() {
+        savePosition();
         Matcher matcher = EOL.matcher(buffer.subSequence(cursor, buffer.length()));
         if(matcher.find()) {
             advanceCursor(matcher.end());
@@ -153,9 +155,9 @@ class Lexer {
      * Advances the cursor by given {@code steps} characters, and advances the line counter if necessary. Use this
      * instead of the + operator.
      * @param steps The cursor should advance this many characters.
-     * @return the original position of the cursor.
      */
-    private int advanceCursor(int steps) {
+    private void advanceCursor(int steps) {
+        savePosition();
         int bakCursor = cursor;
         cursor += steps;
         column += steps;
@@ -165,7 +167,9 @@ class Lexer {
             ++lineno;
             column = steps - matcher.end() + 1;
         }
+    }
 
-        return bakCursor;
+    private void savePosition() {
+        prevPosition = new CursorPosition(lineno, column);
     }
 }

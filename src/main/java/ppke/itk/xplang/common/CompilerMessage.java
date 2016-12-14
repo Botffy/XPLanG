@@ -35,11 +35,11 @@ public final class CompilerMessage {
         return message;
     }
 
-    public Location getLocation() {
-        return location;
+    public CursorPosition getCursorPosition() {
+        return location.start;
     }
 
     @Override public String toString() {
-        return String.format("%s %s", location, message);
+        return String.format("%s %s", location.start, message);
     }
 }

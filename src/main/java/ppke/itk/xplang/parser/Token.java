@@ -1,6 +1,7 @@
 package ppke.itk.xplang.parser;
 
 
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 
 /**
@@ -11,12 +12,6 @@ public class Token {
     private final Symbol symbol;
     private final String lexeme;
     private final Location location;
-
-    Token(Symbol symbol, String lexeme, int line, int col) {
-        this.symbol = symbol;
-        this.lexeme = lexeme;
-        this.location = new Location(line, col);
-    }
 
     Token(Symbol symbol, String lexeme, Location location) {
         this.symbol = symbol;
@@ -39,16 +34,18 @@ public class Token {
     }
 
     /** The lexeme starts in this line of the source text. */
+    @Deprecated
     public int getLine() {
-        return location.line;
+        return location.start.line;
     }
 
     /** The lexeme starts at this column of the line. */
+    @Deprecated
     public int getCol() {
-        return location.column;
+        return location.start.column;
     }
 
     @Override public String toString() {
-        return String.format("%d:%d: %s %s", location.line, location.column, symbol.getName(), lexeme);
+        return String.format("%d:%d: %s %s", location.start.line, location.start.column, symbol.getName(), lexeme);
     }
 }

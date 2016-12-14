@@ -7,7 +7,7 @@ import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.VarRef;
 import ppke.itk.xplang.ast.VarVal;
 import ppke.itk.xplang.ast.VariableDeclaration;
-import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.type.Type;
 
@@ -95,7 +95,7 @@ public class Context {
             );
             throw new NameClashError(
                 translator.translate("parser.TypeNameAlreadyTaken.message", name, offending),
-                new Location(-1, -1) // FIXME, massive fixme
+                new CursorPosition(-1,-1).toUnaryLocation() // FIXME, massive fixme
             );
         }
     }

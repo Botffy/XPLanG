@@ -1,35 +1,21 @@
 package ppke.itk.xplang.common;
 
-import java.util.Objects;
-
 /**
- * Simple value class to hold location information about a piece of text in a file.
+ * A range of text.
  */
-public final class Location implements Comparable<Location> {
-    public final int line;
-    public final int column;
+public final class Location {
+    public final CursorPosition start;
+    public final CursorPosition end;
 
-    public Location(int line, int column) {
-        this.line = line;
-        this.column = column;
+    public Location(int startLine, int startCol, int endLine, int endCol) {
+        this(new CursorPosition(startLine, startCol), new CursorPosition(endLine, endCol));
     }
 
-    @Override public String toString() {
-        return String.format("%s:%s", line, column);
-    }
+    public Location(CursorPosition start, CursorPosition end) {
+        if(start.compareTo(end) > 0)
+            throw new IllegalArgumentException("Starting position is later than ending position");
 
-    @Override public boolean equals(Object object) {
-        if(!(object instanceof Location)) return false;
-        Location that = (Location) object;
-        return this.line == that.line && this.column == that.column;
-    }
-
-    @Override public int hashCode() {
-        return Objects.hash(line, column);
-    }
-
-    @Override public int compareTo(Location that) {
-        int result = this.line - that.line;
-        return result == 0? this.column - that.column : result;
+        this.start = start;
+        this.end = end;
     }
 }

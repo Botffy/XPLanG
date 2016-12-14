@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.ast.Statement;
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
