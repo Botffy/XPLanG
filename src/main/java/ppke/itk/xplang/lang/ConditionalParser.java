@@ -24,22 +24,24 @@ final class ConditionalParser {
 
     static Statement parse(Parser parser) throws ParseError {
         log.debug("Conditional");
-        Location startLoc = parser.accept(PlangSymbol.IF.symbol()).location();
+        Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
         RValue condition = RValueParser.parse(parser);
         if(!Scalar.BOOLEAN_TYPE.accepts(condition.getType())) {
             throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), condition.location());
         }
-        parser.accept(PlangSymbol.THEN.symbol());
-        Sequence ifBranch = SequenceParser.parse(parser, PlangSymbol.ENDIF.symbol(), PlangSymbol.ELSE.symbol());
+        parser.accept(parser.symbol(PlangSymbol.THEN));
+        Sequence ifBranch = SequenceParser.parse(
+            parser, parser.symbol(PlangSymbol.ENDIF), parser.symbol(PlangSymbol.ELSE)
+        );
 
         Sequence elseBranch = null;
-        if(parser.actual().symbol().equals(PlangSymbol.ELSE.symbol())) {
+        if(parser.actual().symbol().equals(parser.symbol(PlangSymbol.ELSE))) {
             parser.advance();
-            elseBranch = SequenceParser.parse(parser, PlangSymbol.ENDIF.symbol());
+            elseBranch = SequenceParser.parse(parser, parser.symbol(PlangSymbol.ENDIF));
         }
 
-        Location endLoc = parser.accept(PlangSymbol.ENDIF.symbol()).location();
+        Location endLoc = parser.accept(parser.symbol(PlangSymbol.ENDIF)).location();
         return new Conditional(new Location(startLoc.start, endLoc.end), condition, ifBranch, elseBranch);
     }
 }

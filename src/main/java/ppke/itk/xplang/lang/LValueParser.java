@@ -22,12 +22,12 @@ final class LValueParser {
 
     static LValue parse(Parser parser) throws ParseError {
         log.debug("LValue");
-        Token token = parser.accept(PlangSymbol.IDENTIFIER.symbol());
+        Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
 
         LValue Result = parser.context().getVariableReference(PlangGrammar.name(token.lexeme()), token);
         log.trace("LValue {}", Result.getType());
-        while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
-            Token startToken = parser.accept(PlangSymbol.BRACKET_OPEN.symbol());
+        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
+            Token startToken = parser.advance();
             RValue address = RValueParser.parse(parser);
             if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
                 throw new TypeError(
@@ -35,7 +35,7 @@ final class LValueParser {
                     address.location()
                 );
             }
-            Token endToken = parser.accept(PlangSymbol.BRACKET_CLOSE.symbol());
+            Token endToken = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
             Result = new ElementRef(
                 new Location(startToken.location().start, endToken.location().end),
                 toRValue(Result), address

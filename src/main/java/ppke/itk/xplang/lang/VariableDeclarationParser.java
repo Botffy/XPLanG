@@ -23,12 +23,12 @@ final class VariableDeclarationParser {
         log.debug("VariableDeclaration");
         List<Token> variables = new ArrayList<>();
 
-        variables.add(parser.accept(PlangSymbol.IDENTIFIER.symbol()));
-        while(parser.actual().symbol().equals(PlangSymbol.COMMA.symbol())) {
+        variables.add(parser.accept(parser.symbol(PlangSymbol.IDENTIFIER)));
+        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
             parser.advance(); // consume the comma
-            variables.add(parser.accept(PlangSymbol.IDENTIFIER.symbol()));
+            variables.add(parser.accept(parser.symbol(PlangSymbol.IDENTIFIER)));
         }
-        parser.accept(PlangSymbol.COLON.symbol());
+        parser.accept(parser.symbol(PlangSymbol.COLON));
         Type type = TypenameParser.parse(parser);
 
         for(Token token : variables) {

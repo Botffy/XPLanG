@@ -17,19 +17,20 @@ final class DeclarationsParser {
 
     static void parse(Parser parser) throws ParseError {
         log.debug("Declarations");
-        parser.accept(PlangSymbol.DECLARE.symbol(),
+        parser.accept(parser.symbol(PlangSymbol.DECLARE),
             translator.translate(
-                "plang.missing_declarations_keyword", PlangSymbol.DECLARE.symbol().getPatternAsString()
+                "plang.missing_declarations_keyword", parser.symbol(PlangSymbol.DECLARE).getPatternAsString()
             )
         );
-        parser.accept(PlangSymbol.COLON.symbol(),
+        parser.accept(parser.symbol(PlangSymbol.COLON),
             translator.translate(
-                "plang.missing_colon_after_declarations_keyword", PlangSymbol.DECLARE.symbol().getPatternAsString()
+                "plang.missing_colon_after_declarations_keyword",
+                parser.symbol(PlangSymbol.DECLARE).getPatternAsString()
             )
         );
 
         VariableDeclarationParser.parse(parser);
-        while(parser.actual().symbol().equals(PlangSymbol.COMMA.symbol())) {
+        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
             parser.advance();
             VariableDeclarationParser.parse(parser);
         }

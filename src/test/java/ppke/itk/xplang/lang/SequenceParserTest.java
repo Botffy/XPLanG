@@ -35,7 +35,7 @@ public class SequenceParserTest {
     @Test public void skipToNextLineAfterError() throws LexerError {
         Reader source = new StringReader("c:=5\nprogram_vége");
         parser.parse(source, grammar);
-        SequenceParser.parse(parser, PlangSymbol.END_PROGRAM.symbol());
+        SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));
         assertEquals(1, parser.getErrorLog().getErrorMessages().size());
     }
 }

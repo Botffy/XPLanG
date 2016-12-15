@@ -72,13 +72,14 @@ public class Parser {
      */
     public Token advance() throws LexerError {
         log.trace("Advance");
+        Token token = actual();
         act = lexer.next();
 
         if(act.symbol().equals(Symbol.LEXER_ERROR)) {
             log.error("Lexer error: invalid token {}", actual());
             throw new LexerError(actual());
         }
-        return act;
+        return token;
     }
 
     /**
@@ -112,6 +113,10 @@ public class Parser {
     public void skipToNextLine() throws LexerError {
         lexer.skipToNextLine();
         advance();
+    }
+
+    public Symbol symbol(Enum name) {
+        return context.lookup(name.name());
     }
 
     public void recordError(CompilerMessage errorMessage) {

@@ -21,15 +21,15 @@ final class StatementParser {
     static Statement parse(Parser parser) throws ParseError {
         log.debug("Statement");
         Symbol act = parser.actual().symbol();
-        if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
+        if(act.equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
             return AssignmentParser.parse(parser);
-        } else if(act.equals(PlangSymbol.IF.symbol())) {
+        } else if(act.equals(parser.symbol(PlangSymbol.IF))) {
             return ConditionalParser.parse(parser);
         }
 
         throw new SyntaxError(asList(
-            PlangSymbol.IDENTIFIER.symbol(),
-            PlangSymbol.IF.symbol()
+            parser.symbol(PlangSymbol.IDENTIFIER),
+            parser.symbol(PlangSymbol.IF)
         ), act, parser.actual());
     }
 }

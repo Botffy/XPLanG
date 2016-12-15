@@ -7,8 +7,6 @@ import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Scalar;
 
-import java.util.EnumSet;
-
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
@@ -16,7 +14,27 @@ public class PlangGrammar extends Grammar {
     public void setup(Context ctx) {
         log.debug("Setting up context");
         try {
-            EnumSet.allOf(PlangSymbol.class).stream().map(PlangSymbol::symbol).forEach(ctx::register);
+            makeSymbol(PlangSymbol.PROGRAM).register(ctx);
+            makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
+            makeSymbol(PlangSymbol.DECLARE).register(ctx);
+            makeSymbol(PlangSymbol.IF).register(ctx);
+            makeSymbol(PlangSymbol.THEN).register(ctx);
+            makeSymbol(PlangSymbol.ELSE).register(ctx);
+            makeSymbol(PlangSymbol.ENDIF).register(ctx);
+            makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
+            makeSymbol(PlangSymbol.COLON).register(ctx);
+            makeSymbol(PlangSymbol.COMMA).register(ctx);
+            makeSymbol(PlangSymbol.BRACKET_OPEN).register(ctx);
+            makeSymbol(PlangSymbol.BRACKET_CLOSE).register(ctx);
+            makeSymbol(PlangSymbol.IDENTIFIER).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_INT).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_REAL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_BOOL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_CHAR).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_STRING).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.EOL).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.WHITESPACE).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.COMMENT).notSignificant().register(ctx);
 
             ctx.declareType(name("Egész"), Scalar.INTEGER_TYPE);
             ctx.declareType(name("Logikai"), Scalar.BOOLEAN_TYPE);
@@ -39,5 +57,17 @@ public class PlangGrammar extends Grammar {
 
     static PlangName name(String name) {
         return new PlangName(name);
+    }
+
+    private Symbol.Builder makeSymbol(PlangSymbol symbol) {
+        log.trace("Creating symbol {} as {}", symbol.name(), symbol.getPattern());
+        Symbol.Builder builder = Symbol.create()
+            .caseInsensitive()
+            .named(symbol.name());
+        if(symbol.isLiteral()) {
+            return builder.matchingLiteral(symbol.getPattern());
+        } else {
+            return builder.matching(symbol.getPattern());
+        }
     }
 }

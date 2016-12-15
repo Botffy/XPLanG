@@ -23,7 +23,7 @@ final class AssignmentParser {
     static Assignment parse(Parser parser) throws ParseError {
         log.debug("Assignment");
         LValue lhs = LValueParser.parse(parser);
-        Token token = parser.accept(PlangSymbol.ASSIGNMENT.symbol());
+        Token token = parser.accept(parser.symbol(PlangSymbol.ASSIGNMENT));
         RValue rhs = RValueParser.parse(parser);
         if(!lhs.getType().accepts(rhs.getType())) {
             throw new TypeError(

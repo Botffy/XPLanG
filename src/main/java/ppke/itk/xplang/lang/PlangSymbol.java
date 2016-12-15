@@ -6,46 +6,41 @@ import ppke.itk.xplang.parser.Symbol;
  * The symbols of the language.
  */
 enum PlangSymbol {
-    PROGRAM(matchingLiteral("program")),
-    END_PROGRAM(matchingLiteral("program_vége")),
-    DECLARE(matchingLiteral("változók")),
-    IF(matchingLiteral("ha")),
-    THEN(matchingLiteral("akkor")),
-    ELSE(matchingLiteral("különben")),
-    ENDIF(matchingLiteral("ha_vége")),
-    ASSIGNMENT(matchingLiteral(":=")),
-    COLON(matchingLiteral(":")),
-    COMMA(matchingLiteral(",")),
-    BRACKET_OPEN(matchingLiteral("[")),
-    BRACKET_CLOSE(matchingLiteral("]")),
-    IDENTIFIER(matching("[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*").withPrecedence(Symbol.Precedence.IDENTIFIER)),
-    LITERAL_INT(matching("\\d+").withPrecedence(Symbol.Precedence.LITERAL)),
-    LITERAL_REAL(matching("\\d\\.\\d+").withPrecedence(Symbol.Precedence.LITERAL)),
-    LITERAL_BOOL(matching("(igaz)|(hamis)").withPrecedence(Symbol.Precedence.LITERAL)),
-    LITERAL_CHAR(matching("'\\S'").withPrecedence(Symbol.Precedence.LITERAL)),
-    LITERAL_STRING(matching("\"[^\"]*\"").withPrecedence(Symbol.Precedence.LITERAL)),
-    EOL(matching(Symbol.EOL_PATTERN).notSignificant()),
-    WHITESPACE(matching("\\s+").notSignificant()),
-    COMMENT(matching("\\*\\*[^\\r\\n]*").notSignificant());
+    PROGRAM(true, "program"),
+    END_PROGRAM(true, "program_vége"),
+    DECLARE(true, "változók"),
+    IF(true, "ha"),
+    THEN(true, "akkor"),
+    ELSE(true, "különben"),
+    ENDIF(true, "ha_vége"),
+    ASSIGNMENT(true, ":="),
+    COLON(true, ":"),
+    COMMA(true, ","),
+    BRACKET_OPEN(true, "["),
+    BRACKET_CLOSE(true, "]"),
+    IDENTIFIER(false, "[a-zA-Záéíóöőúüű][a-zA-Z0-9_áéíóöőúüű]*"),
+    LITERAL_INT(false, "\\d+"),
+    LITERAL_REAL(false, "\\d\\.\\d+"),
+    LITERAL_BOOL(false, "(igaz)|(hamis)"),
+    LITERAL_CHAR(false, "'\\S'"),
+    LITERAL_STRING(false, "\"[^\"]*\""),
+    EOL(false, Symbol.EOL_PATTERN),
+    WHITESPACE(false, "\\s+"),
+    COMMENT(false, "\\*\\*[^\\r\\n]*");
 
-    private final Symbol symbol;
+    private final boolean literal;
+    private final String pattern;
 
-    private static Symbol.Builder matching(String pattern) {
-        return Symbol.create().matching(pattern);
+    PlangSymbol(boolean literal, String pattern) {
+        this.literal = literal;
+        this.pattern = pattern;
     }
 
-    private static Symbol.Builder matchingLiteral(String literal) {
-        return Symbol.create().matchingLiteral(literal);
+    public boolean isLiteral() {
+        return literal;
     }
 
-    PlangSymbol(Symbol.Builder symbolBuilder) {
-        this.symbol = symbolBuilder
-            .caseInsensitive()
-            .named(this.name())
-            .build();
-    }
-
-    public Symbol symbol() {
-        return symbol;
+    public String getPattern() {
+        return pattern;
     }
 }

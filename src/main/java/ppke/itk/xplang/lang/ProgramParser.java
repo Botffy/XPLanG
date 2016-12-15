@@ -24,21 +24,26 @@ final class ProgramParser {
     static Program parse(Parser parser) throws ParseError {
         log.debug("Program");
 
-        Token startToken = parser.accept(PlangSymbol.PROGRAM.symbol(),
-            translator.translate("plang.program_keyword_missing", PlangSymbol.PROGRAM.symbol().getPatternAsString())
+        Token startToken = parser.accept(parser.symbol(PlangSymbol.PROGRAM),
+            translator.translate(
+                "plang.program_keyword_missing", parser.symbol(PlangSymbol.PROGRAM).getPatternAsString()
+            )
         );
 
-        Token nameToken = parser.accept(PlangSymbol.IDENTIFIER.symbol(),
+        Token nameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER),
             translator.translate("plang.missing_program_name"));
 
-        if(parser.actual().symbol().equals(PlangSymbol.DECLARE.symbol())) {
+        if(parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
             DeclarationsParser.parse(parser);
         }
 
-        Sequence sequence = SequenceParser.parse(parser, PlangSymbol.END_PROGRAM.symbol());
+        Sequence sequence = SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));
 
-        Token endToken = parser.accept(PlangSymbol.END_PROGRAM.symbol(),
-            translator.translate("plang.missing_end_program", "PROGRAM_VÉGE"));
+        Token endToken = parser.accept(parser.symbol(PlangSymbol.END_PROGRAM),
+            translator.translate(
+                "plang.missing_end_program", parser.symbol(PlangSymbol.END_PROGRAM).getPatternAsString()
+            )
+        );
         Scope scope = parser.context().closeScope();
 
         return new Program(

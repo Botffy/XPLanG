@@ -174,5 +174,11 @@ public class Symbol {
                 this.significant
             );
         }
+
+        public Symbol register(Context ctx) {
+            Symbol symbol = build();
+            ctx.register(symbol);
+            return symbol;
+        }
     }
 }

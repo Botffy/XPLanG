@@ -22,30 +22,30 @@ final class RValueParser {
     static RValue parse(Parser parser) throws ParseError {
         log.debug("RValue");
         Symbol act = parser.actual().symbol();
-        if(act.equals(PlangSymbol.LITERAL_INT.symbol())) {
-            Token token = parser.accept(PlangSymbol.LITERAL_INT.symbol());
+        if(act.equals(parser.symbol(PlangSymbol.LITERAL_INT))) {
+            Token token = parser.advance();
             return new IntegerLiteral(token.location(), Integer.valueOf(token.lexeme()));
-        } else if(act.equals(PlangSymbol.LITERAL_BOOL.symbol())) {
-            Token token = parser.accept(PlangSymbol.LITERAL_BOOL.symbol());
+        } else if(act.equals(parser.symbol(PlangSymbol.LITERAL_BOOL))) {
+            Token token = parser.advance();
             // FIXME, but this should be taken care of by operators and expressions
             return new BooleanLiteral(token.location(), token.lexeme().equalsIgnoreCase("igaz") ? true : false);
-        } else if(act.equals(PlangSymbol.LITERAL_CHAR.symbol())) {
-            Token token = parser.accept(PlangSymbol.LITERAL_CHAR.symbol());
+        } else if(act.equals(parser.symbol(PlangSymbol.LITERAL_CHAR))) {
+            Token token = parser.advance();
             return new CharacterLiteral(token.location(), token.lexeme().charAt(1));
-        } else if(act.equals(PlangSymbol.LITERAL_REAL.symbol())) {
-            Token token = parser.accept(PlangSymbol.LITERAL_REAL.symbol());
+        } else if(act.equals(parser.symbol(PlangSymbol.LITERAL_REAL))) {
+            Token token = parser.advance();
             return new RealLiteral(token.location(), Double.valueOf(token.lexeme()));
-        } else if(act.equals(PlangSymbol.LITERAL_STRING.symbol())) {
-            Token token = parser.accept(PlangSymbol.LITERAL_STRING.symbol());
+        } else if(act.equals(parser.symbol(PlangSymbol.LITERAL_STRING))) {
+            Token token = parser.advance();
             return new StringLiteral(token.location(), token.lexeme().substring(1, token.lexeme().length() - 1));
-        } else if(act.equals(PlangSymbol.IDENTIFIER.symbol())) {
-            Token token = parser.accept(PlangSymbol.IDENTIFIER.symbol());
+        } else if(act.equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
+            Token token = parser.advance();
             RValue Result = parser.context().getVariableValue(PlangGrammar.name(token.lexeme()), token);
 
-            while(parser.actual().symbol().equals(PlangSymbol.BRACKET_OPEN.symbol())) {
+            while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
                 Location start = parser.advance().location();
                 RValue address = RValueParser.parse(parser);
-                Location end = parser.accept(PlangSymbol.BRACKET_CLOSE.symbol()).location();
+                Location end = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE)).location();
 
                 Location location = Location.between(start, end);
                 if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
@@ -61,8 +61,8 @@ final class RValueParser {
         }
         throw new SyntaxError(
             asList(
-                PlangSymbol.IDENTIFIER.symbol(),
-                PlangSymbol.LITERAL_INT.symbol()
+                parser.symbol(PlangSymbol.IDENTIFIER),
+                parser.symbol(PlangSymbol.LITERAL_INT)
             ), act, parser.actual()
         );
     }
