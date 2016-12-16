@@ -51,7 +51,7 @@ public class Context {
 
     public void declareVariable(Name name, Token token, Type type) throws NameClashError {
         if(nameTable.isFree(name)) {
-            VariableDeclaration declaration = new VariableDeclaration(token.location(), token.lexeme(), type);
+            VariableDeclaration declaration = new VariableDeclaration(token.location(), name.toString(), type);
             nameTable.add(name, declaration);
             log.debug("Declared variable '{}'", name);
         } else {

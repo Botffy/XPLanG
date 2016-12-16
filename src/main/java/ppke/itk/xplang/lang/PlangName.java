@@ -4,7 +4,7 @@ import ppke.itk.xplang.parser.Name;
 
 import java.util.Locale;
 
-class PlangName implements Name {
+class PlangName extends Name {
     private final String value;
 
     PlangName(String str) {
@@ -17,5 +17,9 @@ class PlangName implements Name {
 
     @Override public int hashCode() {
         return value.hashCode();
+    }
+
+    @Override public String toString() {
+        return value;
     }
 }

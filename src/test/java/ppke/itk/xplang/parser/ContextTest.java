@@ -69,7 +69,17 @@ public class ContextTest {
         );
     }
 
-    private static final class TestName implements Name {
+    @Test
+    public void variableDeclarationsShouldHoldCanonicalName() throws ParseError {
+        context.openScope();
+        String lexeme = "HeLLoEs";
+        Token token = new Token(dSymbol, lexeme, LOCATION);
+        context.declareVariable(lowerCaseName(lexeme), token, dType);
+        VariableDeclaration decl = context.getVariableReference(lowerCaseName(lexeme), token).getVariable();
+        assertEquals(decl.getName(), lowerCaseName(lexeme).toString());
+    }
+
+    private static class TestName extends Name {
         private final String value;
 
         TestName(String name) {
@@ -83,9 +93,23 @@ public class ContextTest {
         @Override public int hashCode() {
             return value.hashCode();
         }
+
+        @Override public String toString() {
+            return value;
+        }
+    }
+
+    private static class LowerCaseName extends TestName {
+        LowerCaseName(String name) {
+            super(name.toLowerCase());
+        }
     }
 
     private static TestName name(String str) {
         return new TestName(str);
     };
+
+    private static LowerCaseName lowerCaseName(String str) {
+        return new LowerCaseName(str);
+    }
 }
