@@ -5,13 +5,14 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
-import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.TypeError;
 import ppke.itk.xplang.type.Scalar;
+
+import java.util.Collections;
 
 /**
  * {@code Conditional = IF RValue THEN Sequence ELSE Sequence ENDIF}
@@ -22,7 +23,7 @@ final class ConditionalParser {
 
     private ConditionalParser() { /* empty private ctor */ }
 
-    static Statement parse(Parser parser) throws ParseError {
+    static Conditional parse(Parser parser) throws ParseError {
         log.debug("Conditional");
         Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
@@ -39,6 +40,8 @@ final class ConditionalParser {
         if(parser.actual().symbol().equals(parser.symbol(PlangSymbol.ELSE))) {
             parser.advance();
             elseBranch = SequenceParser.parse(parser, parser.symbol(PlangSymbol.ENDIF));
+        } else {
+            elseBranch = new Sequence(ifBranch.location().end.toUnaryLocation(), Collections.emptyList());
         }
 
         Location endLoc = parser.accept(parser.symbol(PlangSymbol.ENDIF)).location();

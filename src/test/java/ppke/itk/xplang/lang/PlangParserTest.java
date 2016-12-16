@@ -2,17 +2,23 @@ package ppke.itk.xplang.lang;
 
 import org.junit.Before;
 import org.junit.Test;
+import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.parser.Grammar;
-import ppke.itk.xplang.parser.LexerError;
-import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Scalar;
 
 import java.io.Reader;
 import java.io.StringReader;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 
-public class SequenceParserTest {
+/**
+ * Testing the small parser objects of PlangGrammar.
+ */
+public class PlangParserTest {
     private final Grammar grammar = new PlangGrammar() {
         @Override protected Root start(Parser parser) {
             return null;
@@ -37,5 +43,14 @@ public class SequenceParserTest {
         parser.parse(source, grammar);
         SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));
         assertEquals(1, parser.getErrorLog().getErrorMessages().size());
+    }
+
+    @Test public void conditionalNodeWithoutElseBranch() throws ParseError {
+        Reader source = new StringReader("Ha igaz akkor\na:=5\nha_vége");
+        parser.parse(source, grammar);
+        parser.context().declareVariable(PlangGrammar.name("a"), parser.actual(), Scalar.INTEGER_TYPE);
+
+        Conditional cond = ConditionalParser.parse(parser);
+        assertFalse("Conditional.children should not contain nulls", cond.getChildren().contains(null));
     }
 }
