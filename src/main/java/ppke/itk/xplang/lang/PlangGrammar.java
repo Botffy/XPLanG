@@ -14,34 +14,36 @@ public class PlangGrammar extends Grammar {
     public void setup(Context ctx) {
         log.debug("Setting up context");
         try {
-            makeSymbol(PlangSymbol.PROGRAM).register(ctx);
-            makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
-            makeSymbol(PlangSymbol.DECLARE).register(ctx);
-            makeSymbol(PlangSymbol.IF).register(ctx);
-            makeSymbol(PlangSymbol.THEN).register(ctx);
-            makeSymbol(PlangSymbol.ELSE).register(ctx);
-            makeSymbol(PlangSymbol.ENDIF).register(ctx);
-            makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
-            makeSymbol(PlangSymbol.COLON).register(ctx);
-            makeSymbol(PlangSymbol.COMMA).register(ctx);
-            makeSymbol(PlangSymbol.BRACKET_OPEN).register(ctx);
-            makeSymbol(PlangSymbol.BRACKET_CLOSE).register(ctx);
-            makeSymbol(PlangSymbol.IDENTIFIER).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
-            makeSymbol(PlangSymbol.LITERAL_INT).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.LITERAL_REAL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.LITERAL_BOOL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.LITERAL_CHAR).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.LITERAL_STRING).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.EOL).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.WHITESPACE).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.COMMENT).notSignificant().register(ctx);
+            LexicalProperties props = new LexicalProperties();
+
+            makeSymbol(PlangSymbol.PROGRAM, props).register(ctx);
+            makeSymbol(PlangSymbol.END_PROGRAM, props).register(ctx);
+            makeSymbol(PlangSymbol.DECLARE, props).register(ctx);
+            makeSymbol(PlangSymbol.IF, props).register(ctx);
+            makeSymbol(PlangSymbol.THEN, props).register(ctx);
+            makeSymbol(PlangSymbol.ELSE, props).register(ctx);
+            makeSymbol(PlangSymbol.ENDIF, props).register(ctx);
+            makeSymbol(PlangSymbol.ASSIGNMENT, props).register(ctx);
+            makeSymbol(PlangSymbol.COLON, props).register(ctx);
+            makeSymbol(PlangSymbol.COMMA, props).register(ctx);
+            makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
+            makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
+            makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_BOOL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_CHAR, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.LITERAL_STRING, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.EOL, props).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.WHITESPACE, props).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.COMMENT, props).notSignificant().register(ctx);
 
             ctx.declareType(name("Egész"), Scalar.INTEGER_TYPE);
             ctx.declareType(name("Logikai"), Scalar.BOOLEAN_TYPE);
             ctx.declareType(name("Karakter"), Scalar.CHARACTER_TYPE);
             ctx.declareType(name("Valós"), Scalar.REAL_TYPE);
             ctx.declareType(name("Szöveg"), Scalar.STRING_TYPE);
-        } catch(ParseError error) {
+        } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
     }
@@ -59,15 +61,10 @@ public class PlangGrammar extends Grammar {
         return new PlangName(name);
     }
 
-    private Symbol.Builder makeSymbol(PlangSymbol symbol) {
-        log.trace("Creating symbol {} as {}", symbol.name(), symbol.getPattern());
-        Symbol.Builder builder = Symbol.create()
-            .caseInsensitive()
-            .named(symbol.name());
-        if(symbol.isLiteral()) {
-            return builder.matchingLiteral(symbol.getPattern());
-        } else {
-            return builder.matching(symbol.getPattern());
-        }
+    private Symbol.Builder makeSymbol(PlangSymbol symbol, LexicalProperties props) {
+        return Symbol.create()
+            .named(symbol.name())
+            .matching(props.getSymbolPattern(symbol))
+            .caseInsensitive();
     }
 }

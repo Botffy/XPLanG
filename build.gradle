@@ -80,6 +80,7 @@ import org.apache.tools.ant.filters.EscapeUnicode
 tasks.withType(ProcessResources).each { task ->
     task.from(task.getSource()) {
         include '**/*.properties'
+        exclude '**/language/**'
         filter(EscapeUnicode)
         filter(ReplaceTokens, tokens: [
             "version": version,
