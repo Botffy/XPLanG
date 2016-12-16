@@ -1,0 +1,11 @@
+**#Basic binary and unary integer operators, negative numbers, operator precedence
+**Memory:a=Integer(14),b=Integer(3),c=Integer(-2)
+Program testing
+  Változók:
+    a, b, c: Egész
+
+  a := -5
+  b := 3
+  c := a + b
+  a := 10 - c * 2
+program_vége
