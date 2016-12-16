@@ -73,6 +73,10 @@ public abstract class Type {
         return indexType() == Type.NONE;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
     @Override public String toString() {
         return label;
     }

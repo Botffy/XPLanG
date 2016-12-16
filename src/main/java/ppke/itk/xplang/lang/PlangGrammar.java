@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Type;
 
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -38,11 +39,11 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.WHITESPACE, props).notSignificant().register(ctx);
             makeSymbol(PlangSymbol.COMMENT, props).notSignificant().register(ctx);
 
-            ctx.declareType(name("Egész"), Scalar.INTEGER_TYPE);
-            ctx.declareType(name("Logikai"), Scalar.BOOLEAN_TYPE);
-            ctx.declareType(name("Karakter"), Scalar.CHARACTER_TYPE);
-            ctx.declareType(name("Valós"), Scalar.REAL_TYPE);
-            ctx.declareType(name("Szöveg"), Scalar.STRING_TYPE);
+            makeType(ctx, Scalar.BOOLEAN_TYPE, props);
+            makeType(ctx, Scalar.INTEGER_TYPE, props);
+            makeType(ctx, Scalar.REAL_TYPE, props);
+            makeType(ctx, Scalar.CHARACTER_TYPE, props);
+            makeType(ctx, Scalar.STRING_TYPE, props);
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
@@ -66,5 +67,9 @@ public class PlangGrammar extends Grammar {
             .named(symbol.name())
             .matching(props.getSymbolPattern(symbol))
             .caseInsensitive();
+    }
+
+    private void makeType(Context ctx, Type type, LexicalProperties props) throws ParseError {
+        ctx.declareType(name(props.getTypeName(type)), type);
     }
 }
