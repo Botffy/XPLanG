@@ -1,6 +1,42 @@
 # Change log
 
-## MS2 - 2016-12-09
+## MS3 - 2016-12-16
+
+The highlights of this iteration was fleshing out the memory to handle
+composite values (arrays and strings, called `AddressableValue`s in the code),
+and refactoring PlangGrammar to be more robust.
+
+I'm happy with how the memory turned out: arrays are little addressable pieces
+of memories themselvess, making the whole thing a nice treelike structure. I'm
+less happy with the PlangGrammar changes: while it's better than it was, it
+really starts feeling overengineered. Also, while a separate typechecker object
+was expected to be created in this sprint, it wasn't: it will start to really
+matter only when function resolution comes in.
+
+### Features
+
+Lots of types: strings, characters, booleans, floats, and also fixed-size
+arrays, including multidimensional arrays. Conditional statements.
+
+### Design
+
+- Better memory model, composite values.
+- Conditional statements.
+- Lexical elements of PLanG now come from a property file, making language
+variants possible.
+
+### Refactor
+
+- Exploded PlangGrammar: the recursive descent parser is implemented through a
+collection of parses classes with a single Parse static function. Not very
+pretty design, but definitely nicer than the huge PlangGrammar.java was.
+- AST nodes keep their location information.
+- The names of PlangGrammar's symbols are now in an enum.
+- Things (types, variables) are registered in Context by a Name object
+(instead of by plain string keys).
+
+
+## [MS2](https://github.com/Botffy/XPLanG/releases/tag/MS2) - 2016-12-09
 
 The goal of the milestone was to have variables and assignments: done
 surprisingly quickly, the rest of the week was spent on setting up continuous

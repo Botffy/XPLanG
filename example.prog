@@ -1,11 +1,12 @@
 Program testing
   Változók:
-    a, b: Egész,
-    c: Egész
+    b: Logikai,
+    c: Szöveg
 
-  a := 10
-  b := 20
-  c := 30
-  a := c
-  c := 31
+b := Igaz
+c := "Hello world"
+ha b akkor
+  c[0] := 'M'
+  c[5] := 'w'
+ha_vége
 program_vége
