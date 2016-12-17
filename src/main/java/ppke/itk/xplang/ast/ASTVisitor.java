@@ -10,10 +10,12 @@ public interface ASTVisitor {
     void visit(Program program);
     void visit(Scope scope);
     void visit(VariableDeclaration variableDeclaration);
+    void visit(BuiltinFunction function);
     void visit(Sequence sequence);
     void visit(Block block);
     void visit(Assignment assignment);
     void visit(Conditional conditional);
+    void visit(FunctionCall functionCall);
     void visit(VarRef varRef);
     void visit(ElementRef elementRef);
     void visit(VarVal varVal);

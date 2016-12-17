@@ -9,7 +9,7 @@ import static java.util.Comparator.comparing;
  * A range of text.
  */
 public final class Location {
-    private static final Location NONE = new Location(-1, -1, -1, -1);
+    public static final Location NONE = new Location(-1, -1, -1, -1);
     public final CursorPosition start;
     public final CursorPosition end;
 

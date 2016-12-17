@@ -1,0 +1,8 @@
+**#Unary minus operator
+**Memory:a=Integer(-2)
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := -2
+program_vége

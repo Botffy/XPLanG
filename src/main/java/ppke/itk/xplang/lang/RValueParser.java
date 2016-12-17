@@ -38,6 +38,11 @@ final class RValueParser {
         } else if(act.equals(parser.symbol(PlangSymbol.LITERAL_STRING))) {
             Token token = parser.advance();
             return new StringLiteral(token.location(), token.lexeme().substring(1, token.lexeme().length() - 1));
+        } else if(act.equals(parser.symbol(PlangSymbol.OPERATOR_MINUS))) {
+            Token token = parser.advance();
+            FunctionDeclaration func = parser.context().lookupFunction(PlangGrammar.name("builtin$minus"), token);
+            RValue arg = RValueParser.parse(parser);
+            return new FunctionCall(token.location(), func, arg);
         } else if(act.equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
             Token token = parser.advance();
             RValue Result = parser.context().getVariableValue(PlangGrammar.name(token.lexeme()), token);
@@ -60,6 +65,8 @@ final class RValueParser {
             return Result;
         }
         throw new SyntaxError(
+            // FIXME this list is very much out of date.
+            // But it will be taken care of by the introduction of expressions, so won'tfix
             asList(
                 parser.symbol(PlangSymbol.IDENTIFIER),
                 parser.symbol(PlangSymbol.LITERAL_INT)

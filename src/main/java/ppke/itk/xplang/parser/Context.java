@@ -3,12 +3,12 @@ package ppke.itk.xplang.parser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.Scope;
-import ppke.itk.xplang.ast.VarRef;
-import ppke.itk.xplang.ast.VarVal;
-import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.CursorPosition;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
+import ppke.itk.xplang.function.Instruction;
+import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
 import static java.util.stream.Collectors.toList;
@@ -81,6 +81,33 @@ public class Context {
         // TODO mention it if it exist but it's not a variable
         log.error("Lookup of variable '{}' failed.", name);
         throw new NameError("No variable named %s", token);
+    }
+
+    public void createBuiltin(Name name, Instruction instruction, Type returns, Type... args) throws NameClashError {
+        Signature sig = new Signature(name.toString(), returns, args);
+        if(nameTable.isFree(name)) {
+            FunctionDeclaration declaration = new BuiltinFunction(Location.NONE, sig, instruction);
+            nameTable.add(name, declaration);
+            log.debug("Declared function '{}'", declaration);
+        } else {
+            log.error(
+                "Could not register builtin by name '{}': name already taken in this scope by {}",
+                name, nameTable.lookup(name)
+            );
+            throw new NameClashError("", Location.NONE);
+        }
+    }
+
+    public FunctionDeclaration lookupFunction(Name name, Token token) throws NameError {
+        Object obj = nameTable.lookup(name);
+        if(obj instanceof FunctionDeclaration) {
+            FunctionDeclaration var = (FunctionDeclaration) obj;
+            log.trace("Looked up function for name '{}'", name);
+            return var;
+        }
+        // TODO mention it if it exist but it's not a variable
+        log.error("Lookup of function '{}' failed.", name);
+        throw new NameError("No function named %s", token);
     }
 
     public void declareType(Name name, Type type) throws NameClashError {

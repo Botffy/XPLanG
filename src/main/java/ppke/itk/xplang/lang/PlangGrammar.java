@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
@@ -29,6 +30,7 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.COMMA, props).register(ctx);
             makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
             makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
+            makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
             makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
             makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -44,6 +46,8 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Scalar.REAL_TYPE, props);
             makeType(ctx, Scalar.CHARACTER_TYPE, props);
             makeType(ctx, Scalar.STRING_TYPE, props);
+
+            ctx.createBuiltin(name("builtin$minus"), Instruction.INEG, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE);
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

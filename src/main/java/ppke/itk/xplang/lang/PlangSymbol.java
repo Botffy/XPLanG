@@ -16,6 +16,7 @@ enum PlangSymbol {
     COMMA,
     BRACKET_OPEN,
     BRACKET_CLOSE,
+    OPERATOR_MINUS,
     IDENTIFIER,
     LITERAL_INT,
     LITERAL_REAL,

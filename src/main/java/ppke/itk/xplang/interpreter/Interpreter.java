@@ -39,6 +39,17 @@ public class Interpreter implements ASTVisitor {
         );
     }
 
+    @Override public void visit(BuiltinFunction function) {
+        switch(function.getInstruction()) {
+            case INEG: {
+                IntegerValue value = valueStack.pop(IntegerValue.class);
+                valueStack.push(new IntegerValue(- value.getValue()));
+            } break;
+            default:
+                throw new IllegalStateException(String.format("Unknown instruction %s", function.getInstruction()));
+        }
+    }
+
     @Override public void visit(Sequence sequence) {
         for(Statement statement : sequence.statements()) {
             statement.accept(this);
@@ -67,6 +78,13 @@ public class Interpreter implements ASTVisitor {
         } else {
             conditional.getElseSequence().accept(this);
         }
+    }
+
+    @Override public void visit(FunctionCall call) {
+        for(RValue argument : call.arguments()) {
+            argument.accept(this);
+        }
+        call.getDeclaration().accept(this);
     }
 
     @Override public void visit(VarRef varRef) {
