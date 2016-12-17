@@ -35,6 +35,10 @@ class ArrayValue extends AddressableValue {
         return new ArrayValue(values.stream().map(Value::copy).collect(toList()));
     }
 
+    @Override int size() {
+        return values.size();
+    }
+
     @Override public String toString() {
         return String.format("Array(%s)", values.stream().map(Value::toString).collect(joining(",")));
     }

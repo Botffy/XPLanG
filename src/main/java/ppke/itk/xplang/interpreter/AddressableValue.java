@@ -4,4 +4,6 @@ abstract class AddressableValue extends Value implements Addressable {
     @Override Value copy() {
         return this;
     }
+
+    abstract int size();
 }

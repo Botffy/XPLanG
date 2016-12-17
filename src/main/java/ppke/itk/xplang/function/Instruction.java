@@ -1,5 +1,6 @@
 package ppke.itk.xplang.function;
 
+import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
@@ -26,7 +27,9 @@ public enum Instruction {
     ISUM(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE),
 
     /** Integer multiplication. */
-    IMUL(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE);
+    IMUL(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE),
+
+    ARLEN(Scalar.INTEGER_TYPE, FixArray.ANY_ARRAY);
 
     private final Type returnType;
     private final List<Type> operands;

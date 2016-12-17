@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.function.Instruction;
+import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
@@ -31,6 +32,7 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
             makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
             makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
+            makeSymbol(PlangSymbol.OPERATOR_PIPE, props).register(ctx);
             makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
             makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -48,6 +50,7 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Scalar.STRING_TYPE, props);
 
             ctx.createBuiltin(name("builtin$minus"), Instruction.INEG, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Scalar.INTEGER_TYPE, FixArray.ANY_ARRAY);
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

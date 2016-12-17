@@ -1,0 +1,9 @@
+**#Array length operator: my favourite operator in plang
+**Memory:a=Array(DEADBEEF,DEADBEEF,DEADBEEF,DEADBEEF,DEADBEEF),l=Integer(5)
+program Vardecl
+  Változók:
+    a: Egész[5],
+    l: Egész
+
+  l := |a|
+program_vége

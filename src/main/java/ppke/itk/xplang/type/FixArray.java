@@ -4,6 +4,12 @@ package ppke.itk.xplang.type;
  *  A fixed length array.
  */
 public final class FixArray extends Type {
+    public final static Type ANY_ARRAY = new Type("ANY_ARRAY") {
+        @Override public boolean accepts(Type that) {
+            return that instanceof FixArray;
+        }
+    };
+
     private final Type elemType;
     private final int length;
 

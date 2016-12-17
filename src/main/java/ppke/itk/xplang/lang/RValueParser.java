@@ -43,6 +43,12 @@ final class RValueParser {
             FunctionDeclaration func = parser.context().lookupFunction(PlangGrammar.name("builtin$minus"), token);
             RValue arg = RValueParser.parse(parser);
             return new FunctionCall(token.location(), func, arg);
+        } else if(act.equals(parser.symbol(PlangSymbol.OPERATOR_PIPE))) {
+            Token token = parser.advance();
+            FunctionDeclaration func = parser.context().lookupFunction(PlangGrammar.name("builtin$length"), token);
+            RValue arg = RValueParser.parse(parser);
+            parser.accept(parser.symbol(PlangSymbol.OPERATOR_PIPE));
+            return new FunctionCall(token.location(), func, arg);
         } else if(act.equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
             Token token = parser.advance();
             RValue Result = parser.context().getVariableValue(PlangGrammar.name(token.lexeme()), token);

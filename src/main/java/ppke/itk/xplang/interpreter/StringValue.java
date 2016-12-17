@@ -29,6 +29,10 @@ class StringValue extends AddressableValue {
         return new StringValue(chars);
     }
 
+    @Override int size() {
+        return chars.length;
+    }
+
     @Override public String toString() {
         return String.format("String(%s)", new String(this.chars));
     }

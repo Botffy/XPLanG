@@ -45,6 +45,10 @@ public class Interpreter implements ASTVisitor {
                 IntegerValue value = valueStack.pop(IntegerValue.class);
                 valueStack.push(new IntegerValue(- value.getValue()));
             } break;
+            case ARLEN: {
+                AddressableValue value = valueStack.pop(AddressableValue.class);
+                valueStack.push(new IntegerValue(value.size()));
+            } break;
             default:
                 throw new IllegalStateException(String.format("Unknown instruction %s", function.getInstruction()));
         }
