@@ -9,6 +9,7 @@ import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Scalar;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singleton;
 
 /**
  * {@code RValue = IDENTIFIER [{ BRACKET_OPEN RValue BRACKET_CLOSE }] | LITERAL_INT | LITERAL_BOOL}
@@ -40,13 +41,40 @@ final class RValueParser {
             return new StringLiteral(token.location(), token.lexeme().substring(1, token.lexeme().length() - 1));
         } else if(act.equals(parser.symbol(PlangSymbol.OPERATOR_MINUS))) {
             Token token = parser.advance();
-            FunctionDeclaration func = parser.context().lookupFunction(PlangGrammar.name("builtin$minus"), token);
+            FunctionSet functionSet = parser.context().lookupFunction(PlangGrammar.name("builtin$minus"));
+            functionSet.limitArgumentNumberTo(1);
+
             RValue arg = RValueParser.parse(parser);
+            functionSet.limitArgument(0, singleton(arg.getType()));
+
+            FunctionDeclaration func = null;
+            if(functionSet.isResolved()) {
+                func = functionSet.getOnlyElement();
+                log.debug("Function {} resolved to {}", PlangGrammar.name("builtin$minus"), func.signature());
+            } else if(functionSet.isAmbiguous()) {
+                throw new FunctionResolutionError(token.location());
+            } else if(functionSet.isEmpty()) {
+                throw new NameError(token);
+            }
             return new FunctionCall(token.location(), func, arg);
         } else if(act.equals(parser.symbol(PlangSymbol.OPERATOR_PIPE))) {
             Token token = parser.advance();
-            FunctionDeclaration func = parser.context().lookupFunction(PlangGrammar.name("builtin$length"), token);
+            FunctionSet functionSet = parser.context().lookupFunction(PlangGrammar.name("builtin$length"));
+            functionSet.limitArgumentNumberTo(1);
+
             RValue arg = RValueParser.parse(parser);
+            functionSet.limitArgument(0, singleton(arg.getType()));
+
+            FunctionDeclaration func = null;
+            if(functionSet.isResolved()) {
+                func = functionSet.getOnlyElement();
+                log.debug("Function {} resolved to {}", PlangGrammar.name("builtin$length"), func.signature());
+            } else if(functionSet.isAmbiguous()) {
+                throw new FunctionResolutionError(token.location());
+            } else if(functionSet.isEmpty()) {
+                throw new NameError(token);
+            }
+
             parser.accept(parser.symbol(PlangSymbol.OPERATOR_PIPE));
             return new FunctionCall(token.location(), func, arg);
         } else if(act.equals(parser.symbol(PlangSymbol.IDENTIFIER))) {

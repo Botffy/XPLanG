@@ -11,6 +11,8 @@ import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
+import java.util.*;
+
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -83,31 +85,68 @@ public class Context {
         throw new NameError("No variable named %s", token);
     }
 
+    private static final class FuncSet {
+        private final Map<Signature, FunctionDeclaration> set = new HashMap<>();
+
+        void add(FunctionDeclaration function) {
+            if(!set.containsKey(function.signature())) {
+                set.put(function.signature(), function);
+            }
+        }
+
+        boolean contains(Signature signature) {
+            return set.containsKey(signature);
+        }
+
+        void merge(FuncSet that) {
+            for(FunctionDeclaration function : that.set.values()) {
+                this.add(function);
+            }
+        }
+
+        FunctionSet toFunctionSet() {
+            return new FunctionSet(set);
+        }
+    }
+
     public void createBuiltin(Name name, Instruction instruction, Type returns, Type... args) throws NameClashError {
         Signature sig = new Signature(name.toString(), returns, args);
+
+        FuncSet funcSet;
         if(nameTable.isFree(name)) {
-            FunctionDeclaration declaration = new BuiltinFunction(Location.NONE, sig, instruction);
-            nameTable.add(name, declaration);
-            log.debug("Declared function '{}'", declaration);
-        } else {
+            funcSet = new FuncSet();
+            nameTable.add(name, funcSet);
+        }
+
+        Object obj = nameTable.lookup(name);
+        if(!(obj instanceof FuncSet)) {
             log.error(
                 "Could not register builtin by name '{}': name already taken in this scope by {}",
                 name, nameTable.lookup(name)
             );
-            throw new NameClashError("", Location.NONE);
+            throw new NameClashError("Could not register builtin function", Location.NONE);
         }
+        funcSet = (FuncSet) obj;
+        if(funcSet.contains(sig)) {
+            log.error("Could not register builtin by name '{}': same signature already declared in this scope.");
+            throw new NameClashError("Could not register builtin function", Location.NONE);
+        }
+
+        funcSet.add(new BuiltinFunction(Location.NONE, sig, instruction));
+        log.debug("Registered builtin function {} with signature {}", name, sig);
     }
 
-    public FunctionDeclaration lookupFunction(Name name, Token token) throws NameError {
-        Object obj = nameTable.lookup(name);
-        if(obj instanceof FunctionDeclaration) {
-            FunctionDeclaration var = (FunctionDeclaration) obj;
-            log.trace("Looked up function for name '{}'", name);
-            return var;
+    /**
+     * Get all valid and visible Signatures for a Name.
+     */
+    public FunctionSet lookupFunction(Name name) {
+        FuncSet funcSet = new FuncSet();
+        for(Object object : nameTable.allValues(name)) {
+            if(!(object instanceof FuncSet)) break;
+
+            funcSet.merge((FuncSet) object);
         }
-        // TODO mention it if it exist but it's not a variable
-        log.error("Lookup of function '{}' failed.", name);
-        throw new NameError("No function named %s", token);
+        return funcSet.toFunctionSet();
     }
 
     public void declareType(Name name, Type type) throws NameClashError {

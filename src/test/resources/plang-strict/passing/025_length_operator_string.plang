@@ -1,0 +1,10 @@
+**#The length operator works on strings too.
+**Memory:a=String(Hi),l=Integer(2)
+program Vardecl
+  Változók:
+    a: Szöveg,
+    l: Egész
+
+  a := "Hi"
+  l := |a|
+program_vége

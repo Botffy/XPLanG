@@ -51,6 +51,7 @@ public class PlangGrammar extends Grammar {
 
             ctx.createBuiltin(name("builtin$minus"), Instruction.INEG, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE);
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Scalar.INTEGER_TYPE, FixArray.ANY_ARRAY);
+            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Scalar.INTEGER_TYPE, Scalar.STRING_TYPE);
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
