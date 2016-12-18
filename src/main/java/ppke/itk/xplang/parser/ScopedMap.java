@@ -7,6 +7,9 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.util.Counter;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A key-value map structure to keep track of lexical scoping. Based on the
@@ -154,6 +157,25 @@ class ScopedMap<Key, Value> {
         }
         return Result;
     }
+
+    /**
+     * Returns all valid values for a specified key, including hidden ones.
+     */
+    List<Value> allValues(Key name) {
+        if(!symtab.containsKey(name)) return Collections.emptyList();
+
+        List<Value> Result = new ArrayList<>();
+        List<Entry<Value>> chain = symtab.get(name);
+        for(Entry<Value> entry : chain) {
+            for(int i = scopeStack.size(); i --> 0;) {
+                if(entry.scopeId == scopeStack.get(i).identifier) {
+                    Result.add(entry.data);
+                }
+            }
+        }
+
+        return Result;
+    };
 
     /**
      * Returns all entries declared in the current scope.

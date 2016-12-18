@@ -3,10 +3,12 @@ package ppke.itk.xplang.parser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
@@ -137,6 +139,29 @@ public class ScopedMapTest {
         table.add("Latin", obj4);
         assertEquals("EntriesInCurrentScope() should contain the one element put in it in the current scope.",
             table.entriesInCurrentScope(), Stream.of(Pair.of("Latin", obj4)).collect(Collectors.toSet())
+        );
+    }
+
+    @Test public void allEntriesForName() {
+        ScopedMap<String, Object> table = new ScopedMap<>();
+        Object obj1 = "Nomen est omen";
+        Object obj2 = "Nominative determinism";
+        Object obj3 = "Meine liebe wasserkopf";
+        Object obj4 = "Dolce et decorum est pro patria mori";
+
+        table.openScope();
+        table.add("name", obj1);
+        table.openScope();
+        table.add("name", obj2);
+        table.closeScope();
+        table.openScope();
+        table.add("name", obj3);
+        table.openScope();
+        table.add("name", obj4);
+
+        assertEquals(
+            "allValues() should return all values declared in earlier scopes (but not those in closed scopes)",
+            asList(obj1, obj3, obj4), table.allValues("name")
         );
     }
 }
