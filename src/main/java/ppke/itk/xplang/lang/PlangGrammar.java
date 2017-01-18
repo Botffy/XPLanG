@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.function.Instruction;
+import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;

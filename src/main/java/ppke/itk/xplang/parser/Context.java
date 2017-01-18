@@ -8,6 +8,7 @@ import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.function.Instruction;
+import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
@@ -24,6 +25,8 @@ public class Context {
 
     private final SymbolTable symbolTable = new SymbolTable();
     private final ScopedMap<Name, Object> nameTable = new ScopedMap<>();
+    private final Map<Symbol, Operator.Prefix> prefixOperators = new HashMap<>();
+    private final Map<Symbol, Operator.Infix> infixOperators = new HashMap<>();
 
     public Context() {
         log.debug("New context created.");
@@ -147,6 +150,22 @@ public class Context {
             funcSet.merge((FuncSet) object);
         }
         return funcSet.toFunctionSet();
+    }
+
+    public void prefix(Symbol symbol, Operator.Prefix operator) {
+        prefixOperators.put(symbol, operator);
+    }
+
+    public Operator.Prefix prefixOf(Symbol symbol) {
+        return prefixOperators.get(symbol);
+    }
+
+    public void infix(Symbol symbol, Operator.Infix operator) {
+        infixOperators.put(symbol, operator);
+    }
+
+    public Operator.Infix infixOf(Symbol symbol) {
+        return infixOperators.get(symbol);
     }
 
     public void declareType(Name name, Type type) throws NameClashError {
