@@ -2,6 +2,7 @@ package ppke.itk.xplang.parser.operator;
 
 import org.junit.Before;
 import org.junit.Test;
+import ppke.itk.xplang.ast.IntegerLiteral;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 
@@ -42,7 +43,7 @@ public class ExpressionParserTest {
 
             ctx.infix(PLUS, new InfixBinary(name("plus"), Operator.Precedence.SUM));
             ctx.infix(TIMES, new InfixBinary(name("times"), Operator.Precedence.PRODUCT));
-            ctx.prefix(NUMBER, new Literal<>(Integer::valueOf));
+            ctx.prefix(NUMBER, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
         }
 
         @Override protected Root start(Parser parser) throws ParseError {
