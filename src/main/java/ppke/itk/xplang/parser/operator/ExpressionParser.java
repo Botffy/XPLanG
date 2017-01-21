@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
+import static java.util.Collections.emptyList;
+
 /**
  * Pratt parser for parsing expressions.
  *
@@ -27,7 +29,11 @@ public class ExpressionParser {
 
         Operator.Prefix nud = parser.context().prefixOf(op.symbol());
         Expression left = null;
-        if(nud == null) throw new RuntimeException(String.format("No Nud for %s", op)); //FIXME, a proper syntax error
+        if(nud == null) {
+            throw new SyntaxError(
+                translator.translate("expressionParser.noPrefixOperator.message"), emptyList(), op.symbol(), op
+            );
+        }
         else left = nud.parsePrefix(this);
 
         while(parser.actual().symbol() != Symbol.EOF && rightBindingPower < calculateLeftBindingPower()) {
@@ -35,7 +41,11 @@ public class ExpressionParser {
             parser.advance();
 
             Operator.Infix led = parser.context().infixOf(op.symbol());
-            if(led == null) throw new RuntimeException(String.format("No Led for %s", op)); // FIXME, proper syntax error
+            if(led == null) {
+                throw new SyntaxError(
+                    translator.translate("expressionParser.noInfixOperator.message"), emptyList(), op.symbol(), op
+                );
+            }
             else left = led.parseInfix(left, this);
         }
 

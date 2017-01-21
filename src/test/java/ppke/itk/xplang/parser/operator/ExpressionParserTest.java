@@ -1,6 +1,6 @@
 package ppke.itk.xplang.parser.operator;
 
-import org.junit.Assert;
+import com.github.stefanbirkner.fishbowl.Fishbowl;
 import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.FunctionCall;
@@ -15,6 +15,8 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ExpressionParserTest {
     private final static Symbol NUMBER = Symbol.create().named("Number").matching("\\d+").build();
@@ -85,7 +87,7 @@ public class ExpressionParserTest {
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
         RValue astNode = exp.toASTNode();
 
-        Assert.assertThat("The root of the parse tree is a function call.",
+        assertThat("The root of the parse tree is a function call.",
             astNode, instanceOf(FunctionCall.class)
         );
     }
@@ -98,7 +100,7 @@ public class ExpressionParserTest {
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
         RValue astNode = exp.toASTNode();
 
-        Assert.assertEquals("The root of the parse tree should be the integer literal 6",
+        assertEquals("The root of the parse tree should be the integer literal 6",
             Integer.valueOf(6), ((IntegerLiteral) astNode).getValue()
         );
     }
@@ -111,9 +113,24 @@ public class ExpressionParserTest {
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
         RValue astNode = exp.toASTNode();
 
-        Assert.assertEquals(
+        assertEquals(
             "The root should be the plus operator",
             "plus", ((FunctionCall) astNode).getDeclaration().signature().getName()
+        );
+    }
+
+    @Test public void shouldRaiseParseError() throws ParseError {
+        Reader reader = new StringReader("6*");
+        parser.parse(reader, grammar);
+
+        ExpressionParser ep = new ExpressionParser(parser);
+
+        Throwable exception = Fishbowl.exceptionThrownBy(
+            () -> ep.parse(Operator.Precedence.CONTAINING)
+        );
+
+        assertThat("ExpressionParser should throw a ParseError when it fails",
+            exception, instanceOf(ParseError.class)
         );
     }
 
