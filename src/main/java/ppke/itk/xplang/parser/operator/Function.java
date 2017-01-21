@@ -9,11 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 public class Function extends Expression {
+    private final Location location;
     private final Set<FunctionDeclaration> functions;
     private final List<Expression> childNodes;
 
     protected Function(Location location, Set<FunctionDeclaration> functions, List<Expression> childNodes) {
-        super(location);
+        this.location = location;
         this.functions = functions;
         this.childNodes = childNodes;
     }
@@ -23,6 +24,6 @@ public class Function extends Expression {
     }
 
     @Override protected RValue toASTNode() {
-        return new FunctionCall(location(), functions.iterator().next());
+        return new FunctionCall(location, functions.iterator().next());
     }
 }
