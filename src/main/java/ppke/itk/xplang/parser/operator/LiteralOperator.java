@@ -15,8 +15,8 @@ public class LiteralOperator<T> implements Operator.Prefix {
         this.nodeCreation = nodeCreation;
     }
 
-    @Override public void parsePrefix(ExpressionParser parser) {
-        System.out.println(
+    @Override public Expression parsePrefix(ExpressionParser parser) {
+        return new Value(
             nodeCreation.apply(parser.actual().location(), evaluation.apply(parser.actual().lexeme()))
         );
     }

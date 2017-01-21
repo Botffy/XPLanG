@@ -1,7 +1,10 @@
 package ppke.itk.xplang.parser.operator;
 
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.Name;
 import ppke.itk.xplang.parser.ParseError;
+
+import java.util.Arrays;
 
 public class InfixBinary implements Operator.Infix {
     private final Name functionName;
@@ -18,8 +21,14 @@ public class InfixBinary implements Operator.Infix {
         this(functionName, precedence, Associativity.LEFT);
     }
 
-    @Override public void parseInfix(ExpressionParser parser) throws ParseError {
-        parser.parse(associativity == Associativity.LEFT ? precedence : precedence - 1);
+    @Override public Expression parseInfix(Expression left, ExpressionParser parser) throws ParseError {
+        Location loc = parser.actual().location();
+        Expression right = parser.parse(associativity == Associativity.LEFT ? precedence : precedence - 1);
+        return new Function(
+            loc,
+            parser.context().lookupFunction(functionName).getDeclarations(),
+            Arrays.asList(left, right)
+        );
     }
 
     @Override public int getPrecedence() {

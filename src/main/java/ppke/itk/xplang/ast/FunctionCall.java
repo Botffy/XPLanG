@@ -34,4 +34,8 @@ public class FunctionCall extends RValue {
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override public String toString() {
+        return String.format("%s[%s]", super.toString(), function.signature());
+    }
 }

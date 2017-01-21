@@ -142,6 +142,7 @@ public class Context {
     /**
      * Get all valid and visible Signatures for a Name.
      */
+    @Deprecated
     public FunctionSet lookupFunction(Name name) {
         FuncSet funcSet = new FuncSet();
         for(Object object : nameTable.allValues(name)) {

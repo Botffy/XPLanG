@@ -6,11 +6,16 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 
+@Deprecated
 public class FunctionSet {
     private final Map<Signature, FunctionDeclaration> set;
 
     FunctionSet(Map<Signature, FunctionDeclaration> set) {
         this.set = new HashMap<>(set);
+    }
+
+    public Set<FunctionDeclaration> getDeclarations() {
+        return new HashSet<>(set.values());
     }
 
     public void limitReturnType(Set<Type> types) {

@@ -27,10 +27,10 @@ public interface Operator {
     }
 
     interface Prefix extends Operator {
-        void parsePrefix(ExpressionParser parser);
+        Expression parsePrefix(ExpressionParser parser);
     }
 
     interface Infix extends Operator {
-        void parseInfix(ExpressionParser parser) throws ParseError;
+        Expression parseInfix(Expression left, ExpressionParser parser) throws ParseError;
     }
 }

@@ -6,7 +6,9 @@ import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
 /**
- * Pratt parser.
+ * Pratt parser for parsing expressions.
+ *
+ * The expression parser produces a mutable parse tree
  */
 public class ExpressionParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Expression");
@@ -19,13 +21,14 @@ public class ExpressionParser {
         this.parser = parser;
     }
 
-    public void parse(int rightBindingPower) throws ParseError {
+    public Expression parse(int rightBindingPower) throws ParseError {
         op = parser.actual();
         parser.advance();
 
         Operator.Prefix nud = parser.context().prefixOf(op.symbol());
+        Expression left = null;
         if(nud == null) throw new RuntimeException(String.format("No Nud for %s", op)); //FIXME, a proper syntax error
-        else nud.parsePrefix(this);
+        else left = nud.parsePrefix(this);
 
         while(parser.actual().symbol() != Symbol.EOF && rightBindingPower < calculateLeftBindingPower()) {
             op = parser.actual();
@@ -33,8 +36,10 @@ public class ExpressionParser {
 
             Operator.Infix led = parser.context().infixOf(op.symbol());
             if(led == null) throw new RuntimeException(String.format("No Led for %s", op)); // FIXME, proper syntax error
-            else led.parseInfix(this);
+            else left = led.parseInfix(left, this);
         }
+
+        return left;
     }
 
     /**
