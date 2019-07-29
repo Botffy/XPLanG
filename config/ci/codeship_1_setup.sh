@@ -8,4 +8,5 @@ unzip $GRADLE.zip -d ~
 
 # get the code climate jacoco reporter and its dependency
 git clone https://github.com/Botffy/jacoco-codeclimate-reporter.git
+pyenv local 3.4
 pip install requests
