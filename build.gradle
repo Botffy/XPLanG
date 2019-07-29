@@ -33,7 +33,7 @@ test {
 }
 
 checkstyle {
-    toolVersion = '7.3'
+    toolVersion = '8.23'
     sourceSets = [sourceSets.main]
     showViolations = true
     ignoreFailures = true
