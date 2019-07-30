@@ -10,7 +10,7 @@ import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.TypeError;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 
 import java.util.Collections;
 
@@ -28,7 +28,7 @@ final class ConditionalParser {
         Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
         RValue condition = RValueParser.parse(parser);
-        if(!Scalar.BOOLEAN_TYPE.accepts(condition.getType())) {
+        if(!Archetype.BOOLEAN_TYPE.accepts(condition.getType())) {
             throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), condition.location());
         }
         parser.accept(parser.symbol(PlangSymbol.THEN));

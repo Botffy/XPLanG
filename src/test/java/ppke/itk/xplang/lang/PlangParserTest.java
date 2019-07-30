@@ -4,9 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -48,7 +47,7 @@ public class PlangParserTest {
     @Test public void conditionalNodeWithoutElseBranch() throws ParseError {
         Reader source = new StringReader("Ha igaz akkor\na:=5\nha_vége");
         parser.parse(source, grammar);
-        parser.context().declareVariable(PlangGrammar.name("a"), parser.actual(), Scalar.INTEGER_TYPE);
+        parser.context().declareVariable(PlangGrammar.name("a"), parser.actual(), Archetype.INTEGER_TYPE);
 
         Conditional cond = ConditionalParser.parse(parser);
         assertFalse("Conditional.children should not contain nulls", cond.getChildren().contains(null));

@@ -1,7 +1,7 @@
 package ppke.itk.xplang.ast;
 
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
 public class RealLiteral extends Literal<Double> {
@@ -10,7 +10,7 @@ public class RealLiteral extends Literal<Double> {
     }
 
     @Override public Type getType() {
-        return Scalar.REAL_TYPE;
+        return Archetype.REAL_TYPE;
     }
 
     @Override public void accept(ASTVisitor visitor) {

@@ -6,9 +6,8 @@ import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.function.Instruction;
-import ppke.itk.xplang.parser.operator.Operator;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.FixArray;
-import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 public class PlangGrammar extends Grammar {
@@ -44,15 +43,15 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.WHITESPACE, props).notSignificant().register(ctx);
             makeSymbol(PlangSymbol.COMMENT, props).notSignificant().register(ctx);
 
-            makeType(ctx, Scalar.BOOLEAN_TYPE, props);
-            makeType(ctx, Scalar.INTEGER_TYPE, props);
-            makeType(ctx, Scalar.REAL_TYPE, props);
-            makeType(ctx, Scalar.CHARACTER_TYPE, props);
-            makeType(ctx, Scalar.STRING_TYPE, props);
+            makeType(ctx, Archetype.BOOLEAN_TYPE, props);
+            makeType(ctx, Archetype.INTEGER_TYPE, props);
+            makeType(ctx, Archetype.REAL_TYPE, props);
+            makeType(ctx, Archetype.CHARACTER_TYPE, props);
+            makeType(ctx, Archetype.STRING_TYPE, props);
 
-            ctx.createBuiltin(name("builtin$minus"), Instruction.INEG, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Scalar.INTEGER_TYPE, FixArray.ANY_ARRAY);
-            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Scalar.INTEGER_TYPE, Scalar.STRING_TYPE);
+            ctx.createBuiltin(name("builtin$minus"), Instruction.INEG, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
+            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, Archetype.STRING_TYPE);
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

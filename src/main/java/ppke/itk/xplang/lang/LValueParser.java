@@ -9,7 +9,7 @@ import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.parser.TypeError;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 
 /**
  * {@code LValue = IDENTIFIER [BRACKET_OPEN INT_LITERAL BRACKET_CLOSE] }
@@ -29,7 +29,7 @@ final class LValueParser {
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             Token startToken = parser.advance();
             RValue address = RValueParser.parse(parser);
-            if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
+            if(!Archetype.INTEGER_TYPE.accepts(address.getType())) {
                 throw new TypeError(
                     translator.translate("plang.array_indextype_mismatch", address.getType()),
                     address.location()

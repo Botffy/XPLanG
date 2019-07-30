@@ -1,29 +1,6 @@
 package ppke.itk.xplang.type;
 
 public class Scalar extends Type {
-    /** Integer archetype. */
-    public static final Scalar INTEGER_TYPE = new Scalar("IntegerType");
-
-    /** Boolean archetype. */
-    public static final Scalar BOOLEAN_TYPE = new Scalar("BooleanType");
-
-    /** Character archetype. */
-    public static final Scalar CHARACTER_TYPE = new Scalar("CharacterType");
-
-    /** Real archetype. */
-    public static final Scalar REAL_TYPE = new Scalar("RealType");
-
-    /** String archetype. */
-    public static final Scalar STRING_TYPE = new Scalar("StringType") {
-        @Override public Type elementType() {
-            return CHARACTER_TYPE;
-        }
-
-        @Override public Type indexType() {
-            return INTEGER_TYPE;
-        }
-    };
-
     public Scalar(String label) {
         super(label);
     }

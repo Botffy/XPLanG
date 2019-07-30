@@ -1,7 +1,7 @@
 package ppke.itk.xplang.ast;
 
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
 public class BooleanLiteral extends Literal<Boolean> {
@@ -10,7 +10,7 @@ public class BooleanLiteral extends Literal<Boolean> {
     }
 
     @Override public Type getType() {
-        return Scalar.BOOLEAN_TYPE;
+        return Archetype.BOOLEAN_TYPE;
     }
 
     @Override public void accept(ASTVisitor visitor) {

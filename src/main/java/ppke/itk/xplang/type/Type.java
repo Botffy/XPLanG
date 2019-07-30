@@ -4,23 +4,6 @@ package ppke.itk.xplang.type;
  * A type associated with a value.
  */
 public abstract class Type {
-    /**
-     *  The Any formal type: the type that accepts all other types.
-     */
-    public final static Type ANY = new Type("Any") {
-        @Override public boolean accepts(Type that) {
-            return true;
-        }
-    };
-
-    /**
-     *  The None formal type: the type that accepts no other types.
-     */
-    public final static Type NONE = new Type("None") {
-        @Override public boolean accepts(Type that) {
-            return false;
-        }
-    };
 
 
     private final String label;
@@ -44,17 +27,17 @@ public abstract class Type {
     public abstract boolean accepts(Type that);
 
     /**
-     *  The type of the components of this type, or {@link Type#NONE} if the type is scalar.
+     *  The type of the components of this type, or {@link Archetype#NONE} if the type is scalar.
      */
     public Type elementType() {
-        return Type.NONE;
+        return Archetype.NONE;
     }
 
     /**
-     *  Returns the type of the indexing elements of this type, or {@link Type#NONE} if the type is a scalar.
+     *  Returns the type of the indexing elements of this type, or {@link Archetype#NONE} if the type is a scalar.
      */
     public Type indexType() {
-        return Type.NONE;
+        return Archetype.NONE;
     }
 
     /**
@@ -70,7 +53,7 @@ public abstract class Type {
      * By default, a type is scalar if it has no elements.
      */
     public boolean isScalar() {
-        return indexType() == Type.NONE;
+        return indexType() == Archetype.NONE;
     }
 
     public String getLabel() {

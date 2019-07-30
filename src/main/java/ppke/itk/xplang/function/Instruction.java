@@ -1,7 +1,7 @@
 package ppke.itk.xplang.function;
 
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.FixArray;
-import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 import java.util.List;
@@ -18,18 +18,18 @@ import static java.util.Collections.unmodifiableList;
  */
 public enum Instruction {
     /** Identity function: f(x) = x. */
-    ID(Type.ANY, Type.ANY),
+    ID(Archetype.ANY, Archetype.ANY),
 
     /** Integer negation (unary minus operator): f(x) = -x. */
-    INEG(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE),
+    INEG(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
     /** Integer addition. */
-    ISUM(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE),
+    ISUM(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
     /** Integer multiplication. */
-    IMUL(Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE),
+    IMUL(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
-    ARLEN(Scalar.INTEGER_TYPE, FixArray.ANY_ARRAY);
+    ARLEN(Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
 
     private final Type returnType;
     private final List<Type> operands;

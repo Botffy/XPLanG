@@ -28,7 +28,7 @@ public final class FixArray extends Type {
     }
 
     @Override public Type indexType() {
-        return Scalar.INTEGER_TYPE;
+        return Archetype.INTEGER_TYPE;
     }
 
     /**

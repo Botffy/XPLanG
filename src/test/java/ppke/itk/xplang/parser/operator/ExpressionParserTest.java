@@ -9,7 +9,7 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -53,11 +53,11 @@ public class ExpressionParserTest {
             try {
                 ctx.createBuiltin(
                     name("plus"),
-                    Instruction.ISUM, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE
+                    Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE
                 );
                 ctx.createBuiltin(
                     name("times"),
-                    Instruction.IMUL, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE, Scalar.INTEGER_TYPE
+                    Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE
                 );
             } catch(NameClashError nameClashError) {
                 throw new IllegalStateException(nameClashError);

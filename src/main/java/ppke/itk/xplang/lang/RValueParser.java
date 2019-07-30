@@ -6,7 +6,7 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
-import ppke.itk.xplang.type.Scalar;
+import ppke.itk.xplang.type.Archetype;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
@@ -87,7 +87,7 @@ final class RValueParser {
                 Location end = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE)).location();
 
                 Location location = Location.between(start, end);
-                if(!Scalar.INTEGER_TYPE.accepts(address.getType())) {
+                if(!Archetype.INTEGER_TYPE.accepts(address.getType())) {
                     throw new TypeError(
                         translator.translate("plang.array_indextype_mismatch", address.getType()),
                         location
