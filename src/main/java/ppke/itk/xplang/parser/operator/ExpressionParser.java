@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
-import static java.util.Collections.emptyList;
-
 /**
  * Pratt parser for parsing expressions.
  *
@@ -23,30 +21,32 @@ public class ExpressionParser {
         this.parser = parser;
     }
 
-    public Expression parse(int rightBindingPower) throws ParseError {
+    public Expression parse() throws ParseError {
+        return parse(Operator.Precedence.CONTAINING);
+    }
+
+    Expression parse(int rightBindingPower) throws ParseError {
         op = parser.actual();
         parser.advance();
 
-        Operator.Prefix nud = parser.context().prefixOf(op.symbol());
-        Expression left = null;
-        if(nud == null) {
-            throw new SyntaxError(
-                translator.translate("expressionParser.noPrefixOperator.message"), emptyList(), op.symbol(), op
-            );
-        }
-        else left = nud.parsePrefix(this);
+        Operator.Prefix nud = parser.context().prefixOf(op.symbol())
+            .orElseThrow(() -> new SyntaxError(
+                translator.translate("expressionParser.noPrefixOperator.message", op.symbol()), op
+            )
+        );
+        Expression left = nud.parsePrefix(this);
 
-        while(parser.actual().symbol() != Symbol.EOF && rightBindingPower < calculateLeftBindingPower()) {
+        while (parser.actual().symbol() != Symbol.EOF && rightBindingPower < calculateLeftBindingPower()) {
             op = parser.actual();
             parser.advance();
 
-            Operator.Infix led = parser.context().infixOf(op.symbol());
-            if(led == null) {
-                throw new SyntaxError(
-                    translator.translate("expressionParser.noInfixOperator.message"), emptyList(), op.symbol(), op
-                );
-            }
-            else left = led.parseInfix(left, this);
+            Operator.Infix led = parser.context().infixOf(op.symbol())
+                .orElseThrow(() -> new SyntaxError(
+                    translator.translate("expressionParser.noInfixOperator.message", op.symbol()), op
+                )
+            );
+
+            left = led.parseInfix(left, this);
         }
 
         return left;
@@ -57,9 +57,9 @@ public class ExpressionParser {
      * which case it does not bind to the left at all.
      */
     private int calculateLeftBindingPower() {
-        Operator op = parser.context().infixOf(parser.actual().symbol());
-        if(op != null) return op.getPrecedence();
-        return Operator.Precedence.CONTAINING;
+        return parser.context().infixOf(parser.actual().symbol())
+            .map(Operator::getPrecedence)
+            .orElse(Operator.Precedence.CONTAINING);
     }
 
     public Context context() {
@@ -68,5 +68,9 @@ public class ExpressionParser {
 
     public Token actual() {
         return op;
+    }
+
+    public void accept(Symbol symbol, String message) throws LexerError, SyntaxError {
+        parser.accept(symbol, message);
     }
 }

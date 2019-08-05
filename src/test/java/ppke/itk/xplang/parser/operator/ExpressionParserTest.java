@@ -129,6 +129,7 @@ public class ExpressionParserTest {
             () -> ep.parse(Operator.Precedence.CONTAINING)
         );
 
+        exception.printStackTrace();
         assertThat("ExpressionParser should throw a ParseError when it fails",
             exception, instanceOf(ParseError.class)
         );

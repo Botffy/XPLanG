@@ -7,6 +7,9 @@ import ppke.itk.xplang.common.Location;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Function extends Expression {
     private final Location location;
@@ -23,7 +26,7 @@ public class Function extends Expression {
         return childNodes;
     }
 
-    @Override protected RValue toASTNode() {
-        return new FunctionCall(location, functions.iterator().next());
+    @Override public RValue toASTNode() {
+        return new FunctionCall(location, functions.iterator().next(), childNodes.stream().map(Expression::toASTNode).collect(toList()));
     }
 }

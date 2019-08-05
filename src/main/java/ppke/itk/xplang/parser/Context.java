@@ -12,6 +12,7 @@ import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
+import javax.swing.text.html.Option;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -181,8 +182,8 @@ public class Context {
     /**
      * Get the prefix operator registered for a symbol.
      */
-    public Operator.Prefix prefixOf(Symbol symbol) {
-        return prefixOperators.get(symbol);
+    public Optional<Operator.Prefix> prefixOf(Symbol symbol) {
+        return Optional.ofNullable(prefixOperators.get(symbol));
     }
 
     /**
@@ -197,8 +198,8 @@ public class Context {
     /**
      * Get the infix operator registered for a symbol.
      */
-    public Operator.Infix infixOf(Symbol symbol) {
-        return infixOperators.get(symbol);
+    public Optional<Operator.Infix> infixOf(Symbol symbol) {
+        return Optional.ofNullable(infixOperators.get(symbol));
     }
 
     /**

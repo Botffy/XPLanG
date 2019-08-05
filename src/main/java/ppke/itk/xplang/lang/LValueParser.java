@@ -28,7 +28,7 @@ final class LValueParser {
         log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             Token startToken = parser.advance();
-            RValue address = RValueParser.parse(parser);
+            RValue address = parser.parseExpression().toASTNode();
             if(!Archetype.INTEGER_TYPE.accepts(address.getType())) {
                 throw new TypeError(
                     translator.translate("plang.array_indextype_mismatch", address.getType()),

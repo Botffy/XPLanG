@@ -1,12 +1,11 @@
 Program testing
   Változók:
-    b: Logikai,
-    c: Szöveg
+    a: Egész[10],
+    b, c: Egész
 
-b := Igaz
-c := "Hello world"
-ha b akkor
-  c[0] := 'M'
-  c[5] := 'w'
-ha_vége
+a[0] :=  -1
+a[1] := 101
+b := a[-a[0]]
+
 program_vége
+

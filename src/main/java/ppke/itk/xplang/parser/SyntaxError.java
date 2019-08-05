@@ -60,5 +60,10 @@ public class SyntaxError extends ParseError {
     public SyntaxError(String message, Symbol expected, Symbol actual, Token token) {
         this(message, Collections.singletonList(expected), actual, token);
     }
+
+    public SyntaxError(String message, Token token) {
+        super(message, token.location());
+    }
+
 }
 

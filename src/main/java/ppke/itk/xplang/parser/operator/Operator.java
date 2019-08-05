@@ -17,6 +17,7 @@ public interface Operator {
         public static final int EXPONENT = 70;
         public static final int UNARY_PREFIX = 80;
         public static final int UNARY_POSTFIX = 90;
+        public static final int FUNCTION = 100;
 
         private Precedence() { /* Private ctor to hide the default one. */ }
     }
@@ -27,7 +28,7 @@ public interface Operator {
     }
 
     interface Prefix extends Operator {
-        Expression parsePrefix(ExpressionParser parser);
+        Expression parsePrefix(ExpressionParser parser) throws ParseError;
     }
 
     interface Infix extends Operator {

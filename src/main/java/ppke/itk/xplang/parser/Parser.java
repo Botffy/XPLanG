@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
+import ppke.itk.xplang.parser.operator.Expression;
+import ppke.itk.xplang.parser.operator.ExpressionParser;
 
 import java.io.Reader;
 
@@ -108,6 +110,11 @@ public class Parser {
 
     public Token accept(Symbol symbol) throws LexerError, SyntaxError {
         return accept(symbol, null);
+    }
+
+    public Expression parseExpression() throws ParseError {
+        ExpressionParser expressionParser = new ExpressionParser(this);
+        return expressionParser.parse();
     }
 
     public void skipToNextLine() throws LexerError {

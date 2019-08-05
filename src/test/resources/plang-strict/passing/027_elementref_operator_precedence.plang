@@ -1,0 +1,11 @@
+**Memory:a=Array(-1,101,),b=Integer(101)
+Program testing
+  Változók:
+    a: Egész[2],
+    b: Egész
+
+  a[0] :=  -1
+  a[1] := 101
+  b := a[-a[0]]
+program_vége
+

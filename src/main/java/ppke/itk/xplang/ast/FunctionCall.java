@@ -11,10 +11,14 @@ import static java.util.stream.Collectors.toList;
 public class FunctionCall extends RValue {
     private final FunctionDeclaration function;
 
-    public FunctionCall(Location location, FunctionDeclaration function, RValue... args) {
+    public FunctionCall(Location location, FunctionDeclaration function, List<RValue> args) {
         super(location);
         this.function = function;
-        this.children.addAll(0, Arrays.asList(args));
+        this.children.addAll(0, args);
+    }
+
+    public FunctionCall(Location location, FunctionDeclaration function, RValue... args) {
+        this(location, function, Arrays.asList(args));
     }
 
     public FunctionDeclaration getDeclaration() {

@@ -8,7 +8,7 @@ import java.util.List;
 public class Value extends Expression {
     private final RValue value;
 
-    protected Value(RValue value) {
+    public Value(RValue value) {
         this.value = value;
     }
 
@@ -16,7 +16,7 @@ public class Value extends Expression {
         return Collections.emptyList();
     }
 
-    @Override protected RValue toASTNode() {
+    @Override public RValue toASTNode() {
         return value;
     }
 }

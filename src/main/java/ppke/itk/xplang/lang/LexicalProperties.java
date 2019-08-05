@@ -25,7 +25,7 @@ final class LexicalProperties {
         }
     }
 
-    private String get(String key) {
+    String get(String key) {
         if(!props.containsKey(key)) {
             log.error("No key named '{}'", key);
             throw new IllegalStateException(String.format("Unknown key '%s'", key));

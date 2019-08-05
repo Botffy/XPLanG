@@ -9,5 +9,5 @@ import java.util.List;
  */
 public abstract class Expression {
     abstract protected List<Expression> childNodes();
-    abstract protected RValue toASTNode();
+    abstract public RValue toASTNode();
 }

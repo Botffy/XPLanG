@@ -24,7 +24,7 @@ final class AssignmentParser {
         log.debug("Assignment");
         LValue lhs = LValueParser.parse(parser);
         Token token = parser.accept(parser.symbol(PlangSymbol.ASSIGNMENT));
-        RValue rhs = RValueParser.parse(parser);
+        RValue rhs = parser.parseExpression().toASTNode();
         if(!lhs.getType().accepts(rhs.getType())) {
             throw new TypeError(
                 translator.translate("plang.assignments_must_match", lhs.getType(), rhs.getType()),

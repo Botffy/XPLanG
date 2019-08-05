@@ -27,7 +27,7 @@ final class ConditionalParser {
         log.debug("Conditional");
         Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
-        RValue condition = RValueParser.parse(parser);
+        RValue condition = parser.parseExpression().toASTNode();
         if(!Archetype.BOOLEAN_TYPE.accepts(condition.getType())) {
             throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), condition.location());
         }
