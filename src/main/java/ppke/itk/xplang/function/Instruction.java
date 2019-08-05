@@ -26,8 +26,17 @@ public enum Instruction {
     /** Integer addition. */
     ISUM(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Integer subtraction */
+    ISUB(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
+
     /** Integer multiplication. */
     IMUL(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
+
+    /** Integer division. */
+    IDIV(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
+
+    /** Modulus. */
+    IMOD(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
     ARLEN(Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
 

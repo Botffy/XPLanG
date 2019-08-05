@@ -1,0 +1,8 @@
+**#Egészek összeadása
+**Memory:a=Integer(-8)
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := 6 - 2 * 7
+program_vége

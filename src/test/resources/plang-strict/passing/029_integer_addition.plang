@@ -1,0 +1,8 @@
+**#Egészek összeadása
+**Memory:a=Integer(102)
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := 101 + 1
+program_vége

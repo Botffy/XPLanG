@@ -5,13 +5,12 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.function.Instruction;
-import ppke.itk.xplang.parser.operator.CircumfixOperator;
-import ppke.itk.xplang.parser.operator.LiteralOperator;
-import ppke.itk.xplang.parser.operator.PrefixUnary;
-import ppke.itk.xplang.parser.operator.IdentifierOperator;
+import ppke.itk.xplang.parser.operator.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Type;
+
+import java.util.function.BinaryOperator;
 
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -35,6 +34,10 @@ public class PlangGrammar extends Grammar {
             Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
             Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
             Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
+            Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS, props).register(ctx);
+            Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES, props).register(ctx);
+            Symbol div = makeSymbol(PlangSymbol.OPERATOR_IDIV, props).register(ctx);
+            Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD, props).register(ctx);
             Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE, props).register(ctx);
             Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -53,6 +56,11 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Archetype.STRING_TYPE, props);
 
             ctx.createBuiltin(name("builtin$negate"), Instruction.INEG, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$times"), Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$div"), Instruction.IDIV, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, Archetype.STRING_TYPE);
 
@@ -62,9 +70,16 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
             ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, x -> x.charAt(1)));
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
+            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose));
+
             ctx.prefix(minus, new PrefixUnary(name("builtin$negate")));
             ctx.prefix(pipe, new CircumfixOperator(pipe, name("builtin$length")));
-            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose));
+            ctx.infix(minus, new InfixBinary(name("builtin$minus"), Operator.Precedence.SUM));
+            ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
+            ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
+            ctx.infix(times, new InfixBinary(name("builtin$times"), Operator.Precedence.PRODUCT));
+            ctx.infix(div, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
+            ctx.infix(mod, new InfixBinary(name("builtin$mod"), Operator.Precedence.PRODUCT));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

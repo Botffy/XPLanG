@@ -2,6 +2,7 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.type.Type;
 
 import java.io.IOException;

@@ -1,0 +1,8 @@
+**#Modulus operátor
+**Memory:a=Integer(1)
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := 7 mod 3
+program_vége

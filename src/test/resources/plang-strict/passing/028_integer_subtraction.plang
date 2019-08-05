@@ -1,0 +1,8 @@
+**#Egészek kivonása
+**Memory:a=Integer(100)
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := 101 - 1
+program_vége
