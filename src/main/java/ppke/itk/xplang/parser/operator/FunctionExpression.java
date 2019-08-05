@@ -7,16 +7,15 @@ import ppke.itk.xplang.common.Location;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-public class Function extends Expression {
+public class FunctionExpression extends Expression {
     private final Location location;
     private final Set<FunctionDeclaration> functions;
     private final List<Expression> childNodes;
 
-    protected Function(Location location, Set<FunctionDeclaration> functions, List<Expression> childNodes) {
+    protected FunctionExpression(Location location, Set<FunctionDeclaration> functions, List<Expression> childNodes) {
         this.location = location;
         this.functions = functions;
         this.childNodes = childNodes;

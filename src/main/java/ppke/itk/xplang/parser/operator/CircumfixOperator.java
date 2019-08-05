@@ -22,7 +22,7 @@ public class CircumfixOperator implements Operator.Prefix {
         Expression right = parser.parse(getPrecedence());
         parser.accept(closingPair, null);
 
-        return new Function(
+        return new FunctionExpression(
             loc,
             parser.context().lookupFunction(functionName).getDeclarations(),
             singletonList(right)

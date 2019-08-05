@@ -3,8 +3,11 @@ package ppke.itk.xplang.parser.operator;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.parser.Name;
 import ppke.itk.xplang.parser.NameError;
+import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Token;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -18,15 +21,32 @@ public class IdentifierOperator implements Operator.Prefix {
     }
 
     @Override
-    public Expression parsePrefix(ExpressionParser parser) throws NameError {
+    public Expression parsePrefix(ExpressionParser parser) throws ParseError {
         Token token = parser.actual();
         Name name = nameCreator.apply(token.lexeme());
-        RValue Result = parser.context().getVariableValue(name, token);
-        return new Value(Result);
+
+        if (parser.context().isVariable(name)) {
+            RValue Result = parser.context().getVariableValue(name, token);
+            return new Value(Result);
+        }
+
+        if (parser.context().isFunction(name)) {
+            List<Expression> args = new ArrayList<>();
+            args.add(parser.parse());
+            // TODO more than one parameters :)
+
+            return new FunctionExpression(
+                parser.actual().location(),
+                parser.context().lookupFunction(name).getDeclarations(),
+                args
+            );
+        }
+
+        throw new NameError(token);
     }
 
     @Override
     public int getPrecedence() {
-        return Precedence.NONE;
+        return Precedence.FUNCTION;
     }
 }

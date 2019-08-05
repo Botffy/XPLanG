@@ -18,7 +18,7 @@ public class PrefixUnary implements Operator.Prefix {
         Location loc = parser.actual().location();
         Expression right = parser.parse(getPrecedence());
 
-        return new Function(
+        return new FunctionExpression(
             loc,
             parser.context().lookupFunction(functionName).getDeclarations(),
             singletonList(right)

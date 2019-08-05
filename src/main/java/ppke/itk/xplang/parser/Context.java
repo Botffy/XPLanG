@@ -83,6 +83,14 @@ public class Context {
     }
 
     /**
+     * Does the given name denote a variable in this scope?
+     */
+    public boolean isVariable(Name name) {
+        NameTableEntry entry = nameTable.lookup(name);
+        return entry != null && entry.type == NameTableEntry.EntryType.VARIABLE;
+    }
+
+    /**
      * Get a reference to a declared variable.
      * @return The VarRef AST node pointing at the variable.
      * @throws NameError if the name cannot be found, or does not denote a type.
@@ -150,6 +158,14 @@ public class Context {
 
         funcSet.add(new BuiltinFunction(Location.NONE, sig, instruction));
         log.debug("Registered builtin function {} with signature {}", name, sig);
+    }
+
+    /**
+     * Does the given name denote a function in this scope?
+     */
+    public boolean isFunction(Name name) {
+        NameTableEntry entry = nameTable.lookup(name);
+        return entry != null && entry.type == NameTableEntry.EntryType.FUNCTION;
     }
 
     /**

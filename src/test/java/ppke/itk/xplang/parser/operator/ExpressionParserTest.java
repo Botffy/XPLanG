@@ -9,6 +9,7 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Archetype;
 
 import java.io.Reader;
 import java.io.StringReader;
@@ -16,11 +17,14 @@ import java.io.StringReader;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static ppke.itk.xplang.parser.TokenMock.token;
 
 public class ExpressionParserTest {
     private final static Symbol NUMBER = Symbol.create().named("Number").matching("\\d+").build();
     private final static Symbol PLUS = Symbol.create().named("Plus").matchingLiteral("+").build();
     private final static Symbol TIMES = Symbol.create().named("Times").matchingLiteral("*").build();
+    private final static Symbol IDENTIFIER = Symbol.create().named("Identifier").matching("[a-zA-Z][a-zA-Z0-9]*").build();
+    private final static Symbol WHITESPACE = Symbol.create().named("Whitespace").matching("\\s+").notSignificant().build();
 
     private final static class TestName extends Name {
         private final String name;
@@ -48,10 +52,15 @@ public class ExpressionParserTest {
             ctx.register(NUMBER);
             ctx.register(PLUS);
             ctx.register(TIMES);
+            ctx.register(IDENTIFIER);
+            ctx.register(WHITESPACE);
 
             try {
+                ctx.declareType(name("Int"), Archetype.INTEGER_TYPE);
+
                 ctx.createBuiltin(name("plus"), Instruction.ISUM);
                 ctx.createBuiltin(name("times"), Instruction.IMUL);
+                ctx.createBuiltin(name("id"), Instruction.ID);
             } catch(NameClashError nameClashError) {
                 throw new IllegalStateException(nameClashError);
             }
@@ -59,6 +68,7 @@ public class ExpressionParserTest {
             ctx.infix(PLUS, new InfixBinary(name("plus"), Operator.Precedence.SUM));
             ctx.infix(TIMES, new InfixBinary(name("times"), Operator.Precedence.PRODUCT));
             ctx.prefix(NUMBER, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
+            ctx.prefix(IDENTIFIER, new IdentifierOperator(ExpressionParserTest::name));
         }
 
         @Override protected Root start(Parser parser) throws ParseError {
@@ -70,6 +80,7 @@ public class ExpressionParserTest {
 
     @Before public void setUp() {
         parser = new Parser();
+
     }
 
     @Test public void shouldParseInfixOps() throws ParseError {
@@ -126,6 +137,28 @@ public class ExpressionParserTest {
         assertThat("ExpressionParser should throw a ParseError when it fails",
             exception, instanceOf(ParseError.class)
         );
+    }
+
+    @Test
+    public void shouldHandleVariables() throws ParseError {
+        parser.context().declareVariable(name("a"), token(IDENTIFIER, "a"), Archetype.INTEGER_TYPE);
+
+        Reader reader = new StringReader("a");
+        parser.parse(reader, grammar);
+
+        ExpressionParser ep = new ExpressionParser(parser);
+        Expression res = ep.parse(Operator.Precedence.CONTAINING);
+        assertThat(res, instanceOf(Value.class));
+    }
+
+    @Test
+    public void shouldHandleFunctions() throws ParseError {
+        Reader reader = new StringReader("id 6");
+        parser.parse(reader, grammar);
+
+        ExpressionParser ep = new ExpressionParser(parser);
+        Expression res = ep.parse(Operator.Precedence.CONTAINING);
+        assertThat(res, instanceOf(FunctionExpression.class));
     }
 
     private static TestName name(String name) {
