@@ -38,7 +38,7 @@ public enum Instruction {
     /** Modulus. */
     IMOD(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
-    ARLEN(Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
+    ARLEN(Archetype.INTEGER_TYPE, Archetype.ANY_ARRAY);
 
     private final Type returnType;
     private final List<Type> operands;

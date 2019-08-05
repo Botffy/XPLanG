@@ -19,6 +19,13 @@ public class Archetype {
         }
     };
 
+    /** A type that accepts FixArrays no matter what their element type is. */
+    public final static Type ANY_ARRAY = new Type("ANY_ARRAY") {
+        @Override public boolean accepts(Type that) {
+            return that instanceof FixArray;
+        }
+    };
+
     /** Integer archetype. */
     public static final Scalar INTEGER_TYPE = new Scalar("IntegerType");
 
