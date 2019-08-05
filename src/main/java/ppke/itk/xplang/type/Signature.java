@@ -1,5 +1,6 @@
 package ppke.itk.xplang.type;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,10 +15,14 @@ public class Signature {
     private final Type returnType;
     private final List<Type> args;
 
-    public Signature(String name, Type returnType, Type... args) {
+    public Signature(String name, Type returnType, List<Type> args) {
         this.name = name;
         this.returnType = returnType;
-        this.args = unmodifiableList(asList(args));
+        this.args = unmodifiableList(new ArrayList<>(args));
+    }
+
+    public Signature(String name, Type returnType, Type... args) {
+        this(name, returnType, asList(args));
     }
 
     public String getName() {

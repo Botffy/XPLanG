@@ -3,14 +3,11 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
-import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.function.Instruction;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.*;
 import ppke.itk.xplang.type.Archetype;
-import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Type;
-
-import java.util.function.BinaryOperator;
 
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -55,14 +52,13 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Archetype.CHARACTER_TYPE, props);
             makeType(ctx, Archetype.STRING_TYPE, props);
 
-            ctx.createBuiltin(name("builtin$negate"), Instruction.INEG, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$times"), Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$div"), Instruction.IDIV, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, FixArray.ANY_ARRAY);
-            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN, Archetype.INTEGER_TYPE, Archetype.STRING_TYPE);
+            ctx.createBuiltin(name("builtin$negate"), Instruction.INEG);
+            ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM);
+            ctx.createBuiltin(name("builtin$times"), Instruction.IMUL);
+            ctx.createBuiltin(name("builtin$div"), Instruction.IDIV);
+            ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD);
+            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));
             ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));

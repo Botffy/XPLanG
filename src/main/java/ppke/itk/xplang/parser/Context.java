@@ -123,12 +123,10 @@ public class Context {
      *
      * @param name the name of the function.
      * @param instruction the instruction to process when the function is called.
-     * @param returns the return type of the function.
-     * @param args the arguments of the function.
      * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Name name, Instruction instruction, Type returns, Type... args) throws NameClashError {
-        Signature sig = new Signature(name.toString(), returns, args);
+    public void createBuiltin(Name name, Instruction instruction) throws NameClashError {
+        Signature sig = new Signature(name.toString(), instruction.returnType(), instruction.operands());
 
         FuncSet funcSet;
         if (nameTable.isFree(name)) {
