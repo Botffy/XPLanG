@@ -40,43 +40,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(BuiltinFunction function) {
-        switch(function.getInstruction()) {
-            case INEG: {
-                IntegerValue value = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(- value.getValue()));
-            } break;
-            case ARLEN: {
-                AddressableValue value = valueStack.pop(AddressableValue.class);
-                valueStack.push(new IntegerValue(value.size()));
-            } break;
-            case ISUB: {
-                IntegerValue right = valueStack.pop(IntegerValue.class);
-                IntegerValue left = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(left.getValue() - right.getValue()));
-            } break;
-            case ISUM: {
-                IntegerValue right = valueStack.pop(IntegerValue.class);
-                IntegerValue left = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(left.getValue() + right.getValue()));
-            } break;
-            case IMUL: {
-                IntegerValue right = valueStack.pop(IntegerValue.class);
-                IntegerValue left = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(left.getValue() * right.getValue()));
-            } break;
-            case IDIV: {
-                IntegerValue right = valueStack.pop(IntegerValue.class);
-                IntegerValue left = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(left.getValue() / right.getValue()));
-            } break;
-            case IMOD: {
-                IntegerValue right = valueStack.pop(IntegerValue.class);
-                IntegerValue left = valueStack.pop(IntegerValue.class);
-                valueStack.push(new IntegerValue(left.getValue() % right.getValue()));
-            } break;
-            default:
-                throw new IllegalStateException(String.format("Unknown instruction %s", function.getInstruction()));
-        }
+        InstructionProcessor.execute(function.getInstruction(), valueStack);
     }
 
     @Override public void visit(Sequence sequence) {
