@@ -180,11 +180,11 @@ class ScopedMap<Key, Value> {
     /**
      * Returns all entries declared in the current scope.
      */
-    Set<Pair<Key, Object>> entriesInCurrentScope() {
-        Set<Pair<Key, Object>> Result = new HashSet<>();
+    Set<Pair<Key, Value>> entriesInCurrentScope() {
+        Set<Pair<Key, Value>> Result = new HashSet<>();
         for(Map.Entry<Key, List<Entry<Value>>> mapEntry : symtab.entrySet()) {
             List<Entry<Value>> chain = mapEntry.getValue();
-            Entry match = null;
+            Entry<Value> match = null;
             for(Entry<Value> entry : chain) {
                 if(entry.scopeId == currentScope().identifier) {
                     match = entry;

@@ -15,6 +15,7 @@ import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ContextTest {
     private final static Location LOCATION = new CursorPosition(1,1).toUnaryLocation();
@@ -77,6 +78,29 @@ public class ContextTest {
         context.declareVariable(lowerCaseName(lexeme), token, dType);
         VariableDeclaration decl = context.getVariableReference(lowerCaseName(lexeme), token).getVariable();
         assertEquals(decl.getName(), lowerCaseName(lexeme).toString());
+    }
+
+    @Test
+    public void lookupFailureNoSuchVariable() throws Exception {
+        Throwable throwable = exceptionThrownBy(
+            () -> context.getVariableValue(name("nonexistent"), new Token(dSymbol, "nonexistent", LOCATION))
+        );
+
+        assertTrue(throwable instanceof NoSuchVariableException);
+        throwable.printStackTrace();
+    }
+
+    @Test
+    public void lookupFailureIsNotVariable() throws Exception {
+        context.openScope();
+        context.declareType(name("Egész"), new Scalar("ExampleType"));
+
+        Throwable throwable = exceptionThrownBy(
+            () -> context.getVariableValue(name("Egész"), new Token(dSymbol, "Egész", LOCATION))
+        );
+
+        assertTrue(throwable instanceof NotVariableException);
+        throwable.printStackTrace();
     }
 
     private static class TestName extends Name {
