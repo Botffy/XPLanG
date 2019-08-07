@@ -1,0 +1,7 @@
+**Memory:a=Real(4.0)
+program Vardecl
+  Változók:
+    a: Valós
+
+  a := 2.0 ^ 2.0
+program_vége

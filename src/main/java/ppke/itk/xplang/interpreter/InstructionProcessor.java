@@ -12,11 +12,18 @@ public class InstructionProcessor {
     static {
         executions.put(Instruction.ARLEN, new UnaryInstruction<>(AddressableValue.class, x -> new IntegerValue(x.size())));
         executions.put(Instruction.INEG, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(- x.getValue())));
+        executions.put(Instruction.ISUM, integerBinary(Integer::sum));
         executions.put(Instruction.ISUB, integerBinary((x, y) -> x - y));
-        executions.put(Instruction.ISUM, integerBinary((x, y) -> x + y));
         executions.put(Instruction.IMUL, integerBinary((x, y) -> x * y));
         executions.put(Instruction.IDIV, integerBinary((x, y) -> x / y));
         executions.put(Instruction.IMOD, integerBinary((x, y) -> x % y));
+        executions.put(Instruction.FNEG, new UnaryInstruction<>(RealValue.class, x -> new RealValue(- x.getValue())));
+        executions.put(Instruction.FABS, new UnaryInstruction<>(RealValue.class, x -> new RealValue(Math.abs(x.getValue()))));
+        executions.put(Instruction.FSUM, realBinary(Double::sum));
+        executions.put(Instruction.FSUB, realBinary((x, y) -> x - y));
+        executions.put(Instruction.FMUL, realBinary((x, y) -> x * y));
+        executions.put(Instruction.FDIV, realBinary((x, y) -> x / y));
+        executions.put(Instruction.FEXP, realBinary(Math::pow));
     }
 
     public static void execute(Instruction instruction, Stack<Value> stack) {
@@ -30,6 +37,10 @@ public class InstructionProcessor {
 
     private static BinaryInstruction<IntegerValue, IntegerValue> integerBinary(BiFunction<Integer, Integer, Integer> function) {
         return new BinaryInstruction<>(IntegerValue.class, (x, y) -> new IntegerValue(function.apply(x.getValue(), y.getValue())));
+    }
+
+    private static BinaryInstruction<RealValue, RealValue> realBinary(BiFunction<Double, Double, Double> function) {
+        return new BinaryInstruction<>(RealValue.class, (x, y) -> new RealValue(function.apply(x.getValue(), y.getValue())));
     }
 
     @FunctionalInterface

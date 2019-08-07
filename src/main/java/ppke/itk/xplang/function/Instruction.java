@@ -38,6 +38,28 @@ public enum Instruction {
     /** Modulus. */
     IMOD(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Floating point negation. */
+    FNEG(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point absolute value. */
+    FABS(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point addition. */
+    FSUM(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point subtraction. */
+    FSUB(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point multiplication. */
+    FMUL(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point division. */
+    FDIV(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Floating point exponentiation. */
+    FEXP(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Array length: get the number of elements in any addressable type */
     ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
 
     private final Type returnType;

@@ -1,0 +1,8 @@
+**#Valós számok összeadása
+**Memory:a=Real(0.5000)
+program Vardecl
+  Változók:
+    a: Valós
+
+  a := 0.4 + 0.1
+program_vége

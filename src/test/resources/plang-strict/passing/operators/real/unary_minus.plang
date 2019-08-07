@@ -1,0 +1,8 @@
+**#Unary minus operator
+**Memory:a=Real(-0.2000)
+program Vardecl
+  Változók:
+    a: Valós
+
+  a := -0.2
+program_vége

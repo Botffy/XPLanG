@@ -33,8 +33,10 @@ public class PlangGrammar extends Grammar {
             Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
             Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS, props).register(ctx);
             Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES, props).register(ctx);
-            Symbol div = makeSymbol(PlangSymbol.OPERATOR_IDIV, props).register(ctx);
+            Symbol idiv = makeSymbol(PlangSymbol.OPERATOR_IDIV, props).register(ctx);
+            Symbol div = makeSymbol(PlangSymbol.OPERATOR_DIV, props).register(ctx);
             Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD, props).register(ctx);
+            Symbol exp = makeSymbol(PlangSymbol.OPERATOR_EXP, props).register(ctx);
             Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE, props).register(ctx);
             Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -58,6 +60,14 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$times"), Instruction.IMUL);
             ctx.createBuiltin(name("builtin$div"), Instruction.IDIV);
             ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD);
+            ctx.createBuiltin(name("builtin$negate"), Instruction.FNEG);
+            ctx.createBuiltin(name("builtin$length"), Instruction.FABS);
+            ctx.createBuiltin(name("builtin$minus"), Instruction.FSUB);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.FSUM);
+            ctx.createBuiltin(name("builtin$times"), Instruction.FMUL);
+            ctx.createBuiltin(name("builtin$div"), Instruction.FDIV);
+            ctx.createBuiltin(name("builtin$exp"), Instruction.FEXP);
+
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));
@@ -74,8 +84,10 @@ public class PlangGrammar extends Grammar {
             ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
             ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
             ctx.infix(times, new InfixBinary(name("builtin$times"), Operator.Precedence.PRODUCT));
+            ctx.infix(idiv, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
             ctx.infix(div, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
             ctx.infix(mod, new InfixBinary(name("builtin$mod"), Operator.Precedence.PRODUCT));
+            ctx.infix(exp, new InfixBinary(name("builtin$exp"), Operator.Precedence.EXPONENT));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
