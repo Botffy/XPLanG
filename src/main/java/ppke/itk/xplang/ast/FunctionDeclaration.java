@@ -6,7 +6,7 @@ import ppke.itk.xplang.type.Signature;
 public abstract class FunctionDeclaration extends Node {
     private final Signature signature;
 
-    FunctionDeclaration(Location location, Signature signature) {
+    protected FunctionDeclaration(Location location, Signature signature) {
         super(location);
         this.signature = signature;
     }

@@ -20,9 +20,16 @@ public class Archetype {
     };
 
     /** A type that accepts FixArrays no matter what their element type is. */
-    public final static Type ANY_ARRAY = new Type("ANY_ARRAY") {
+    public final static Type ANY_ARRAY = new Type("AnyArray") {
         @Override public boolean accepts(Type that) {
             return that instanceof FixArray;
+        }
+    };
+
+    public final static Type ADDRESSABLE = new Type("Addressable") {
+        @Override
+        public boolean accepts(Type that) {
+            return !Archetype.NONE.equals(that.indexType());
         }
     };
 

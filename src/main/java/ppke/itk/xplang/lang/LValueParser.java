@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Token;
-import ppke.itk.xplang.parser.TypeError;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
 /**
@@ -28,17 +25,23 @@ final class LValueParser {
         log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             Token startToken = parser.advance();
-            RValue address = parser.parseExpression().toASTNode();
-            if(!Archetype.INTEGER_TYPE.accepts(address.getType())) {
-                throw new TypeError(
-                    translator.translate("plang.array_indextype_mismatch", address.getType()),
-                    address.location()
-                );
-            }
+
+            Expression indexExpression = parser.parseExpression();
+            RValue index = TypeChecker.in(parser.context())
+                .checking(indexExpression)
+                .expecting(Archetype.INTEGER_TYPE)
+                .withCustomErrorMessage(
+                    node -> new TypeError(
+                        translator.translate("plang.array_indextype_mismatch", node.getType()),
+                        node.location()
+                    )
+                ).build()
+                .resolve();
+
             Token endToken = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
             Result = new ElementRef(
                 new Location(startToken.location().start, endToken.location().end),
-                toRValue(Result), address
+                toRValue(Result), index
             );
             log.trace("LValue {}", Result.getType());
         }

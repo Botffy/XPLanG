@@ -89,11 +89,13 @@ public class ExpressionParserTest {
 
         ExpressionParser ep = new ExpressionParser(parser);
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
-        RValue astNode = exp.toASTNode();
 
         assertThat("The root of the parse tree is a function call.",
-            astNode, instanceOf(FunctionCall.class)
+            exp, instanceOf(FunctionExpression.class)
         );
+
+        FunctionExpression function = (FunctionExpression) exp;
+        assertEquals(function.getName().toString(), "plus");
     }
 
     @Test public void shouldParseSingleLiterals() throws ParseError {
@@ -102,7 +104,9 @@ public class ExpressionParserTest {
 
         ExpressionParser ep = new ExpressionParser(parser);
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
-        RValue astNode = exp.toASTNode();
+        assertThat(exp, instanceOf(ValueExpression.class));
+
+        RValue astNode = ((ValueExpression) exp).getRValue();
 
         assertEquals("The root of the parse tree should be the integer literal 6",
             Integer.valueOf(6), ((IntegerLiteral) astNode).getValue()
@@ -115,11 +119,11 @@ public class ExpressionParserTest {
 
         ExpressionParser ep = new ExpressionParser(parser);
         Expression exp = ep.parse(Operator.Precedence.CONTAINING);
-        RValue astNode = exp.toASTNode();
 
+        assertThat(exp, instanceOf(FunctionExpression.class));
         assertEquals(
             "The root should be the plus operator",
-            "plus", ((FunctionCall) astNode).getDeclaration().signature().getName()
+            "plus", ((FunctionExpression) exp).getName().toString()
         );
     }
 
@@ -148,7 +152,7 @@ public class ExpressionParserTest {
 
         ExpressionParser ep = new ExpressionParser(parser);
         Expression res = ep.parse(Operator.Precedence.CONTAINING);
-        assertThat(res, instanceOf(Value.class));
+        assertThat(res, instanceOf(ValueExpression.class));
     }
 
     @Test

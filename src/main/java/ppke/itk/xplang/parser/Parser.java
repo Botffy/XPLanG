@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
-import ppke.itk.xplang.parser.operator.Expression;
 import ppke.itk.xplang.parser.operator.ExpressionParser;
 
 import java.io.Reader;

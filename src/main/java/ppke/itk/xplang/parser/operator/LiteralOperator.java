@@ -2,6 +2,8 @@ package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.ast.Literal;
 import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.Expression;
+import ppke.itk.xplang.parser.ValueExpression;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -16,7 +18,7 @@ public class LiteralOperator<T> implements Operator.Prefix {
     }
 
     @Override public Expression parsePrefix(ExpressionParser parser) {
-        return new Value(
+        return new ValueExpression(
             nodeCreation.apply(parser.actual().location(), evaluation.apply(parser.actual().lexeme()))
         );
     }

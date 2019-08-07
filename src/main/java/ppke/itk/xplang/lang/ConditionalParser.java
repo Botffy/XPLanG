@@ -7,9 +7,7 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.TypeError;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
 import java.util.Collections;
@@ -27,10 +25,16 @@ final class ConditionalParser {
         log.debug("Conditional");
         Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
-        RValue condition = parser.parseExpression().toASTNode();
-        if(!Archetype.BOOLEAN_TYPE.accepts(condition.getType())) {
-            throw new TypeError(translator.translate("plang.conditional_must_be_boolean"), condition.location());
-        }
+        Expression conditionExpression = parser.parseExpression();
+        RValue condition = TypeChecker.in(parser.context())
+            .checking(conditionExpression)
+            .expecting(Archetype.BOOLEAN_TYPE)
+            .withCustomErrorMessage(
+                node -> new TypeError(translator.translate("plang.conditional_must_be_boolean"), node.location())
+            )
+            .build()
+            .resolve();
+
         parser.accept(parser.symbol(PlangSymbol.THEN));
         Sequence ifBranch = SequenceParser.parse(
             parser, parser.symbol(PlangSymbol.ENDIF), parser.symbol(PlangSymbol.ELSE)

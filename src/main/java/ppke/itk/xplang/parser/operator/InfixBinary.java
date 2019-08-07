@@ -1,6 +1,8 @@
 package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.Expression;
+import ppke.itk.xplang.parser.FunctionExpression;
 import ppke.itk.xplang.parser.Name;
 import ppke.itk.xplang.parser.ParseError;
 
@@ -25,8 +27,9 @@ public class InfixBinary implements Operator.Infix {
         Location loc = parser.actual().location();
         Expression right = parser.parse(associativity == Associativity.LEFT ? precedence : precedence - 1);
         return new FunctionExpression(
+            functionName,
             loc,
-            parser.context().lookupFunction(functionName).getDeclarations(),
+            parser.context().findFunctionsFor(functionName),
             Arrays.asList(left, right)
         );
     }

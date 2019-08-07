@@ -1,6 +1,8 @@
 package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.Expression;
+import ppke.itk.xplang.parser.FunctionExpression;
 import ppke.itk.xplang.parser.Name;
 import ppke.itk.xplang.parser.ParseError;
 
@@ -19,8 +21,9 @@ public class PrefixUnary implements Operator.Prefix {
         Expression right = parser.parse(getPrecedence());
 
         return new FunctionExpression(
+            functionName,
             loc,
-            parser.context().lookupFunction(functionName).getDeclarations(),
+            parser.context().findFunctionsFor(functionName),
             singletonList(right)
         );
     }

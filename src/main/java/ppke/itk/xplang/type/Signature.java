@@ -1,5 +1,7 @@
 package ppke.itk.xplang.type;
 
+import ppke.itk.xplang.parser.Name;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,21 +13,21 @@ import static java.util.Collections.unmodifiableList;
  * The signature of a function: its name, and the inputs and outputs of the function.
  */
 public class Signature {
-    private final String name;
+    private final Name name;
     private final Type returnType;
     private final List<Type> args;
 
-    public Signature(String name, Type returnType, List<Type> args) {
+    public Signature(Name name, Type returnType, List<Type> args) {
         this.name = name;
         this.returnType = returnType;
         this.args = unmodifiableList(new ArrayList<>(args));
     }
 
-    public Signature(String name, Type returnType, Type... args) {
+    public Signature(Name name, Type returnType, Type... args) {
         this(name, returnType, asList(args));
     }
 
-    public String getName() {
+    public Name getName() {
         return name;
     }
 
@@ -35,6 +37,10 @@ public class Signature {
 
     public List<Type> getArgs() {
         return args;
+    }
+
+    public Type getArg(int i) {
+        return args.get(i);
     }
 
     public Type argType(int position) {

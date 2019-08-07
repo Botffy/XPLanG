@@ -2,65 +2,40 @@ package ppke.itk.xplang.parser;
 
 import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.type.Signature;
-import ppke.itk.xplang.type.Type;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
-@Deprecated
-public class FunctionSet {
-    private final Map<Signature, FunctionDeclaration> set;
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableSet;
 
-    FunctionSet(Map<Signature, FunctionDeclaration> set) {
-        this.set = new HashMap<>(set);
+final class FunctionSet {
+    private final Map<Signature, FunctionDeclaration> set = new HashMap<>();
+
+    void add(FunctionDeclaration function) {
+        set.putIfAbsent(function.signature(), function);
     }
 
-    public Set<FunctionDeclaration> getDeclarations() {
-        return new HashSet<>(set.values());
+    boolean contains(Signature signature) {
+        return set.containsKey(signature);
     }
 
-    public void limitReturnType(Set<Type> types) {
-        Set<Signature> fails = new HashSet<>();
-        for(Signature entry : set.keySet()) {
-            if(types.stream().noneMatch(t -> t.accepts(entry.getReturnType()))) {
-                fails.add(entry);
-            }
+    void merge(FunctionSet that) {
+        for(FunctionDeclaration function : that.set.values()) {
+            this.add(function);
         }
-        fails.forEach(set::remove);
     }
 
-    public void limitArgumentNumberTo(int argNumber) {
-        Set<Signature> fails = new HashSet<>();
-        for(Signature entry : set.keySet()) {
-            if(entry.argumentCount() != argNumber) {
-                fails.add(entry);
-            }
-        }
-        fails.forEach(set::remove);
+    Map<Signature, FunctionDeclaration> getDeclarations() {
+        return unmodifiableMap(set);
     }
 
-    public void limitArgument(int position, Set<Type> types) {
-        Set<Signature> fails = new HashSet<>();
-        for(Signature entry : set.keySet()) {
-            if(types.stream().noneMatch(t -> entry.argType(position).accepts(t))) {
-                fails.add(entry);
-            }
-        }
-        fails.forEach(set::remove);
+    Set<Signature> getSignatures() {
+        return unmodifiableSet(set.keySet());
     }
 
-    public boolean isResolved() {
-        return set.size() == 1;
-    }
-
-    public boolean isAmbiguous() {
-        return set.size() > 1;
-    }
-
-    public boolean isEmpty() {
-        return set.isEmpty();
-    }
-
-    public FunctionDeclaration getOnlyElement() {
-        return set.values().iterator().next();
+    void limitArgumentNumberTo(int argNumber) {
+        set.entrySet().removeIf(x -> x.getKey().argumentCount() != argNumber);
     }
 }

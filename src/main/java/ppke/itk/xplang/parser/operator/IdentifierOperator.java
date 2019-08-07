@@ -1,10 +1,7 @@
 package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.ast.RValue;
-import ppke.itk.xplang.parser.Name;
-import ppke.itk.xplang.parser.NameError;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +24,7 @@ public class IdentifierOperator implements Operator.Prefix {
 
         if (parser.context().isVariable(name)) {
             RValue Result = parser.context().getVariableValue(name, token);
-            return new Value(Result);
+            return new ValueExpression(Result);
         }
 
         if (parser.context().isFunction(name)) {
@@ -36,8 +33,9 @@ public class IdentifierOperator implements Operator.Prefix {
             // TODO more than one parameters :)
 
             return new FunctionExpression(
+                name,
                 parser.actual().location(),
-                parser.context().lookupFunction(name).getDeclarations(),
+                parser.context().findFunctionsFor(name),
                 args
             );
         }

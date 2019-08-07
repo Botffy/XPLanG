@@ -4,7 +4,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
-import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.function.Instruction;
@@ -12,7 +11,6 @@ import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
-import javax.swing.text.html.Option;
 import java.util.*;
 
 import static java.util.stream.Collectors.toList;
@@ -134,12 +132,12 @@ public class Context {
      * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
      */
     public void createBuiltin(Name name, Instruction instruction) throws NameClashError {
-        Signature sig = new Signature(name.toString(), instruction.returnType(), instruction.operands());
+        Signature sig = new Signature(name, instruction.returnType(), instruction.operands());
 
-        FuncSet funcSet;
+        FunctionSet functionSet;
         if (nameTable.isFree(name)) {
-            funcSet = new FuncSet();
-            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.FUNCTION, funcSet));
+            functionSet = new FunctionSet();
+            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.FUNCTION, functionSet));
         }
 
         NameTableEntry entry = nameTable.lookup(name);
@@ -150,13 +148,13 @@ public class Context {
             );
             throw new NameClashError("Could not register builtin function", Location.NONE);
         }
-        funcSet = entry.getValueAsFuncSet();
-        if(funcSet.contains(sig)) {
+        functionSet = entry.getValueAsFuncSet();
+        if(functionSet.contains(sig)) {
             log.error("Could not register builtin by name '{}': same signature already declared in this scope.", name);
             throw new NameClashError("Could not register builtin function", Location.NONE);
         }
 
-        funcSet.add(new BuiltinFunction(Location.NONE, sig, instruction));
+        functionSet.add(new BuiltinFunction(Location.NONE, sig, instruction));
         log.debug("Registered builtin function {} with signature {}", name, sig);
     }
 
@@ -171,17 +169,26 @@ public class Context {
     /**
      * Get all valid and visible Signatures for a Name.
      */
-    @Deprecated
-    public FunctionSet lookupFunction(Name name) {
-        FuncSet funcSet = new FuncSet();
+    public Map<Signature, FunctionDeclaration> findFunctionsFor(Name name) {
+        return functionSetFor(name).getDeclarations();
+    }
+
+    /** Find the FunctionDeclaration node for a signature. */
+    public FunctionDeclaration lookupFunction(Signature signature) {
+        FunctionSet functionSet = functionSetFor(signature.getName());
+        return functionSet.getDeclarations().get(signature);
+    }
+
+    private FunctionSet functionSetFor(Name name) {
+        FunctionSet functionSet = new FunctionSet();
         for (NameTableEntry entry : nameTable.allValues(name)) {
             if (entry.type != NameTableEntry.EntryType.FUNCTION) {
                 break;
             }
 
-            funcSet.merge(entry.getValueAsFuncSet());
+            functionSet.merge(entry.getValueAsFuncSet());
         }
-        return funcSet.toFunctionSet();
+        return functionSet;
     }
 
     /**
@@ -284,7 +291,7 @@ public class Context {
         enum EntryType {
             VARIABLE(VariableDeclaration.class),
             TYPE(Type.class),
-            FUNCTION(FuncSet.class);
+            FUNCTION(FunctionSet.class);
 
             private final Class<?> clazz;
             EntryType(Class<?> clazz) {
@@ -314,32 +321,9 @@ public class Context {
             return (Type) value;
         }
 
-        private FuncSet getValueAsFuncSet() {
-            return (FuncSet) value;
+        private FunctionSet getValueAsFuncSet() {
+            return (FunctionSet) value;
         }
     }
 
-    private static final class FuncSet {
-        private final Map<Signature, FunctionDeclaration> set = new HashMap<>();
-
-        void add(FunctionDeclaration function) {
-            if(!set.containsKey(function.signature())) {
-                set.put(function.signature(), function);
-            }
-        }
-
-        boolean contains(Signature signature) {
-            return set.containsKey(signature);
-        }
-
-        void merge(FuncSet that) {
-            for(FunctionDeclaration function : that.set.values()) {
-                this.add(function);
-            }
-        }
-
-        FunctionSet toFunctionSet() {
-            return new FunctionSet(set);
-        }
-    }
 }

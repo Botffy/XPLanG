@@ -1,5 +1,6 @@
 package ppke.itk.xplang.parser.operator;
 
+import ppke.itk.xplang.parser.Expression;
 import ppke.itk.xplang.parser.ParseError;
 
 public interface Operator {

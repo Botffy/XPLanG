@@ -1,9 +1,7 @@
 package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.Name;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Symbol;
+import ppke.itk.xplang.parser.*;
 
 import static java.util.Collections.singletonList;
 
@@ -23,8 +21,9 @@ public class CircumfixOperator implements Operator.Prefix {
         parser.accept(closingPair, null);
 
         return new FunctionExpression(
+            functionName,
             loc,
-            parser.context().lookupFunction(functionName).getDeclarations(),
+            parser.context().findFunctionsFor(functionName),
             singletonList(right)
         );
     }
