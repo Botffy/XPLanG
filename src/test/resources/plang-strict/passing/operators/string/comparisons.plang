@@ -1,0 +1,23 @@
+**Memory:eq_true=Boolean(true),eq_false=Boolean(false),neq_true=Boolean(true),neq_false=Boolean(false),lt_true=Boolean(true),lt_false=Boolean(false),lte_e_true=Boolean(true)lte_e_false=Boolean(false),gt_true=Boolean(true),gt_false=Boolean(false),gte_e_true=Boolean(true),gte_e_false=Boolean(false)
+program Vardecl
+  Változók:
+    eq_true, eq_false: Logikai,
+    neq_true, neq_false: Logikai,
+    lt_true, lt_false: Logikai,
+    lte_e_true, lte_e_false: Logikai,
+    gt_true, gt_false: Logikai,
+    gte_e_true, gte_e_false: Logikai
+
+  eq_true := "hello" = "hello"
+  eq_false := "hello" = "helloes"
+  neq_true := "hello" /= "jello"
+  neq_false := "hi" /= "hi"
+  lt_true := "hello" < "hi"
+  lt_false := "hi" < "hello"
+  lte_e_true := "árvíztűrő" <= "árvíztűrő"
+  lte_e_false := "hello" <= "hallo"
+  gt_true := "hello" > "hallo"
+  gt_false := "hallo" > "hello"
+  gte_e_true := "hi" >= "hey"
+  gte_e_false := "hey" >= "hi"
+program_vége

@@ -38,6 +38,12 @@ public class PlangGrammar extends Grammar {
             Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD, props).register(ctx);
             Symbol exp = makeSymbol(PlangSymbol.OPERATOR_EXP, props).register(ctx);
             Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE, props).register(ctx);
+            Symbol eq = makeSymbol(PlangSymbol.OPERATOR_EQ, props).register(ctx);
+            Symbol neq = makeSymbol(PlangSymbol.OPERATOR_NEQ, props).register(ctx);
+            Symbol lt = makeSymbol(PlangSymbol.OPERATOR_LT, props).register(ctx);
+            Symbol lte = makeSymbol(PlangSymbol.OPERATOR_LTE, props).register(ctx);
+            Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT, props).register(ctx);
+            Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE, props).register(ctx);
             Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
             Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -54,6 +60,10 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Archetype.CHARACTER_TYPE, props);
             makeType(ctx, Archetype.STRING_TYPE, props);
 
+            createComparisons(ctx, Archetype.INTEGER_TYPE);
+            createComparisons(ctx, Archetype.REAL_TYPE);
+            createComparisons(ctx, Archetype.CHARACTER_TYPE);
+            createComparisons(ctx, Archetype.STRING_TYPE);
             ctx.createBuiltin(name("builtin$negate"), Instruction.INEG);
             ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB);
             ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM);
@@ -78,6 +88,13 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
             ctx.infix(bracketOpen, new ElementValueOperator(bracketClose));
 
+            ctx.infix(eq, new InfixBinary(name("builtin$eq"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(neq, new InfixBinary(name("builtin$neq"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(lt, new InfixBinary(name("builtin$lt"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(lte, new InfixBinary(name("builtin$lte"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(gt, new InfixBinary(name("builtin$gt"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(gte, new InfixBinary(name("builtin$gte"), Operator.Precedence.CONDITIONAL));
+
             ctx.prefix(minus, new PrefixUnary(name("builtin$negate")));
             ctx.prefix(pipe, new CircumfixOperator(pipe, name("builtin$length")));
             ctx.infix(minus, new InfixBinary(name("builtin$minus"), Operator.Precedence.SUM));
@@ -91,6 +108,16 @@ public class PlangGrammar extends Grammar {
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
+    }
+
+    private void createComparisons(Context ctx, Type type) throws NameClashError {
+        ctx.createBuiltin(name("builtin$eq"), Instruction.EQ, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$neq"), Instruction.NEQ, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$lt"), Instruction.LT, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$lte"), Instruction.LTE, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$gt"), Instruction.GT, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$gte"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(name("builtin$"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
     }
 
     /**

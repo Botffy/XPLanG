@@ -2,6 +2,7 @@ package ppke.itk.xplang.function;
 
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.FixArray;
+import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
 import java.util.List;
@@ -19,6 +20,24 @@ import static java.util.Collections.unmodifiableList;
 public enum Instruction {
     /** Identity function: f(x) = x. */
     ID(Archetype.ANY, Archetype.ANY),
+
+    /** Equality */
+    EQ(Archetype.ANY, Archetype.ANY, Archetype.ANY),
+
+    /** Not equal */
+    NEQ(Archetype.ANY, Archetype.ANY, Archetype.ANY),
+
+    /** Comparison: less than */
+    LT(Archetype.ANY, Archetype.ANY, Archetype.ANY),
+
+    /** Comparison: greater than */
+    GT(Archetype.ANY, Archetype.ANY, Archetype.ANY),
+
+    /** Comparison: less than or equal */
+    LTE(Archetype.ANY, Archetype.ANY, Archetype.ANY),
+
+    /** Comparison: greater than or equal */
+    GTE(Archetype.ANY, Archetype.ANY, Archetype.ANY),
 
     /** Integer negation (unary minus operator): f(x) = -x. */
     INEG(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),

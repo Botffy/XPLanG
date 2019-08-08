@@ -7,9 +7,18 @@ import java.util.EnumMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class InstructionProcessor {
+import static ppke.itk.xplang.interpreter.BooleanValue.FALSE;
+import static ppke.itk.xplang.interpreter.BooleanValue.TRUE;
+
+class InstructionProcessor {
     private static EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
     static {
+        executions.put(Instruction.EQ, comparison(x -> x == 0));
+        executions.put(Instruction.NEQ, comparison(x -> x != 0));
+        executions.put(Instruction.LT, comparison(x -> x < 0));
+        executions.put(Instruction.LTE, comparison(x -> x <= 0));
+        executions.put(Instruction.GT, comparison(x -> x > 0));
+        executions.put(Instruction.GTE, comparison(x -> x >= 0));
         executions.put(Instruction.ARLEN, new UnaryInstruction<>(AddressableValue.class, x -> new IntegerValue(x.size())));
         executions.put(Instruction.INEG, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(- x.getValue())));
         executions.put(Instruction.ISUM, integerBinary(Integer::sum));
@@ -26,7 +35,7 @@ public class InstructionProcessor {
         executions.put(Instruction.FEXP, realBinary(Math::pow));
     }
 
-    public static void execute(Instruction instruction, Stack<Value> stack) {
+    static void execute(Instruction instruction, Stack<Value> stack) {
         if (!executions.containsKey(instruction)) {
             throw new IllegalStateException(String.format("Unknown instruction %s", instruction));
         }
@@ -34,6 +43,9 @@ public class InstructionProcessor {
         executions.get(instruction).execute(stack);
     }
 
+    private static BinaryInstruction<BooleanValue, ComparableValue> comparison(Function<Integer, Boolean> function) {
+        return new BinaryInstruction<>(ComparableValue.class, (x, y) -> function.apply(x.compareTo(y)) ? TRUE : FALSE);
+    }
 
     private static BinaryInstruction<IntegerValue, IntegerValue> integerBinary(BiFunction<Integer, Integer, Integer> function) {
         return new BinaryInstruction<>(IntegerValue.class, (x, y) -> new IntegerValue(function.apply(x.getValue(), y.getValue())));

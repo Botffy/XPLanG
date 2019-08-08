@@ -13,6 +13,8 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 
+import static java.util.Arrays.asList;
+import static java.util.Arrays.binarySearch;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -125,14 +127,32 @@ public class Context {
     }
 
     /**
-     * Create and register a new builtin function.
+     * Create and register a new builtin function, using its default signature.
      *
      * @param name the name of the function.
      * @param instruction the instruction to process when the function is called.
      * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
      */
     public void createBuiltin(Name name, Instruction instruction) throws NameClashError {
-        Signature sig = new Signature(name, instruction.returnType(), instruction.operands());
+        createBuiltin(name, instruction, instruction.returnType(), instruction.operands());
+    }
+
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
+        createBuiltin(name, instruction, returnType, asList(operands));
+    }
+
+    /**
+     * Create and register a new builtin function, using a specified signature.
+     *
+     * @param name the name of the function.
+     * @param instruction the instruction to process when the function is called.
+     * @param returnType the return type of the function.
+     * @param operands the types of the operands of the function.
+     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     */
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> operands) throws NameClashError {
+        Signature signature = new Signature(name, returnType, operands);
+        // TODO: validate if this signature may match instruction signature.
 
         FunctionSet functionSet;
         if (nameTable.isFree(name)) {
@@ -149,13 +169,13 @@ public class Context {
             throw new NameClashError("Could not register builtin function", Location.NONE);
         }
         functionSet = entry.getValueAsFuncSet();
-        if(functionSet.contains(sig)) {
+        if(functionSet.contains(signature)) {
             log.error("Could not register builtin by name '{}': same signature already declared in this scope.", name);
             throw new NameClashError("Could not register builtin function", Location.NONE);
         }
 
-        functionSet.add(new BuiltinFunction(Location.NONE, sig, instruction));
-        log.debug("Registered builtin function {} with signature {}", name, sig);
+        functionSet.add(new BuiltinFunction(Location.NONE, signature, instruction));
+        log.debug("Registered builtin function {} with signature {}", name, signature);
     }
 
     /**

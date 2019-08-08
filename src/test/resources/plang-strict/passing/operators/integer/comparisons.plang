@@ -1,0 +1,23 @@
+**Memory:eq_true=Boolean(true),eq_false=Boolean(false),neq_true=Boolean(true),neq_false=Boolean(false),lt_true=Boolean(true),lt_false=Boolean(false),lte_e_true=Boolean(true)lte_e_false=Boolean(false),gt_true=Boolean(true),gt_false=Boolean(false),gte_e_true=Boolean(true),gte_e_false=Boolean(false)
+program Vardecl
+  Változók:
+    eq_true, eq_false: Logikai,
+    neq_true, neq_false: Logikai,
+    lt_true, lt_false: Logikai,
+    lte_e_true, lte_e_false: Logikai,
+    gt_true, gt_false: Logikai,
+    gte_e_true, gte_e_false: Logikai
+
+  eq_true := 1 = 1
+  eq_false := 1 = 2
+  neq_true := 1 /= 2
+  neq_false := 1 /= 1
+  lt_true := 2 < 3
+  lt_false := 3 < 2
+  lte_e_true := 2 <= 3
+  lte_e_false := 3 <= 2
+  gt_true := 3 > 2
+  gt_false := 32 > 3
+  gte_e_true := 33 >= 2
+  gte_e_false := 2 >= 78
+program_vége

@@ -1,0 +1,25 @@
+**Memory:eq_true=Boolean(true),eq_false=Boolean(false),neq_true=Boolean(true),neq_false=Boolean(false),lt_true=Boolean(true),lt_false=Boolean(false),lte_e_true=Boolean(true)lte_e_false=Boolean(false),gt_true=Boolean(true),gt_false=Boolean(false),gte_e_true=Boolean(true),gte_e_false=Boolean(false),unicode_lt=Boolean(true)
+program Vardecl
+  Változók:
+    eq_true, eq_false: Logikai,
+    neq_true, neq_false: Logikai,
+    lt_true, lt_false: Logikai,
+    lte_e_true, lte_e_false: Logikai,
+    gt_true, gt_false: Logikai,
+    gte_e_true, gte_e_false: Logikai,
+    unicode_lt: Logikai
+
+  eq_true := 'a' = 'a'
+  eq_false := 'a' = 'b'
+  neq_true := 'a' /= 'b'
+  neq_false := 'a' /= 'a'
+  lt_true := 'a' < 'b'
+  lt_false := 'c' < 'b'
+  lte_e_true := 'a' <= 'a'
+  lte_e_false := 'z' <= 'm'
+  gt_true := 'z' > 'm'
+  gt_false := 'm' > 'z'
+  gte_e_true := 'c' >= 'c'
+  gte_e_false := 'b' >= 'c'
+  unicode_lt := 'á' > 'b'
+program_vége
