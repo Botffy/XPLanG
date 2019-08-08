@@ -2,7 +2,9 @@ package ppke.itk.xplang.interpreter;
 
 import java.util.Arrays;
 
-class StringValue extends AddressableValue {
+import static ppke.itk.xplang.interpreter.ValueUtils.convert;
+
+class StringValue implements AddressableValue, ComparableValue {
     private final char[] chars;
 
     StringValue(String value) {
@@ -25,11 +27,11 @@ class StringValue extends AddressableValue {
         return new CharacterValue(chars[convert(index, IntegerValue.class).getValue()]);
     }
 
-    @Override StringValue copy() {
+    @Override public StringValue copy() {
         return new StringValue(chars);
     }
 
-    @Override int size() {
+    @Override public int size() {
         return chars.length;
     }
 
@@ -43,5 +45,15 @@ class StringValue extends AddressableValue {
 
     @Override public boolean equals(Object object) {
         return object instanceof StringValue && Arrays.equals(this.chars, ((StringValue) object).chars);
+    }
+
+    @Override
+    public int compareTo(Value other) {
+        if (!(other instanceof StringValue) ) {
+            throw new InterpreterError("Can only compare values of the same type.");
+        }
+
+        StringValue that = (StringValue) other;
+        return new String(this.chars).compareTo(new String(that.chars));
     }
 }

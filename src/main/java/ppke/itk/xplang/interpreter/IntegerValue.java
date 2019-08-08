@@ -1,6 +1,6 @@
 package ppke.itk.xplang.interpreter;
 
-class IntegerValue extends Value {
+class IntegerValue implements ComparableValue {
     private final int value;
 
     IntegerValue(int value) {
@@ -11,7 +11,7 @@ class IntegerValue extends Value {
         return value;
     }
 
-    @Override IntegerValue copy() {
+    @Override public IntegerValue copy() {
         return this;
     }
 
@@ -25,5 +25,15 @@ class IntegerValue extends Value {
 
     @Override public boolean equals(Object object) {
         return object instanceof IntegerValue && this.value == ((IntegerValue) object).value;
+    }
+
+    @Override
+    public int compareTo(Value other) {
+        if (!(other instanceof IntegerValue)) {
+            throw new InterpreterError("Can only compare values of the same type.");
+        }
+
+        IntegerValue that = (IntegerValue) other;
+        return Integer.compare(this.value, that.value);
     }
 }

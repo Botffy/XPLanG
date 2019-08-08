@@ -1,6 +1,6 @@
 package ppke.itk.xplang.interpreter;
 
-final class BooleanValue extends Value {
+final class BooleanValue implements Value {
     final static BooleanValue TRUE = new BooleanValue(true);
     final static BooleanValue FALSE = new BooleanValue(false);
 
@@ -14,7 +14,7 @@ final class BooleanValue extends Value {
         return value;
     }
 
-    @Override BooleanValue copy() {
+    @Override public BooleanValue copy() {
         return this;
     }
 

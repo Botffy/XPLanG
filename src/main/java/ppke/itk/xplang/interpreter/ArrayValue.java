@@ -8,8 +8,9 @@ import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class ArrayValue extends AddressableValue {
+class ArrayValue implements AddressableValue {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
     private final List<Value> values;
@@ -31,11 +32,11 @@ class ArrayValue extends AddressableValue {
         return values.get(convert(index, IntegerValue.class).getValue());
     }
 
-    @Override ArrayValue copy() {
+    @Override public ArrayValue copy() {
         return new ArrayValue(values.stream().map(Value::copy).collect(toList()));
     }
 
-    @Override int size() {
+    @Override public int size() {
         return values.size();
     }
 

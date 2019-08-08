@@ -17,7 +17,7 @@ public class ValueInitialisationTest {
         Type type = FixArray.of(6, Archetype.BOOLEAN_TYPE);
         VariableDeclaration var = new VariableDeclaration(LOCATION, "a", type);
 
-        Value initialValue = Value.initialise(var.getType());
+        Value initialValue = ValueUtils.initialise(var.getType());
         assertThat("Composite types should be initialised with ArrayValues",
             initialValue, instanceOf(ArrayValue.class)
         );
@@ -27,7 +27,7 @@ public class ValueInitialisationTest {
         Type type = FixArray.of(6, FixArray.of(2, Archetype.BOOLEAN_TYPE));
         VariableDeclaration var = new VariableDeclaration(LOCATION, "a", type);
 
-        Value initialValue = Value.initialise(var.getType());
+        Value initialValue = ValueUtils.initialise(var.getType());
         ArrayValue value = (ArrayValue) initialValue;
         assertThat("Composite types should be initialised with ArrayValues",
             value.getComponent(new IntegerValue(0)), instanceOf(ArrayValue.class)

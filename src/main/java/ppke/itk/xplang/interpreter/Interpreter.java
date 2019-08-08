@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.util.Stack;
 
-import static ppke.itk.xplang.interpreter.Value.initialise;
+import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
 
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");

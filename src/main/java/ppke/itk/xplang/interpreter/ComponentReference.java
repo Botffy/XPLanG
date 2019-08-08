@@ -2,7 +2,7 @@ package ppke.itk.xplang.interpreter;
 
 import java.util.Objects;
 
-public class ComponentReference extends ReferenceValue {
+public class ComponentReference implements ReferenceValue {
     private final Addressable composite;
     private final Object address;
 
@@ -11,11 +11,11 @@ public class ComponentReference extends ReferenceValue {
         this.address = address;
     }
 
-    @Override void assign(Value value) {
+    @Override public void assign(Value value) {
         this.composite.setComponent(this.address, value);
     }
 
-    @Override ComponentReference copy() {
+    @Override public ComponentReference copy() {
         return this;
     }
 

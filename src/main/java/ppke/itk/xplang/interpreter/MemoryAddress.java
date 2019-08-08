@@ -1,6 +1,6 @@
 package ppke.itk.xplang.interpreter;
 
-class MemoryAddress extends ReferenceValue {
+class MemoryAddress implements ReferenceValue {
     private final Memory memory;
     private final Object address;
 
@@ -13,11 +13,11 @@ class MemoryAddress extends ReferenceValue {
         return address;
     }
 
-    @Override void assign(Value value) {
+    @Override public void assign(Value value) {
         memory.set(this, value);
     }
 
-    @Override Value copy() {
+    @Override public Value copy() {
         return null;
     }
 
