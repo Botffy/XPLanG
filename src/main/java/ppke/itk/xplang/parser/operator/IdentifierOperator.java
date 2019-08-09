@@ -1,6 +1,7 @@
 package ppke.itk.xplang.parser.operator;
 
 import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class IdentifierOperator implements Operator.Prefix {
     @Override
     public Expression parsePrefix(ExpressionParser parser) throws ParseError {
         Token token = parser.actual();
+        Location location = parser.actual().location();
         Name name = nameCreator.apply(token.lexeme());
 
         if (parser.context().isVariable(name)) {
@@ -35,7 +37,7 @@ public class IdentifierOperator implements Operator.Prefix {
             Expression rhs = parser.parse();
             return new FunctionExpression(
                 SpecialName.TYPE_CONVERSION,
-                parser.actual().location(),
+                location,
                 parser.context().findFunctionsFor(SpecialName.TYPE_CONVERSION),
                 singletonList(rhs)
             );

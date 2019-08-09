@@ -1,0 +1,7 @@
+**#Using a typename for conversion, but that conversion function does not exist
+**FirstErrorLoc:6,8
+program t
+  Változók:
+    x: szöveg
+  x := szöveg 'k'
+program_vége
