@@ -1,0 +1,10 @@
+**Memory:a=Boolean(true),b=Boolean(hamis),c=Boolean(true),d=Boolean(true)
+Program testing
+  Változók:
+    a, b, c, d: Logikai
+
+  a := igaz vagy hamis
+  b := hamis vagy hamis
+  c := igaz vagy igaz
+  d := hamis vagy igaz
+program_vége

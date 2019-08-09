@@ -1,0 +1,8 @@
+**#No + operator defined between string and integer
+**FirstErrorLoc:7,16
+Program testing
+  Változók:
+    a: Szöveg
+
+  a := "12345" + 6
+program_vége

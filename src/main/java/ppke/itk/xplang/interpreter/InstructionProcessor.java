@@ -19,6 +19,9 @@ class InstructionProcessor {
         executions.put(Instruction.LTE, comparison(x -> x <= 0));
         executions.put(Instruction.GT, comparison(x -> x > 0));
         executions.put(Instruction.GTE, comparison(x -> x >= 0));
+        executions.put(Instruction.NOT, new UnaryInstruction<>(BooleanValue.class, x -> x.negate()));
+        executions.put(Instruction.OR, new BinaryInstruction<>(BooleanValue.class, (x, y) -> x.or(y)));
+        executions.put(Instruction.AND, new BinaryInstruction<>(BooleanValue.class, (x, y) -> x.and(y)));
         executions.put(Instruction.ARLEN, new UnaryInstruction<>(AddressableValue.class, x -> new IntegerValue(x.size())));
         executions.put(Instruction.INEG, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(- x.getValue())));
         executions.put(Instruction.ISUM, integerBinary(Integer::sum));

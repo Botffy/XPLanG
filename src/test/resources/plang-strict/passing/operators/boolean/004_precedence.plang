@@ -1,0 +1,7 @@
+**Memory:a=Boolean(true)
+Program testing
+  Változók:
+    a: Logikai
+
+  a := nem hamis és igaz vagy hamis
+program_vége

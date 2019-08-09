@@ -18,6 +18,18 @@ final class BooleanValue implements Value {
         return this;
     }
 
+    public BooleanValue negate() {
+        return this == TRUE ? FALSE : TRUE;
+    }
+
+    public BooleanValue or(BooleanValue that) {
+        return valueOf(this.value || that.value);
+    }
+
+    public BooleanValue and(BooleanValue that) {
+        return valueOf(this.value && that.value);
+    }
+
     @Override public String toString() {
         return String.format("Boolean(%s)", value);
     }

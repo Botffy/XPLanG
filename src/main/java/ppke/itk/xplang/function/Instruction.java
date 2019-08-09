@@ -39,6 +39,15 @@ public enum Instruction {
     /** Comparison: greater than or equal */
     GTE(Archetype.ANY, Archetype.ANY, Archetype.ANY),
 
+    /** Logical NOT */
+    NOT(Archetype.BOOLEAN_TYPE, Archetype.BOOLEAN_TYPE),
+
+    /** Logical OR */
+    OR(Archetype.BOOLEAN_TYPE, Archetype.BOOLEAN_TYPE, Archetype.BOOLEAN_TYPE),
+
+    /** Logical AND */
+    AND(Archetype.BOOLEAN_TYPE, Archetype.BOOLEAN_TYPE, Archetype.BOOLEAN_TYPE),
+
     /** Integer negation (unary minus operator): f(x) = -x. */
     INEG(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 

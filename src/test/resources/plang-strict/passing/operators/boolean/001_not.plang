@@ -1,0 +1,8 @@
+**Memory:a=Boolean(false),b=Boolean(true)
+Program testing
+  Változók:
+    a, b: Logikai
+
+  a := nem igaz
+  b := nem hamis
+program_vége

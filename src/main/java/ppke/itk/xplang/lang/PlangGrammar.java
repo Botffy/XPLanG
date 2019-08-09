@@ -33,6 +33,9 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.COMMA, props).register(ctx);
             Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
             Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
+            Symbol not = makeSymbol(PlangSymbol.OPERATOR_NOT, props).register(ctx);
+            Symbol or = makeSymbol(PlangSymbol.OPERATOR_OR, props).register(ctx);
+            Symbol and = makeSymbol(PlangSymbol.OPERATOR_AND, props).register(ctx);
             Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
             Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS, props).register(ctx);
             Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES, props).register(ctx);
@@ -67,6 +70,9 @@ public class PlangGrammar extends Grammar {
             createComparisons(ctx, Archetype.REAL_TYPE);
             createComparisons(ctx, Archetype.CHARACTER_TYPE);
             createComparisons(ctx, Archetype.STRING_TYPE);
+            ctx.createBuiltin(name("builtin$not"), Instruction.NOT);
+            ctx.createBuiltin(name("builtin$or"), Instruction.OR);
+            ctx.createBuiltin(name("builtin$and"), Instruction.AND);
             ctx.createBuiltin(name("builtin$negate"), Instruction.INEG);
             ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB);
             ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM);
@@ -97,6 +103,10 @@ public class PlangGrammar extends Grammar {
             ctx.infix(lte, new InfixBinary(name("builtin$lte"), Operator.Precedence.CONDITIONAL));
             ctx.infix(gt, new InfixBinary(name("builtin$gt"), Operator.Precedence.CONDITIONAL));
             ctx.infix(gte, new InfixBinary(name("builtin$gte"), Operator.Precedence.CONDITIONAL));
+
+            ctx.prefix(not, new PrefixUnary(name("builtin$not")));
+            ctx.infix(or, new InfixBinary(name("builtin$or"), Operator.Precedence.LOGIC));
+            ctx.infix(and, new InfixBinary(name("builtin$and"), Operator.Precedence.LOGIC));
 
             ctx.prefix(minus, new PrefixUnary(name("builtin$negate")));
             ctx.prefix(pipe, new CircumfixOperator(pipe, name("builtin$length")));
