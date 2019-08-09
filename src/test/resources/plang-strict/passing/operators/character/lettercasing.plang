@@ -1,0 +1,15 @@
+**Memory:a=Character('á'),b=Character('Á'),c=Character('9'),x1=Boolean(true),x2=Boolean(false),y1=Boolean(false),y2=Boolean(true)
+program Vardecl
+  Változók:
+    a,b,c: Karakter,
+    x1, x2, y1, y2: Logikai
+
+  a := kis 'Á'
+  b := nagy 'Á'
+  c := kis '9'
+
+  x1 := Betű 'Á'
+  x2 := Betű '9'
+  y1 := Szám 'Á'
+  y1 := Szám '9'
+program_vége

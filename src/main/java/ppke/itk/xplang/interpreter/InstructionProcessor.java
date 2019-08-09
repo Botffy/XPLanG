@@ -49,6 +49,10 @@ class InstructionProcessor {
         executions.put(Instruction.ATAN, realUnary(Math::atan));
         executions.put(Instruction.LD, realUnary(Math::log));
         executions.put(Instruction.EXP, realUnary(Math::exp));
+        executions.put(Instruction.NAGY, new UnaryInstruction<>(CharacterValue.class, x -> new CharacterValue(Character.toUpperCase(x.getValue()))));
+        executions.put(Instruction.KIS, new UnaryInstruction<>(CharacterValue.class, x -> new CharacterValue(Character.toLowerCase(x.getValue()))));
+        executions.put(Instruction.IS_LETTER, new UnaryInstruction<>(CharacterValue.class, x -> BooleanValue.valueOf(Character.isLetter(x.getValue()))));
+        executions.put(Instruction.IS_DIGIT, new UnaryInstruction<>(CharacterValue.class, x -> BooleanValue.valueOf(Character.isDigit(x.getValue()))));
     }
 
     static void execute(Instruction instruction, Stack<Value> stack) {

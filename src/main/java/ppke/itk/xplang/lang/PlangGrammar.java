@@ -103,6 +103,11 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("log"), Instruction.LD);
             ctx.createBuiltin(name("exp"), Instruction.EXP);
 
+            ctx.createBuiltin(name("nagy"), Instruction.NAGY);
+            ctx.createBuiltin(name("kis"), Instruction.KIS);
+            ctx.createBuiltin(name("betű"), Instruction.IS_LETTER);
+            ctx.createBuiltin(name("szám"), Instruction.IS_DIGIT);
+
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));
             ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));

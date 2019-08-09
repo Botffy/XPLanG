@@ -117,6 +117,18 @@ public enum Instruction {
     /** Floating point exponentiation. */
     FEXP(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
 
+    /** To uppercase */
+    NAGY(Archetype.CHARACTER_TYPE, Archetype.CHARACTER_TYPE),
+
+    /** To lowercase */
+    KIS(Archetype.CHARACTER_TYPE, Archetype.CHARACTER_TYPE),
+
+    /** Is argument a letter? */
+    IS_LETTER(Archetype.BOOLEAN_TYPE, Archetype.CHARACTER_TYPE),
+
+    /** Is argument a number? */
+    IS_DIGIT(Archetype.BOOLEAN_TYPE, Archetype.CHARACTER_TYPE),
+
     /** Array length: get the number of elements in any addressable type */
     ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
 
