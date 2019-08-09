@@ -344,6 +344,11 @@ public class Context {
         private FunctionSet getValueAsFuncSet() {
             return (FunctionSet) value;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s[%s]", type, value);
+        }
     }
 
 }
