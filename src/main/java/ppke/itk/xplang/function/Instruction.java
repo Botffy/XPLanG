@@ -72,6 +72,30 @@ public enum Instruction {
     /** Generate a random number between the [0..x) interval */
     RAND(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Sinus */
+    SIN(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Cosinus */
+    COS(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Tangent */
+    TAN(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Arcus sinus*/
+    ASIN(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Arcus cosinus */
+    ACOS(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Arcus tangent */
+    ATAN(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Base 2 logarithm */
+    LD(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Exponential */
+    EXP(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
     /** Floating point negation. */
     FNEG(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
 

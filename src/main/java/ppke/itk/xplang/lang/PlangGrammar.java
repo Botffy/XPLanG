@@ -94,6 +94,14 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
             ctx.createBuiltin(name("rnd"), Instruction.RAND);
+            ctx.createBuiltin(name("sin"), Instruction.SIN);
+            ctx.createBuiltin(name("cos"), Instruction.COS);
+            ctx.createBuiltin(name("tan"), Instruction.TAN);
+            ctx.createBuiltin(name("arcsin"), Instruction.ASIN);
+            ctx.createBuiltin(name("arccos"), Instruction.ACOS);
+            ctx.createBuiltin(name("arctan"), Instruction.ATAN);
+            ctx.createBuiltin(name("log"), Instruction.LD);
+            ctx.createBuiltin(name("exp"), Instruction.EXP);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));

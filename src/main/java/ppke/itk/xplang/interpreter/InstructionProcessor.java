@@ -41,6 +41,14 @@ class InstructionProcessor {
         executions.put(Instruction.FMUL, realBinary((x, y) -> x * y));
         executions.put(Instruction.FDIV, realBinary((x, y) -> x / y));
         executions.put(Instruction.FEXP, realBinary(Math::pow));
+        executions.put(Instruction.SIN, realUnary(Math::sin));
+        executions.put(Instruction.COS, realUnary(Math::cos));
+        executions.put(Instruction.TAN, realUnary(Math::tan));
+        executions.put(Instruction.ASIN, realUnary(Math::asin));
+        executions.put(Instruction.ACOS, realUnary(Math::acos));
+        executions.put(Instruction.ATAN, realUnary(Math::atan));
+        executions.put(Instruction.LD, realUnary(Math::log));
+        executions.put(Instruction.EXP, realUnary(Math::exp));
     }
 
     static void execute(Instruction instruction, Stack<Value> stack) {
@@ -57,6 +65,10 @@ class InstructionProcessor {
 
     private static BinaryInstruction<IntegerValue, IntegerValue> integerBinary(BiFunction<Integer, Integer, Integer> function) {
         return new BinaryInstruction<>(IntegerValue.class, (x, y) -> new IntegerValue(function.apply(x.getValue(), y.getValue())));
+    }
+
+    private static UnaryInstruction<RealValue, RealValue> realUnary(Function<Double, Double> function) {
+        return new UnaryInstruction<>(RealValue.class, x -> new RealValue(function.apply(x.getValue())));
     }
 
     private static BinaryInstruction<RealValue, RealValue> realBinary(BiFunction<Double, Double, Double> function) {
