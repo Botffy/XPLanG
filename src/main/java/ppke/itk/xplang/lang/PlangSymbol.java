@@ -17,6 +17,8 @@ enum PlangSymbol {
     ASSIGNMENT,
     COLON,
     COMMA,
+    PAREN_OPEN,
+    PAREN_CLOSE,
     BRACKET_OPEN,
     BRACKET_CLOSE,
     OPERATOR_NOT,

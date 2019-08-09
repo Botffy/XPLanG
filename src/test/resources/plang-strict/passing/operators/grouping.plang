@@ -1,0 +1,9 @@
+**#Zárójelezés
+**Memory:a=Integer(28),b=Integer(-40)
+program Vardecl
+  Változók:
+    a, b: Egész
+
+  a := (6 - 2) * 7
+  b := ((6 - 2) * (1 - 2)) * 10
+program_vége

@@ -19,6 +19,7 @@ public interface Operator {
         public static final int UNARY_PREFIX = 80;
         public static final int UNARY_POSTFIX = 90;
         public static final int FUNCTION = 100;
+        public static final int GROUPING = Integer.MAX_VALUE;
 
         private Precedence() { /* Private ctor to hide the default one. */ }
     }

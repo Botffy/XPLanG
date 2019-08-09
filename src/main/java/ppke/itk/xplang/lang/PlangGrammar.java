@@ -31,6 +31,8 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.ASSIGNMENT, props).register(ctx);
             makeSymbol(PlangSymbol.COLON, props).register(ctx);
             makeSymbol(PlangSymbol.COMMA, props).register(ctx);
+            Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN, props).register(ctx);
+            Symbol parenClose = makeSymbol(PlangSymbol.PAREN_CLOSE, props).register(ctx);
             Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
             Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
             Symbol not = makeSymbol(PlangSymbol.OPERATOR_NOT, props).register(ctx);
@@ -89,6 +91,7 @@ public class PlangGrammar extends Grammar {
 
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
+            ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));
             ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
             ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, Double::valueOf));
