@@ -93,20 +93,20 @@ public class PlangGrammar extends Grammar {
 
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
-            ctx.createBuiltin(name("rnd"), Instruction.RAND);
-            ctx.createBuiltin(name("sin"), Instruction.SIN);
-            ctx.createBuiltin(name("cos"), Instruction.COS);
-            ctx.createBuiltin(name("tan"), Instruction.TAN);
-            ctx.createBuiltin(name("arcsin"), Instruction.ASIN);
-            ctx.createBuiltin(name("arccos"), Instruction.ACOS);
-            ctx.createBuiltin(name("arctan"), Instruction.ATAN);
-            ctx.createBuiltin(name("log"), Instruction.LD);
-            ctx.createBuiltin(name("exp"), Instruction.EXP);
+            ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND);
+            ctx.createBuiltin(name(props.getFunctionName("sin")), Instruction.SIN);
+            ctx.createBuiltin(name(props.getFunctionName("cos")), Instruction.COS);
+            ctx.createBuiltin(name(props.getFunctionName("tan")), Instruction.TAN);
+            ctx.createBuiltin(name(props.getFunctionName("asin")), Instruction.ASIN);
+            ctx.createBuiltin(name(props.getFunctionName("acos")), Instruction.ACOS);
+            ctx.createBuiltin(name(props.getFunctionName("atan")), Instruction.ATAN);
+            ctx.createBuiltin(name(props.getFunctionName("ld")), Instruction.LD);
+            ctx.createBuiltin(name(props.getFunctionName("exp")), Instruction.EXP);
 
-            ctx.createBuiltin(name("nagy"), Instruction.NAGY);
-            ctx.createBuiltin(name("kis"), Instruction.KIS);
-            ctx.createBuiltin(name("betű"), Instruction.IS_LETTER);
-            ctx.createBuiltin(name("szám"), Instruction.IS_DIGIT);
+            ctx.createBuiltin(name(props.getFunctionName("nagy")), Instruction.NAGY);
+            ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS);
+            ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER);
+            ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));

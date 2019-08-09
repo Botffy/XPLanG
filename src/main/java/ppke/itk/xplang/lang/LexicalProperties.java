@@ -41,4 +41,8 @@ final class LexicalProperties {
     String getTypeName(Type type) {
         return get(String.format("type.name.%s", type.getLabel()));
     }
+
+    String getFunctionName(String key) {
+        return get(String.format("function.name.%s", key));
+    }
 }
