@@ -97,12 +97,12 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
             ctx.infix(bracketOpen, new ElementValueOperator(bracketClose));
 
-            ctx.infix(eq, new InfixBinary(name("builtin$eq"), Operator.Precedence.CONDITIONAL));
-            ctx.infix(neq, new InfixBinary(name("builtin$neq"), Operator.Precedence.CONDITIONAL));
-            ctx.infix(lt, new InfixBinary(name("builtin$lt"), Operator.Precedence.CONDITIONAL));
-            ctx.infix(lte, new InfixBinary(name("builtin$lte"), Operator.Precedence.CONDITIONAL));
-            ctx.infix(gt, new InfixBinary(name("builtin$gt"), Operator.Precedence.CONDITIONAL));
-            ctx.infix(gte, new InfixBinary(name("builtin$gte"), Operator.Precedence.CONDITIONAL));
+            ctx.infix(eq, new InfixBinary(name("builtin$eq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(neq, new InfixBinary(name("builtin$neq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(lt, new InfixBinary(name("builtin$lt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(lte, new InfixBinary(name("builtin$lte"), Operator.Precedence.RELATIONAL));
+            ctx.infix(gt, new InfixBinary(name("builtin$gt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(gte, new InfixBinary(name("builtin$gte"), Operator.Precedence.RELATIONAL));
 
             ctx.prefix(not, new PrefixUnary(name("builtin$not")));
             ctx.infix(or, new InfixBinary(name("builtin$or"), Operator.Precedence.LOGIC));

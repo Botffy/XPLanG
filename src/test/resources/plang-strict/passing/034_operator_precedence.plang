@@ -1,0 +1,9 @@
+**#Operator precedence
+**Memory:b=Boolean(true)
+Program testing
+  Változók:
+    b: Logikai
+
+  b := 5 <3 vagy 5 < 10
+program_vége
+

@@ -4,7 +4,7 @@ Program testing
 
   a := 1
 
-  ciklus amíg a < 3
+  ciklus amíg a < 3 vagy a < 10
     a := a + 1
   ciklus_vége
 program_vége
