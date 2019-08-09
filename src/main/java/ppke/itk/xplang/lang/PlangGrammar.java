@@ -76,6 +76,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$or"), Instruction.OR);
             ctx.createBuiltin(name("builtin$and"), Instruction.AND);
             ctx.createBuiltin(name("builtin$negate"), Instruction.INEG);
+            ctx.createBuiltin(name("builtin$length"), Instruction.IABS);
             ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB);
             ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM);
             ctx.createBuiltin(name("builtin$times"), Instruction.IMUL);

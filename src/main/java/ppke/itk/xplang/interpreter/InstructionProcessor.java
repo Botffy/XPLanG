@@ -24,6 +24,7 @@ class InstructionProcessor {
         executions.put(Instruction.AND, new BinaryInstruction<>(BooleanValue.class, (x, y) -> x.and(y)));
         executions.put(Instruction.ARLEN, new UnaryInstruction<>(AddressableValue.class, x -> new IntegerValue(x.size())));
         executions.put(Instruction.INEG, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(- x.getValue())));
+        executions.put(Instruction.IABS, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(Math.abs(x.getValue()))));
         executions.put(Instruction.ISUM, integerBinary(Integer::sum));
         executions.put(Instruction.ISUB, integerBinary((x, y) -> x - y));
         executions.put(Instruction.IMUL, integerBinary((x, y) -> x * y));

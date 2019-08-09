@@ -1,0 +1,8 @@
+**Memory:a=Real(15),b=Real(15)
+program Vardecl
+  Változók:
+    a,b: Egész
+
+  a := |15|
+  b := |-15|
+program_vége

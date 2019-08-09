@@ -51,6 +51,9 @@ public enum Instruction {
     /** Integer negation (unary minus operator): f(x) = -x. */
     INEG(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Absolute value for integers */
+    IABS(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
+
     /** Integer addition. */
     ISUM(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
