@@ -264,6 +264,11 @@ public class Context {
         }
     }
 
+    public boolean isType(Name name) {
+        NameTableEntry entry = nameTable.lookup(name);
+        return entry != null && entry.type == NameTableEntry.EntryType.TYPE;
+    }
+
     /**
      * Get a type by its name.
      * @throws NameError if the name is unknown, or does not denote a type.

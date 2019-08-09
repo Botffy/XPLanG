@@ -4,8 +4,12 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+
+import static java.util.Collections.singletonList;
 
 /**
  * An identifier acts as a prefix operator in the Pratt parser, and may denote a variable or a function call.
@@ -25,6 +29,16 @@ public class IdentifierOperator implements Operator.Prefix {
         if (parser.context().isVariable(name)) {
             RValue Result = parser.context().getVariableValue(name, token);
             return new ValueExpression(Result);
+        }
+
+        if (parser.context().isType(name)) {
+            Expression rhs = parser.parse();
+            return new FunctionExpression(
+                SpecialName.TYPE_CONVERSION,
+                parser.actual().location(),
+                parser.context().findFunctionsFor(SpecialName.TYPE_CONVERSION),
+                singletonList(rhs)
+            );
         }
 
         if (parser.context().isFunction(name)) {

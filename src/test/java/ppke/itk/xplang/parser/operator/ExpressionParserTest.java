@@ -26,7 +26,7 @@ public class ExpressionParserTest {
     private final static Symbol IDENTIFIER = Symbol.create().named("Identifier").matching("[a-zA-Z][a-zA-Z0-9]*").build();
     private final static Symbol WHITESPACE = Symbol.create().named("Whitespace").matching("\\s+").notSignificant().build();
 
-    private final static class TestName extends Name {
+    private final static class TestName implements Name {
         private final String name;
 
         public TestName(String name) {

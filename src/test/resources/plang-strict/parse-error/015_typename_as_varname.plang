@@ -1,0 +1,7 @@
+**#Semantic error: name already in use as typename.
+**FirstErrorLoc:5,5
+program vardecl_nameclash
+  Változók:
+    egész: Egész
+  egész := 1
+program_vége

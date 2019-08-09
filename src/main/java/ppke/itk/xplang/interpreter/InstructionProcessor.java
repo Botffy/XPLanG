@@ -34,6 +34,7 @@ class InstructionProcessor {
         executions.put(Instruction.IDIV, integerBinary((x, y) -> x / y));
         executions.put(Instruction.IMOD, integerBinary((x, y) -> x % y));
         executions.put(Instruction.RAND, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(random.nextInt(x.getValue()))));
+        executions.put(Instruction.ITOF, new UnaryInstruction<>(IntegerValue.class, x -> new RealValue(x.getValue())));
         executions.put(Instruction.FNEG, new UnaryInstruction<>(RealValue.class, x -> new RealValue(- x.getValue())));
         executions.put(Instruction.FABS, new UnaryInstruction<>(RealValue.class, x -> new RealValue(Math.abs(x.getValue()))));
         executions.put(Instruction.FSUM, realBinary(Double::sum));
@@ -41,6 +42,8 @@ class InstructionProcessor {
         executions.put(Instruction.FMUL, realBinary((x, y) -> x * y));
         executions.put(Instruction.FDIV, realBinary((x, y) -> x / y));
         executions.put(Instruction.FEXP, realBinary(Math::pow));
+        executions.put(Instruction.ROUND, new UnaryInstruction<>(RealValue.class, x -> new IntegerValue((int) (x.getValue() + 0.5))));
+        executions.put(Instruction.FTOI, new UnaryInstruction<>(RealValue.class, x -> new IntegerValue((int) (x.getValue()))));
         executions.put(Instruction.SIN, realUnary(Math::sin));
         executions.put(Instruction.COS, realUnary(Math::cos));
         executions.put(Instruction.TAN, realUnary(Math::tan));

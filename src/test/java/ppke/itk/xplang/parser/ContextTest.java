@@ -103,7 +103,7 @@ public class ContextTest {
         throwable.printStackTrace();
     }
 
-    private static class TestName extends Name {
+    private static class TestName implements Name {
         private final String value;
 
         TestName(String name) {

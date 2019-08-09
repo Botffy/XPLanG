@@ -72,6 +72,9 @@ public enum Instruction {
     /** Generate a random number between the [0..x) interval */
     RAND(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Convert integer to real number */
+    ITOF(Archetype.REAL_TYPE, Archetype.INTEGER_TYPE),
+
     /** Sinus */
     SIN(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
 
@@ -116,6 +119,12 @@ public enum Instruction {
 
     /** Floating point exponentiation. */
     FEXP(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
+
+    /** Round a real number r to the highest integer x for which x < r */
+    FTOI(Archetype.INTEGER_TYPE, Archetype.REAL_TYPE),
+
+    /** Round a real number to the nearest integer. */
+    ROUND(Archetype.INTEGER_TYPE, Archetype.REAL_TYPE),
 
     /** To uppercase */
     NAGY(Archetype.CHARACTER_TYPE, Archetype.CHARACTER_TYPE),

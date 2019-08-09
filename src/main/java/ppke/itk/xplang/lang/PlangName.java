@@ -4,7 +4,7 @@ import ppke.itk.xplang.parser.Name;
 
 import java.util.Locale;
 
-class PlangName extends Name {
+class PlangName implements Name {
     private final String value;
 
     PlangName(String str) {

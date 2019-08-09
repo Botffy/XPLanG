@@ -68,6 +68,9 @@ public class PlangGrammar extends Grammar {
             makeType(ctx, Archetype.CHARACTER_TYPE, props);
             makeType(ctx, Archetype.STRING_TYPE, props);
 
+            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.FTOI);
+            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF);
+
             createComparisons(ctx, Archetype.INTEGER_TYPE);
             createComparisons(ctx, Archetype.REAL_TYPE);
             createComparisons(ctx, Archetype.CHARACTER_TYPE);
@@ -105,7 +108,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name(props.getFunctionName("atan")), Instruction.ATAN);
             ctx.createBuiltin(name(props.getFunctionName("ld")), Instruction.LD);
             ctx.createBuiltin(name(props.getFunctionName("exp")), Instruction.EXP);
-
+            ctx.createBuiltin(name(props.getFunctionName("round")), Instruction.ROUND);
             ctx.createBuiltin(name(props.getFunctionName("nagy")), Instruction.NAGY);
             ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS);
             ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER);
