@@ -1,0 +1,10 @@
+**Memory:a=String("Helloworld"),b=String("Hello"),c=String("Hello"),d=String("Hello world")
+program testing
+  Változók:
+    a, b, c, d: Szöveg
+
+a := "Hello" + "world"
+b := "Hell" + 'o'
+c := 'H' + "ello"
+d := "Hello world"
+program_vége

@@ -22,9 +22,9 @@ class InstructionProcessor {
         executions.put(Instruction.LTE, comparison(x -> x <= 0));
         executions.put(Instruction.GT, comparison(x -> x > 0));
         executions.put(Instruction.GTE, comparison(x -> x >= 0));
-        executions.put(Instruction.NOT, new UnaryInstruction<>(BooleanValue.class, x -> x.negate()));
-        executions.put(Instruction.OR, new BinaryInstruction<>(BooleanValue.class, (x, y) -> x.or(y)));
-        executions.put(Instruction.AND, new BinaryInstruction<>(BooleanValue.class, (x, y) -> x.and(y)));
+        executions.put(Instruction.NOT, new UnaryInstruction<>(BooleanValue.class, BooleanValue::negate));
+        executions.put(Instruction.OR, new BinaryInstruction<>(BooleanValue.class, BooleanValue.class, BooleanValue::or));
+        executions.put(Instruction.AND, new BinaryInstruction<>(BooleanValue.class, BooleanValue.class, BooleanValue::and));
         executions.put(Instruction.ARLEN, new UnaryInstruction<>(AddressableValue.class, x -> new IntegerValue(x.size())));
         executions.put(Instruction.INEG, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(- x.getValue())));
         executions.put(Instruction.IABS, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(Math.abs(x.getValue()))));
@@ -53,6 +53,9 @@ class InstructionProcessor {
         executions.put(Instruction.KIS, new UnaryInstruction<>(CharacterValue.class, x -> new CharacterValue(Character.toLowerCase(x.getValue()))));
         executions.put(Instruction.IS_LETTER, new UnaryInstruction<>(CharacterValue.class, x -> BooleanValue.valueOf(Character.isLetter(x.getValue()))));
         executions.put(Instruction.IS_DIGIT, new UnaryInstruction<>(CharacterValue.class, x -> BooleanValue.valueOf(Character.isDigit(x.getValue()))));
+        executions.put(Instruction.APPEND, new BinaryInstruction<>(StringValue.class, CharacterValue.class, (x, y) -> x.append(y)));
+        executions.put(Instruction.PREPEND, new BinaryInstruction<>(CharacterValue.class, StringValue.class, (x, y) -> y.prepend(x)));
+        executions.put(Instruction.CONCAT, new BinaryInstruction<>(StringValue.class, StringValue.class, (x, y) -> x.concat(y)));
     }
 
     static void execute(Instruction instruction, Stack<Value> stack) {
@@ -63,20 +66,20 @@ class InstructionProcessor {
         executions.get(instruction).execute(stack);
     }
 
-    private static BinaryInstruction<BooleanValue, ComparableValue> comparison(Function<Integer, Boolean> function) {
-        return new BinaryInstruction<>(ComparableValue.class, (x, y) -> function.apply(x.compareTo(y)) ? TRUE : FALSE);
+    private static BinaryInstruction<BooleanValue, ComparableValue, ComparableValue> comparison(Function<Integer, Boolean> function) {
+        return new BinaryInstruction<>(ComparableValue.class, ComparableValue.class, (x, y) -> function.apply(x.compareTo(y)) ? TRUE : FALSE);
     }
 
-    private static BinaryInstruction<IntegerValue, IntegerValue> integerBinary(BiFunction<Integer, Integer, Integer> function) {
-        return new BinaryInstruction<>(IntegerValue.class, (x, y) -> new IntegerValue(function.apply(x.getValue(), y.getValue())));
+    private static BinaryInstruction<IntegerValue, IntegerValue, IntegerValue> integerBinary(BiFunction<Integer, Integer, Integer> function) {
+        return new BinaryInstruction<>(IntegerValue.class, IntegerValue.class, (x, y) -> new IntegerValue(function.apply(x.getValue(), y.getValue())));
     }
 
     private static UnaryInstruction<RealValue, RealValue> realUnary(Function<Double, Double> function) {
         return new UnaryInstruction<>(RealValue.class, x -> new RealValue(function.apply(x.getValue())));
     }
 
-    private static BinaryInstruction<RealValue, RealValue> realBinary(BiFunction<Double, Double, Double> function) {
-        return new BinaryInstruction<>(RealValue.class, (x, y) -> new RealValue(function.apply(x.getValue(), y.getValue())));
+    private static BinaryInstruction<RealValue, RealValue, RealValue> realBinary(BiFunction<Double, Double, Double> function) {
+        return new BinaryInstruction<>(RealValue.class, RealValue.class, (x, y) -> new RealValue(function.apply(x.getValue(), y.getValue())));
     }
 
     @FunctionalInterface
@@ -100,19 +103,21 @@ class InstructionProcessor {
         }
     }
 
-    private static class BinaryInstruction<R extends Value, T extends Value> implements Execution {
-        private final Class<T> argType;
-        private final BiFunction<T, T, R> function;
+    private static class BinaryInstruction<R extends Value, U extends Value, V extends Value> implements Execution {
+        private final Class<U> arg1Type;
+        private final Class<V> arg2Type;
+        private final BiFunction<U, V, R> function;
 
-        BinaryInstruction(Class<T> argType, BiFunction<T, T, R> function) {
-            this.argType = argType;
+        BinaryInstruction(Class<U> arg1Type, Class<V> arg2Type, BiFunction<U, V, R> function) {
+            this.arg1Type = arg1Type;
+            this.arg2Type = arg2Type;
             this.function = function;
         }
 
         @Override
         public void execute(Stack<Value> stack) {
-            T right = stack.pop(argType);
-            T left = stack.pop(argType);
+            V right = stack.pop(arg2Type);
+            U left = stack.pop(arg1Type);
             stack.push(function.apply(left, right));
 
         }

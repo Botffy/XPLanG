@@ -90,6 +90,9 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$times"), Instruction.FMUL);
             ctx.createBuiltin(name("builtin$div"), Instruction.FDIV);
             ctx.createBuiltin(name("builtin$exp"), Instruction.FEXP);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.APPEND);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.PREPEND);
+            ctx.createBuiltin(name("builtin$plus"), Instruction.CONCAT);
 
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 

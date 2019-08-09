@@ -129,6 +129,15 @@ public enum Instruction {
     /** Is argument a number? */
     IS_DIGIT(Archetype.BOOLEAN_TYPE, Archetype.CHARACTER_TYPE),
 
+    /** Append character to string */
+    APPEND(Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.CHARACTER_TYPE),
+
+    /** Prepend a character to a string */
+    PREPEND(Archetype.STRING_TYPE, Archetype.CHARACTER_TYPE, Archetype.STRING_TYPE),
+
+    /** String concatenation */
+    CONCAT(Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
+
     /** Array length: get the number of elements in any addressable type */
     ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
 

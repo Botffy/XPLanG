@@ -11,8 +11,8 @@ class StringValue implements AddressableValue, ComparableValue {
         this.chars = value.toCharArray();
     }
 
-    StringValue(char[] value) {
-        this.chars = Arrays.copyOf(value, value.length);
+    private StringValue(char[] value) {
+        this.chars = value;
     }
 
     @Override public ReferenceValue getReference(Object address) throws InterpreterError {
@@ -28,11 +28,32 @@ class StringValue implements AddressableValue, ComparableValue {
     }
 
     @Override public StringValue copy() {
-        return new StringValue(chars);
+        return new StringValue(Arrays.copyOf(chars, chars.length));
     }
 
     @Override public int size() {
         return chars.length;
+    }
+
+    StringValue append(CharacterValue character) {
+        char[] n = new char[this.chars.length + 1];
+        System.arraycopy(this.chars, 0, n, 0, this.chars.length);
+        n[this.chars.length] = character.value;
+        return new StringValue(n);
+    }
+
+    StringValue prepend(CharacterValue character) {
+        char[] n = new char[this.chars.length + 1];
+        System.arraycopy(this.chars, 0, n, 1, this.chars.length);
+        n[0] = character.value;
+        return new StringValue(n);
+    }
+
+    StringValue concat(StringValue that) {
+        char[] n = new char[this.chars.length + that.chars.length];
+        System.arraycopy(this.chars, 0, n, 0, this.chars.length);
+        System.arraycopy(that.chars, 0, n, this.chars.length, that.chars.length);
+        return new StringValue(n);
     }
 
     @Override public String toString() {
