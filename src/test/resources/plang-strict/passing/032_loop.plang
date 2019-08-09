@@ -1,11 +1,11 @@
+**#Loop
+**Memory:a=Integer(10)
 Program testing
   Változók:
     a: Egész
 
   a := 1
-
-  ciklus amíg a < 3
+  ciklus amíg a < 10
     a := a + 1
   ciklus_vége
 program_vége
-

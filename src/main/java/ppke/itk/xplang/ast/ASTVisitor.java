@@ -15,6 +15,7 @@ public interface ASTVisitor {
     void visit(Block block);
     void visit(Assignment assignment);
     void visit(Conditional conditional);
+    void visit(Loop loop);
     void visit(FunctionCall functionCall);
     void visit(VarRef varRef);
     void visit(ElementRef elementRef);

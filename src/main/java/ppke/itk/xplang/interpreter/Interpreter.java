@@ -73,6 +73,29 @@ public class Interpreter implements ASTVisitor {
         }
     }
 
+    @Override
+    public void visit(Loop loop) {
+        switch(loop.getType()) {
+            case TEST_FIRST: {
+                loop.getCondition().accept(this);
+                Value value = valueStack.pop();
+                while (value.equals(BooleanValue.TRUE)) {
+                    loop.getSequence().accept(this);
+                    loop.getCondition().accept(this);
+                    value = valueStack.pop();
+                }
+            } break;
+            case TEST_LAST:{
+                Value value;
+                do {
+                    loop.getSequence().accept(this);
+                    loop.getCondition().accept(this);
+                    value = valueStack.pop();
+                } while (value.equals(BooleanValue.TRUE));
+            } break;
+        }
+    }
+
     @Override public void visit(FunctionCall call) {
         for(RValue argument : call.arguments()) {
             argument.accept(this);

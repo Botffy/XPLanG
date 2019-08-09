@@ -25,6 +25,9 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.THEN, props).register(ctx);
             makeSymbol(PlangSymbol.ELSE, props).register(ctx);
             makeSymbol(PlangSymbol.ENDIF, props).register(ctx);
+            makeSymbol(PlangSymbol.LOOP, props).register(ctx);
+            makeSymbol(PlangSymbol.WHILE, props).register(ctx);
+            makeSymbol(PlangSymbol.END_LOOP, props).register(ctx);
             makeSymbol(PlangSymbol.ASSIGNMENT, props).register(ctx);
             makeSymbol(PlangSymbol.COLON, props).register(ctx);
             makeSymbol(PlangSymbol.COMMA, props).register(ctx);
