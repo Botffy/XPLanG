@@ -1,0 +1,7 @@
+**#generate a random number
+program Vardecl
+  Változók:
+    a: Egész
+
+  a := rnd 50
+program_vége

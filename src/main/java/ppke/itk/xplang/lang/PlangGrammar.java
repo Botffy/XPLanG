@@ -82,6 +82,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$times"), Instruction.IMUL);
             ctx.createBuiltin(name("builtin$div"), Instruction.IDIV);
             ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD);
+            ctx.createBuiltin(name("builtin$rand"), Instruction.RAND);
             ctx.createBuiltin(name("builtin$negate"), Instruction.FNEG);
             ctx.createBuiltin(name("builtin$length"), Instruction.FABS);
             ctx.createBuiltin(name("builtin$minus"), Instruction.FSUB);
@@ -91,6 +92,8 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$exp"), Instruction.FEXP);
 
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
+
+            ctx.createBuiltin(name("rnd"), Instruction.RAND);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));

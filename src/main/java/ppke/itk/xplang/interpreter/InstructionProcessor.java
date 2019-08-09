@@ -4,6 +4,7 @@ import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.util.Stack;
 
 import java.util.EnumMap;
+import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -11,6 +12,8 @@ import static ppke.itk.xplang.interpreter.BooleanValue.FALSE;
 import static ppke.itk.xplang.interpreter.BooleanValue.TRUE;
 
 class InstructionProcessor {
+    private static Random random = new Random();
+
     private static EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
     static {
         executions.put(Instruction.EQ, comparison(x -> x == 0));
@@ -30,6 +33,7 @@ class InstructionProcessor {
         executions.put(Instruction.IMUL, integerBinary((x, y) -> x * y));
         executions.put(Instruction.IDIV, integerBinary((x, y) -> x / y));
         executions.put(Instruction.IMOD, integerBinary((x, y) -> x % y));
+        executions.put(Instruction.RAND, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(random.nextInt(x.getValue()))));
         executions.put(Instruction.FNEG, new UnaryInstruction<>(RealValue.class, x -> new RealValue(- x.getValue())));
         executions.put(Instruction.FABS, new UnaryInstruction<>(RealValue.class, x -> new RealValue(Math.abs(x.getValue()))));
         executions.put(Instruction.FSUM, realBinary(Double::sum));

@@ -69,6 +69,9 @@ public enum Instruction {
     /** Modulus. */
     IMOD(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
 
+    /** Generate a random number between the [0..x) interval */
+    RAND(Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE),
+
     /** Floating point negation. */
     FNEG(Archetype.REAL_TYPE, Archetype.REAL_TYPE),
 
