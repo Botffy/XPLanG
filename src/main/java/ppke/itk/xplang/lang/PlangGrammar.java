@@ -9,6 +9,9 @@ import ppke.itk.xplang.parser.operator.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
+import static ppke.itk.xplang.lang.PlangName.name;
+import static ppke.itk.xplang.parser.OperatorName.operator;
+
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
@@ -77,32 +80,32 @@ public class PlangGrammar extends Grammar {
             createComparisons(ctx, Archetype.REAL_TYPE);
             createComparisons(ctx, Archetype.CHARACTER_TYPE);
             createComparisons(ctx, Archetype.STRING_TYPE);
-            ctx.createBuiltin(name("builtin$not"), Instruction.NOT);
-            ctx.createBuiltin(name("builtin$or"), Instruction.OR);
-            ctx.createBuiltin(name("builtin$and"), Instruction.AND);
-            ctx.createBuiltin(name("builtin$negate"), Instruction.INEG);
-            ctx.createBuiltin(name("builtin$length"), Instruction.IABS);
-            ctx.createBuiltin(name("builtin$minus"), Instruction.ISUB);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.ISUM);
-            ctx.createBuiltin(name("builtin$times"), Instruction.IMUL);
-            ctx.createBuiltin(name("builtin$div"), Instruction.IDIV);
-            ctx.createBuiltin(name("builtin$mod"), Instruction.IMOD);
-            ctx.createBuiltin(name("builtin$rand"), Instruction.RAND);
-            ctx.createBuiltin(name("builtin$negate"), Instruction.FNEG);
-            ctx.createBuiltin(name("builtin$length"), Instruction.FABS);
-            ctx.createBuiltin(name("builtin$minus"), Instruction.FSUB);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.FSUM);
-            ctx.createBuiltin(name("builtin$times"), Instruction.FMUL);
-            ctx.createBuiltin(name("builtin$div"), Instruction.FDIV);
-            ctx.createBuiltin(name("builtin$exp"), Instruction.FEXP);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.APPEND);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.PREPEND);
-            ctx.createBuiltin(name("builtin$plus"), Instruction.CONCAT);
-            ctx.createBuiltin(name("builtin$find"), Instruction.FIND_CHAR);
-            ctx.createBuiltin(name("builtin$find"), Instruction.FIND_SUBSTR);
+            ctx.createBuiltin(operator("not"), Instruction.NOT);
+            ctx.createBuiltin(operator("or"), Instruction.OR);
+            ctx.createBuiltin(operator("and"), Instruction.AND);
+            ctx.createBuiltin(operator("negate"), Instruction.INEG);
+            ctx.createBuiltin(operator("length"), Instruction.IABS);
+            ctx.createBuiltin(operator("minus"), Instruction.ISUB);
+            ctx.createBuiltin(operator("plus"), Instruction.ISUM);
+            ctx.createBuiltin(operator("times"), Instruction.IMUL);
+            ctx.createBuiltin(operator("div"), Instruction.IDIV);
+            ctx.createBuiltin(operator("mod"), Instruction.IMOD);
+            ctx.createBuiltin(operator("rand"), Instruction.RAND);
+            ctx.createBuiltin(operator("negate"), Instruction.FNEG);
+            ctx.createBuiltin(operator("length"), Instruction.FABS);
+            ctx.createBuiltin(operator("minus"), Instruction.FSUB);
+            ctx.createBuiltin(operator("plus"), Instruction.FSUM);
+            ctx.createBuiltin(operator("times"), Instruction.FMUL);
+            ctx.createBuiltin(operator("div"), Instruction.FDIV);
+            ctx.createBuiltin(operator("exp"), Instruction.FEXP);
+            ctx.createBuiltin(operator("plus"), Instruction.APPEND);
+            ctx.createBuiltin(operator("plus"), Instruction.PREPEND);
+            ctx.createBuiltin(operator("plus"), Instruction.CONCAT);
+            ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR);
+            ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR);
 
-            ctx.createBuiltin(name("builtin$slice"), Instruction.SLICE, Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-            ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
+            ctx.createBuiltin(operator("slice"), Instruction.SLICE, Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+            ctx.createBuiltin(operator("length"), Instruction.ARLEN);
 
             ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND);
             ctx.createBuiltin(name(props.getFunctionName("sin")), Instruction.SIN);
@@ -120,50 +123,49 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
-            ctx.prefix(identifier, new IdentifierOperator(PlangGrammar::name));
+            ctx.prefix(identifier, new IdentifierOperator(PlangName::new));
             ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
             ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, Double::valueOf));
             ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
             ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, x -> x.charAt(1)));
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
-            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon, name("builtin$slice")));
+            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon, operator("slice")));
 
-            ctx.infix(eq, new InfixBinary(name("builtin$eq"), Operator.Precedence.RELATIONAL));
-            ctx.infix(neq, new InfixBinary(name("builtin$neq"), Operator.Precedence.RELATIONAL));
-            ctx.infix(lt, new InfixBinary(name("builtin$lt"), Operator.Precedence.RELATIONAL));
-            ctx.infix(lte, new InfixBinary(name("builtin$lte"), Operator.Precedence.RELATIONAL));
-            ctx.infix(gt, new InfixBinary(name("builtin$gt"), Operator.Precedence.RELATIONAL));
-            ctx.infix(gte, new InfixBinary(name("builtin$gte"), Operator.Precedence.RELATIONAL));
+            ctx.infix(eq, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(neq, new InfixBinary(operator("neq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(lt, new InfixBinary(operator("lt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(lte, new InfixBinary(operator("lte"), Operator.Precedence.RELATIONAL));
+            ctx.infix(gt, new InfixBinary(operator("gt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(gte, new InfixBinary(operator("gte"), Operator.Precedence.RELATIONAL));
 
-            ctx.prefix(not, new PrefixUnary(name("builtin$not")));
-            ctx.infix(or, new InfixBinary(name("builtin$or"), Operator.Precedence.LOGIC));
-            ctx.infix(and, new InfixBinary(name("builtin$and"), Operator.Precedence.LOGIC));
+            ctx.prefix(not, new PrefixUnary(operator("not")));
+            ctx.infix(or, new InfixBinary(operator("or"), Operator.Precedence.LOGIC));
+            ctx.infix(and, new InfixBinary(operator("and"), Operator.Precedence.LOGIC));
 
-            ctx.prefix(minus, new PrefixUnary(name("builtin$negate")));
-            ctx.prefix(pipe, new CircumfixOperator(pipe, name("builtin$length")));
-            ctx.infix(minus, new InfixBinary(name("builtin$minus"), Operator.Precedence.SUM));
-            ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
-            ctx.infix(plus, new InfixBinary(name("builtin$plus"), Operator.Precedence.SUM));
-            ctx.infix(times, new InfixBinary(name("builtin$times"), Operator.Precedence.PRODUCT));
-            ctx.infix(idiv, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
-            ctx.infix(div, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
-            ctx.infix(mod, new InfixBinary(name("builtin$mod"), Operator.Precedence.PRODUCT));
-            ctx.infix(exp, new InfixBinary(name("builtin$exp"), Operator.Precedence.EXPONENT));
+            ctx.prefix(minus, new PrefixUnary(operator("negate")));
+            ctx.prefix(pipe, new CircumfixOperator(pipe, operator("length")));
+            ctx.infix(minus, new InfixBinary(operator("minus"), Operator.Precedence.SUM));
+            ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
+            ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
+            ctx.infix(times, new InfixBinary(operator("times"), Operator.Precedence.PRODUCT));
+            ctx.infix(idiv, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
+            ctx.infix(div, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
+            ctx.infix(mod, new InfixBinary(operator("mod"), Operator.Precedence.PRODUCT));
+            ctx.infix(exp, new InfixBinary(operator("exp"), Operator.Precedence.EXPONENT));
 
-            ctx.infix(find, new InfixBinary(name("builtin$find"), Operator.Precedence.EXPONENT));
+            ctx.infix(find, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
     }
 
     private void createComparisons(Context ctx, Type type) throws NameClashError {
-        ctx.createBuiltin(name("builtin$eq"), Instruction.EQ, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$neq"), Instruction.NEQ, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$lt"), Instruction.LT, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$lte"), Instruction.LTE, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$gt"), Instruction.GT, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$gte"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(name("builtin$"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("eq"), Instruction.EQ, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("neq"), Instruction.NEQ, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("lt"), Instruction.LT, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("lte"), Instruction.LTE, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("gt"), Instruction.GT, Archetype.BOOLEAN_TYPE, type, type);
+        ctx.createBuiltin(operator("gte"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
     }
 
     /**
@@ -173,10 +175,6 @@ public class PlangGrammar extends Grammar {
         log.debug("start");
         Program program = ProgramParser.parse(parser);
         return new Root(program.location(), program);
-    }
-
-    static PlangName name(String name) {
-        return new PlangName(name);
     }
 
     private Symbol.Builder makeSymbol(PlangSymbol symbol, LexicalProperties props) {

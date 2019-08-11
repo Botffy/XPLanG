@@ -8,6 +8,8 @@ import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
+import static ppke.itk.xplang.lang.PlangName.name;
+
 /**
  * {@code LValue = IDENTIFIER [BRACKET_OPEN INT_LITERAL BRACKET_CLOSE] }
  */
@@ -21,7 +23,7 @@ final class LValueParser {
         log.debug("LValue");
         Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
 
-        LValue Result = parser.context().getVariableReference(PlangGrammar.name(token.lexeme()), token);
+        LValue Result = parser.context().getVariableReference(name(token.lexeme()), token);
         log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             Token startToken = parser.advance();

@@ -33,7 +33,7 @@ final class VariableDeclarationParser {
 
         for(Token token : variables) {
             try {
-                parser.context().declareVariable(PlangGrammar.name(token.lexeme()), token, type);
+                parser.context().declareVariable(new PlangName(token.lexeme()), token, type);
             } catch(NameClashError error) {
                 parser.recordError(error.toErrorMessage());
             }

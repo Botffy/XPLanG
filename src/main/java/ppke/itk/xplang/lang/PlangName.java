@@ -22,4 +22,8 @@ class PlangName implements Name {
     @Override public String toString() {
         return value;
     }
+
+    static PlangName name(String name) {
+        return new PlangName(name);
+    }
 }

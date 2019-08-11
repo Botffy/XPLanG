@@ -19,7 +19,7 @@ final class TypenameParser {
     static Type parse(Parser parser) throws ParseError {
         log.debug("Typename");
         Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
-        Type type = parser.context().lookupType(PlangGrammar.name(token.lexeme()), token);
+        Type type = parser.context().lookupType(new PlangName(token.lexeme()), token);
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             parser.advance();
             int length = Integer.parseInt(parser.accept(parser.symbol(PlangSymbol.LITERAL_INT)).lexeme());
