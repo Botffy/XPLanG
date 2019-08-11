@@ -120,7 +120,7 @@ public enum Instruction {
     /** Floating point exponentiation. */
     FEXP(Archetype.REAL_TYPE, Archetype.REAL_TYPE, Archetype.REAL_TYPE),
 
-    /** Round a real number r to the highest integer x for which x < r */
+    /** Round a real number r to the highest integer x for which x &lt; r */
     FTOI(Archetype.INTEGER_TYPE, Archetype.REAL_TYPE),
 
     /** Round a real number to the nearest integer. */
