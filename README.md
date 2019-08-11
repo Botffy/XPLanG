@@ -16,7 +16,7 @@ The dream lives on.
 
 ## Prerequisites
 
-You will need Java 8 Runtime Environment. Just install the latest JRE from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+You will need Java 11 Runtime Environment (or later). Just install the latest JRE from [Oracle's download page](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 
 ## Download
 
@@ -45,8 +45,8 @@ Valid options:
 You will need
 
 - [Git](https://git-scm.com/downloads),
-- [Java 8 Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-- [Gradle (version 3.2.1)](https://gradle.org).
+- [Java 11 Development Kit](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [Gradle (version 5.5.1)](https://gradle.org).
 
 Make sure to have these in your PATH, then restart your terminal.
 

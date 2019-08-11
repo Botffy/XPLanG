@@ -4,7 +4,7 @@ apply plugin: 'pmd'
 apply plugin: 'jacoco'
 
 version = 'git describe --tags --always'.execute().text.trim()
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
 mainClassName = "ppke.itk.xplang.ui.Main"
 
 tasks.withType(JavaCompile) {
@@ -37,6 +37,7 @@ checkstyle {
     sourceSets = [sourceSets.main]
     showViolations = true
     ignoreFailures = true
+    configDir = file("${rootDir}/config/checkstyle")
 }
 
 pmd {
