@@ -3,11 +3,8 @@ package ppke.itk.xplang.parser;
 import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.type.Signature;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSet;
 
 final class FunctionSet {
@@ -27,12 +24,16 @@ final class FunctionSet {
         }
     }
 
-    Map<Signature, FunctionDeclaration> getDeclarations() {
-        return unmodifiableMap(set);
+    Set<FunctionDeclaration> getDeclarations() {
+        return new HashSet<>(set.values());
     }
 
     Set<Signature> getSignatures() {
         return unmodifiableSet(set.keySet());
+    }
+
+    Optional<FunctionDeclaration> find(Signature signature) {
+        return Optional.ofNullable(set.get(signature));
     }
 
     void limitArgumentNumberTo(int argNumber) {

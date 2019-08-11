@@ -10,6 +10,7 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
@@ -53,9 +54,10 @@ public class TypeCheckerTest {
     public void resolvesFunctions() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f1, new MockFunctionDeclaration(f1));
-        candidates.put(f2, new MockFunctionDeclaration(f2));
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -71,15 +73,16 @@ public class TypeCheckerTest {
     public void resolvesTrees() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f1, new MockFunctionDeclaration(f1));
-        candidates.put(f2, new MockFunctionDeclaration(f2));
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
         ValueExpression op3 = new ValueExpression(new MockRValue(a));
-        FunctionExpression child = new FunctionExpression(name("f"), Location.NONE, new HashMap<>(candidates), asList(op1, op2));
-        FunctionExpression root = new FunctionExpression(name("f"), Location.NONE, new HashMap<>(candidates), asList(child, op3));
+        FunctionExpression child = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
+        FunctionExpression root = new FunctionExpression(name("f"), Location.NONE, candidates, asList(child, op3));
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(root).build();
         RValue call = typeChecker.resolve();
@@ -95,9 +98,10 @@ public class TypeCheckerTest {
     public void unresolvedFunctions() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f1, new MockFunctionDeclaration(f1));
-        candidates.put(f2, new MockFunctionDeclaration(f2));
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(b));
@@ -116,8 +120,7 @@ public class TypeCheckerTest {
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
         Signature f = new Signature(name("f"), a, a, a);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f, new MockFunctionDeclaration(f));
+        Set<FunctionDeclaration> candidates = Set.of(new MockFunctionDeclaration(f));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -125,10 +128,11 @@ public class TypeCheckerTest {
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).expecting(b).build();
         RValue call = typeChecker.resolve();
+        (new ASTPrinter()).visit(call);
+
         assertThat(call, instanceOf(FunctionCall.class));
         FunctionCall funCall = (FunctionCall) call;
         assertEquals(coercion, funCall.getDeclaration().signature());
-        (new ASTPrinter()).visit(call);
     }
 
     @Test
@@ -137,8 +141,7 @@ public class TypeCheckerTest {
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
         Signature f = new Signature(name("f"), a, a, a);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f, new MockFunctionDeclaration(f));
+        Set<FunctionDeclaration> candidates = Set.of(new MockFunctionDeclaration(f));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(b));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -176,9 +179,10 @@ public class TypeCheckerTest {
 
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), a, a, b);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f1, new MockFunctionDeclaration(f1));
-        candidates.put(f2, new MockFunctionDeclaration(f2));
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -214,9 +218,10 @@ public class TypeCheckerTest {
 
         Signature f1 = new Signature(name("f"), a, a, b);
         Signature f2 = new Signature(name("f"), a, b, a);
-        Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(f1, new MockFunctionDeclaration(f1));
-        candidates.put(f2, new MockFunctionDeclaration(f2));
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));

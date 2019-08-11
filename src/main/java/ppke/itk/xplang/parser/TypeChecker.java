@@ -14,8 +14,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.nCopies;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 
 public class TypeChecker {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.TypeChecker");
@@ -170,7 +169,12 @@ public class TypeChecker {
                 Signature coercionSignature = new Signature(SpecialName.IMPLICIT_COERCION, signature.getArg(i), provides.get(original));
                 FunctionDeclaration coercionFunction = context.lookupFunction(coercionSignature).orElseThrow(IllegalStateException::new);
 
-                Expression coercion = new FunctionExpression(Location.NONE, coercionFunction, singletonList(original));
+                Expression coercion = new FunctionExpression(
+                    SpecialName.IMPLICIT_COERCION,
+                    Location.NONE,
+                    singleton(coercionFunction),
+                    singletonList(original)
+                );
                 parent.childNodes().set(i, coercion);
             }
         }

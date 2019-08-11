@@ -179,7 +179,7 @@ public class Context {
             );
             throw new NameClashError("Could not register function", Location.NONE);
         }
-        functionSet = entry.getValueAsFuncSet();
+        functionSet = entry.getValueAsFunctionSet();
         if(functionSet.contains(signature)) {
             log.error("Could not register function '{}': same signature already declared in this scope.", signature);
             throw new NameClashError("Could not register function", Location.NONE);
@@ -200,14 +200,14 @@ public class Context {
     /**
      * Get all valid and visible Signatures for a Name.
      */
-    public Map<Signature, FunctionDeclaration> findFunctionsFor(Name name) {
+    public Set<FunctionDeclaration> findFunctionsFor(Name name) {
         return functionSetFor(name).getDeclarations();
     }
 
     /** Find the FunctionDeclaration node for a signature. */
-    public Optional<FunctionDeclaration> lookupFunction(Signature signature) {
+    Optional<FunctionDeclaration> lookupFunction(Signature signature) {
         FunctionSet functionSet = functionSetFor(signature.getName());
-        return Optional.ofNullable(functionSet.getDeclarations().get(signature));
+        return functionSet.find(signature);
     }
 
     private FunctionSet functionSetFor(Name name) {
@@ -217,7 +217,7 @@ public class Context {
                 break;
             }
 
-            functionSet.merge(entry.getValueAsFuncSet());
+            functionSet.merge(entry.getValueAsFunctionSet());
         }
         return functionSet;
     }
@@ -357,7 +357,7 @@ public class Context {
             return (Type) value;
         }
 
-        private FunctionSet getValueAsFuncSet() {
+        private FunctionSet getValueAsFunctionSet() {
             return (FunctionSet) value;
         }
 

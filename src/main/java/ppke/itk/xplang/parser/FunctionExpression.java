@@ -6,32 +6,23 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Signature;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.toList;
 
 public class FunctionExpression extends Expression {
     private final Location location;
     private final Name name;
-    private final Map<Signature, FunctionDeclaration> candidates;
+    private final Set<FunctionDeclaration> candidates;
     private List<Expression> childNodes;
 
-    public FunctionExpression(Location location, FunctionDeclaration declaration, List<Expression> childNodes) {
-        this.location = location;
-        this.name = declaration.signature().getName();
-        this.candidates = new HashMap<>();
-        candidates.put(declaration.signature(), declaration);
-        this.childNodes = childNodes;
-    }
-
-    public FunctionExpression(Name name, Location location, Map<Signature, FunctionDeclaration> candidates, List<Expression> childNodes) {
+    public FunctionExpression(Name name, Location location, Set<FunctionDeclaration> candidates, List<Expression> childNodes) {
         this.name = name;
         this.location = location;
-        this.candidates = new HashMap<>(candidates);
+        this.candidates = new HashSet<>(candidates);
         this.childNodes = childNodes;
     }
 
@@ -43,15 +34,17 @@ public class FunctionExpression extends Expression {
         return name;
     }
 
-    public Set<Signature> getCandidates() {
-        return unmodifiableSet(candidates.keySet());
+    Set<Signature> getCandidates() {
+        return candidates.stream()
+            .map(FunctionDeclaration::signature)
+            .collect(Collectors.toSet());
     }
 
     /**
      * Remove one from the signature functions.
      */
     void removeFromCandidates(Signature toRemove) {
-        candidates.remove(toRemove);
+        candidates.removeIf(x -> x.signature().equals(toRemove));
     }
 
     boolean hasNoCandidates() {
@@ -67,7 +60,7 @@ public class FunctionExpression extends Expression {
             throw new IllegalStateException("Function is not resolved");
         }
 
-        return candidates.keySet().iterator().next();
+        return candidates.iterator().next().signature();
     }
 
 
@@ -82,10 +75,7 @@ public class FunctionExpression extends Expression {
 
     @Override
     public RValue toASTNode() {
-        FunctionDeclaration declaration = candidates.entrySet().stream()
-            .findAny()
-            .map(Map.Entry::getValue)
-            .get();
+        FunctionDeclaration declaration = candidates.iterator().next();
         return new FunctionCall(location, declaration, childNodes.stream().map(Expression::toASTNode).collect(toList()));
     }
 
