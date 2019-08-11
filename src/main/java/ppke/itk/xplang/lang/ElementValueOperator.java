@@ -47,7 +47,7 @@ public class ElementValueOperator implements Operator.Infix {
 
             RValue address = TypeChecker.in(parser.context())
                 .checking(indexExpression)
-                .expecting(Archetype.INTEGER_TYPE) // FIXME should be addressable's indexType
+                .expecting(addressable.getType().indexType())
                 .build()
                 .resolve();
 

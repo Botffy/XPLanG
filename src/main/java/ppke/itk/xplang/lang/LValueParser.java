@@ -31,7 +31,7 @@ final class LValueParser {
             Expression indexExpression = parser.parseExpression();
             RValue index = TypeChecker.in(parser.context())
                 .checking(indexExpression)
-                .expecting(Archetype.INTEGER_TYPE)
+                .expecting(Result.getType().indexType())
                 .withCustomErrorMessage(
                     node -> new TypeError(
                         translator.translate("plang.array_indextype_mismatch", node.getType()),
