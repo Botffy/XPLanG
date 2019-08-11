@@ -1,6 +1,5 @@
 package ppke.itk.xplang.parser;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.FunctionCall;
@@ -13,12 +12,10 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.nCopies;
 import static java.util.Collections.singletonList;
-import static java.util.stream.Collectors.toSet;
 
 public class TypeChecker {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.TypeChecker");
@@ -130,7 +127,6 @@ public class TypeChecker {
     }
 
     private void disambiguateCoercedCandidates(FunctionExpression node, Map<Signature, List<MatchType>> matches) {
-        // FIXME: this considers (f1,f2) then (f2,f1) too
         for (Map.Entry<Signature, List<MatchType>> f1 : matches.entrySet()) {
             for (Map.Entry<Signature, List<MatchType>> f2 : matches.entrySet()) {
                 if (f1 == f2) {
@@ -153,11 +149,6 @@ public class TypeChecker {
                     continue;
                 }
 
-                // f2 is always better and never worse than f1
-                if (max == 1) {
-                    log.debug("Removing {}: {}", f1.getKey(), f1.getValue());
-                    node.removeFromCandidates(f1.getKey());
-                }
                 // f1 is always better, and never worse than f2
                 if (max == -1) {
                     log.debug("Removing {}: {}", f2.getKey(), f2.getValue());
