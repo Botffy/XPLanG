@@ -38,6 +38,7 @@ enum PlangSymbol {
     OPERATOR_LTE,
     OPERATOR_GT,
     OPERATOR_GTE,
+    OPERATOR_FIND,
     IDENTIFIER,
     LITERAL_INT,
     LITERAL_REAL,

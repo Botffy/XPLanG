@@ -35,6 +35,10 @@ class StringValue implements AddressableValue, ComparableValue {
         return chars.length;
     }
 
+    String getValue() {
+        return new String(chars);
+    }
+
     StringValue append(CharacterValue character) {
         char[] n = new char[this.chars.length + 1];
         System.arraycopy(this.chars, 0, n, 0, this.chars.length);

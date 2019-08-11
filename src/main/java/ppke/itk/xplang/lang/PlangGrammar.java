@@ -52,6 +52,7 @@ public class PlangGrammar extends Grammar {
             Symbol lte = makeSymbol(PlangSymbol.OPERATOR_LTE, props).register(ctx);
             Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT, props).register(ctx);
             Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE, props).register(ctx);
+            Symbol find = makeSymbol(PlangSymbol.OPERATOR_FIND, props).register(ctx);
             Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
             Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -97,6 +98,8 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$plus"), Instruction.APPEND);
             ctx.createBuiltin(name("builtin$plus"), Instruction.PREPEND);
             ctx.createBuiltin(name("builtin$plus"), Instruction.CONCAT);
+            ctx.createBuiltin(name("builtin$find"), Instruction.FIND_CHAR);
+            ctx.createBuiltin(name("builtin$find"), Instruction.FIND_SUBSTR);
 
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
@@ -145,6 +148,8 @@ public class PlangGrammar extends Grammar {
             ctx.infix(div, new InfixBinary(name("builtin$div"), Operator.Precedence.PRODUCT));
             ctx.infix(mod, new InfixBinary(name("builtin$mod"), Operator.Precedence.PRODUCT));
             ctx.infix(exp, new InfixBinary(name("builtin$exp"), Operator.Precedence.EXPONENT));
+
+            ctx.infix(find, new InfixBinary(name("builtin$find"), Operator.Precedence.EXPONENT));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

@@ -147,6 +147,12 @@ public enum Instruction {
     /** String concatenation */
     CONCAT(Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
 
+    /** Find first location of a character in a string */
+    FIND_CHAR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.CHARACTER_TYPE),
+
+    /** Find first location of a substring in a string */
+    FIND_SUBSTR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
+
     /** Array length: get the number of elements in any addressable type */
     ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
 
