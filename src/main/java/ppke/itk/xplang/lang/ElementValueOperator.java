@@ -10,12 +10,25 @@ import ppke.itk.xplang.type.Archetype;
 
 import static java.util.Arrays.asList;
 
-public class ElementValueOperator implements Operator.Infix {
+/**
+ * Parse an element access or slice expression.
+ * <p>
+ * An ADDRESSABLE type (array or string) contains multiple elements. The ElementValueOperator can be used to access
+ * these elements, or a slice (subarray, substring) of the variable.
+ */
+class ElementValueOperator implements Operator.Infix {
     private final Symbol closingBracket;
     private final Symbol sliceSeparator;
     private final Name sliceFunctionName;
 
-    public ElementValueOperator(Symbol closingBracket, Symbol sliceSeparator, Name sliceFunctionName) {
+    /**
+     * Create the operator.
+     *
+     * @param closingBracket The closing symbol.
+     * @param sliceSeparator The optional separator between the startIndex and the endIndex of a slice expression.
+     * @param sliceFunctionName If this is a slice expression, this function will be called to get the slice.
+     */
+    ElementValueOperator(Symbol closingBracket, Symbol sliceSeparator, Name sliceFunctionName) {
         this.closingBracket = closingBracket;
         this.sliceSeparator = sliceSeparator;
         this.sliceFunctionName = sliceFunctionName;

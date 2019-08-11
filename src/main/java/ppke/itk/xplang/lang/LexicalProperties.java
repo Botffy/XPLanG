@@ -2,7 +2,6 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.type.Type;
 
 import java.io.IOException;
@@ -10,6 +9,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
+/**
+ * Access the actual lexical properties of the language.
+ */
 final class LexicalProperties {
     private static final Logger log = LoggerFactory.getLogger("Root.Parser.Lang");
 
@@ -34,6 +36,9 @@ final class LexicalProperties {
         return props.getProperty(key);
     }
 
+    /**
+     * Get the regular expression matching the symbol.
+     */
     String getSymbolPattern(PlangSymbol symbol) {
         return get(String.format("symbol.pattern.%s", symbol.name()));
     }

@@ -4,6 +4,9 @@ import ppke.itk.xplang.parser.Name;
 
 import java.util.Locale;
 
+/**
+ * The Name class for the PLanG-strict language. Case-insensitive.
+ */
 class PlangName implements Name {
     private final String value;
 

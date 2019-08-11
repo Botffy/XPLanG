@@ -11,6 +11,9 @@ import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
+/**
+ * {@code Loop = CIKLUS (AMÍG Expression Sequence CIKLUS_VÉGE) | (Sequence AMÍG Expression) }
+ */
 public class LoopParser {
     private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -26,7 +29,7 @@ public class LoopParser {
         Symbol act = parser.actual().symbol();
         RValue condition;
         Sequence sequence;
-        Loop.Type type = Loop.Type.TEST_FIRST;
+        Loop.Type type;
         if (act.equals(parser.symbol(PlangSymbol.WHILE))) {
             type = Loop.Type.TEST_FIRST;
             parser.accept(parser.symbol(PlangSymbol.WHILE));

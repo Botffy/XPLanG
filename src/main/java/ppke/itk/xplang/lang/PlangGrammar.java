@@ -12,6 +12,9 @@ import ppke.itk.xplang.type.Type;
 import static ppke.itk.xplang.lang.PlangName.name;
 import static ppke.itk.xplang.parser.OperatorName.operator;
 
+/**
+ * The description of the PLanG programming language (PLanG-strict)
+ */
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
