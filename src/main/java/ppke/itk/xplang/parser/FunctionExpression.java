@@ -62,15 +62,12 @@ public class FunctionExpression extends Expression {
         return candidates.size() != 1;
     }
 
-    Signature getOnlyCandidate() throws FunctionResolutionError {
-        if (candidates.size() > 1) {
-            throw new FunctionAmbiguousException(name, candidates.keySet(), location);
+    Signature getOnlyCandidate() {
+        if (candidates.size() != 1) {
+            throw new IllegalStateException("Function is not resolved");
         }
 
-        return candidates.entrySet().stream()
-            .findAny()
-            .map(Map.Entry::getKey)
-            .orElseThrow(() -> new NoViableFunctionException(name, location));
+        return candidates.keySet().iterator().next();
     }
 
 
@@ -96,5 +93,4 @@ public class FunctionExpression extends Expression {
     public String toString() {
         return String.format("FunctionExpression[%s]", name);
     }
-
 }

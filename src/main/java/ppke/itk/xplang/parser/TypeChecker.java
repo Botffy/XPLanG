@@ -99,6 +99,10 @@ public class TypeChecker {
 
         if (parent.isNotResolved()) {
             disambiguateCoercedCandidates(parent, matches);
+
+            if (parent.isNotResolved()) {
+                throw new FunctionAmbiguousException(parent.getName(), parent.getCandidates(), parent.getLocation());
+            }
         }
 
         Signature found = parent.getOnlyCandidate();
