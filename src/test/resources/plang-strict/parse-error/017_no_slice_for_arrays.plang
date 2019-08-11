@@ -1,0 +1,8 @@
+**#arrays cannot be sliced
+**FirstErrorLoc:7,9
+program t
+  Változók:
+    x: egész[4],
+    y: egész[2]
+  y := x[1:3]
+program_vége

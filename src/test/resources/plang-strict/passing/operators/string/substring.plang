@@ -1,0 +1,11 @@
+**Memory:s1=String("ell"),s2=String("ell")
+program s
+  változók:
+    s1, s2: szöveg
+
+  s1 := "hello world"
+  s1 := s1[1:4]
+
+  s2 := "hello world"[1:4]
+
+program_vége

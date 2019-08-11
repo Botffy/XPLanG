@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class ArrayValue implements AddressableValue {
+class ArrayValue implements SlicableValue, AddressableValue {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
     private final List<Value> values;
@@ -30,6 +30,11 @@ class ArrayValue implements AddressableValue {
 
     @Override public Value getComponent(Object index) throws InterpreterError {
         return values.get(convert(index, IntegerValue.class).getValue());
+    }
+
+    @Override
+    public ArrayValue getSlice(IntegerValue start, IntegerValue end) throws InterpreterError {
+        return new ArrayValue(values.subList(start.getValue(), end.getValue()));
     }
 
     @Override public ArrayValue copy() {

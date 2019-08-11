@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class StringValue implements AddressableValue, ComparableValue {
+class StringValue implements AddressableValue, ComparableValue, SlicableValue {
     private final char[] chars;
 
     StringValue(String value) {
@@ -57,6 +57,12 @@ class StringValue implements AddressableValue, ComparableValue {
         char[] n = new char[this.chars.length + that.chars.length];
         System.arraycopy(this.chars, 0, n, 0, this.chars.length);
         System.arraycopy(that.chars, 0, n, this.chars.length, that.chars.length);
+        return new StringValue(n);
+    }
+
+    @Override
+    public StringValue getSlice(IntegerValue from, IntegerValue to) throws InterpreterError {
+        char[] n = Arrays.copyOfRange(this.chars, from.getValue(), to.getValue());
         return new StringValue(n);
     }
 

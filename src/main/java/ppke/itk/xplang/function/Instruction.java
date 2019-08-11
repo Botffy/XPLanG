@@ -1,8 +1,6 @@
 package ppke.itk.xplang.function;
 
 import ppke.itk.xplang.type.Archetype;
-import ppke.itk.xplang.type.FixArray;
-import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
 import java.util.List;
@@ -154,7 +152,10 @@ public enum Instruction {
     FIND_SUBSTR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
 
     /** Array length: get the number of elements in any addressable type */
-    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
+    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE),
+
+    /** Return a slice of an addressable */
+    SLICE(Archetype.ADDRESSABLE, Archetype.ADDRESSABLE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
 
     private final Type returnType;
     private final List<Type> operands;
@@ -167,6 +168,11 @@ public enum Instruction {
     Instruction(Type returns, Type left, Type right) {
         this.returnType = returns;
         this.operands = unmodifiableList(asList(left, right));
+    }
+
+    Instruction(Type returns, Type... args) {
+        this.returnType = returns;
+        this.operands = unmodifiableList(asList(args));
     }
 
     /**

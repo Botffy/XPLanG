@@ -70,6 +70,10 @@ public class ExpressionParser {
         return op;
     }
 
+    public Token peek() {
+        return parser.actual();
+    }
+
     public void accept(Symbol symbol, String message) throws LexerError, SyntaxError {
         parser.accept(symbol, message);
     }

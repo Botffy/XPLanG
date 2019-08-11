@@ -29,8 +29,8 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.WHILE, props).register(ctx);
             makeSymbol(PlangSymbol.END_LOOP, props).register(ctx);
             makeSymbol(PlangSymbol.ASSIGNMENT, props).register(ctx);
-            makeSymbol(PlangSymbol.COLON, props).register(ctx);
-            makeSymbol(PlangSymbol.COMMA, props).register(ctx);
+            Symbol colon = makeSymbol(PlangSymbol.COLON, props).register(ctx);
+            Symbol comma = makeSymbol(PlangSymbol.COMMA, props).register(ctx);
             Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN, props).register(ctx);
             Symbol parenClose = makeSymbol(PlangSymbol.PAREN_CLOSE, props).register(ctx);
             Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
@@ -101,6 +101,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name("builtin$find"), Instruction.FIND_CHAR);
             ctx.createBuiltin(name("builtin$find"), Instruction.FIND_SUBSTR);
 
+            ctx.createBuiltin(name("builtin$slice"), Instruction.SLICE, Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
             ctx.createBuiltin(name("builtin$length"), Instruction.ARLEN);
 
             ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND);
@@ -125,7 +126,7 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
             ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, x -> x.charAt(1)));
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
-            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose));
+            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon, name("builtin$slice")));
 
             ctx.infix(eq, new InfixBinary(name("builtin$eq"), Operator.Precedence.RELATIONAL));
             ctx.infix(neq, new InfixBinary(name("builtin$neq"), Operator.Precedence.RELATIONAL));
