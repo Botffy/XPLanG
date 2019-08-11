@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
@@ -20,6 +19,9 @@ import static org.junit.Assert.assertThat;
 import static ppke.itk.xplang.parser.MockName.name;
 
 public class TypeCheckerTest {
+    private final static Type a = new Scalar("A");
+    private final static Type b = new Scalar("B");
+
     private Context context;
 
     @Before
@@ -29,7 +31,7 @@ public class TypeCheckerTest {
 
     @Test
     public void resolvesValueExpressions() throws Exception {
-        RValue value = new IntegerLiteral(Location.NONE, 10);
+        RValue value = new MockRValue(a);
         Expression expression = new ValueExpression(value);
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(expression).build();
@@ -39,51 +41,51 @@ public class TypeCheckerTest {
 
     @Test
     public void throwsIfTypeMismatch() throws Exception {
-        RValue value = new IntegerLiteral(Location.NONE, 10);
+        RValue value = new MockRValue(a);
         Expression expression = new ValueExpression(value);
 
-        TypeChecker typeChecker = TypeChecker.in(context).checking(expression).expecting(Archetype.STRING_TYPE).build();
+        TypeChecker typeChecker = TypeChecker.in(context).checking(expression).expecting(b).build();
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
         assertThat(error, instanceOf(TypeError.class));
     }
 
     @Test
     public void resolvesFunctions() throws Exception {
-        Signature plusInt = new Signature(name("plus"), Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-        Signature plusString = new Signature(name("plus"), Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE);
+        Signature f1 = new Signature(name("f"), a, a, a);
+        Signature f2 = new Signature(name("f"), b, b, b);
         Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(plusInt, new MockFunctionDeclaration(plusInt));
-        candidates.put(plusString, new MockFunctionDeclaration(plusString));
+        candidates.put(f1, new MockFunctionDeclaration(f1));
+        candidates.put(f2, new MockFunctionDeclaration(f2));
 
-        ValueExpression op1 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
-        ValueExpression op2 = new ValueExpression(new IntegerLiteral(Location.NONE, 2));
-        FunctionExpression expression = new FunctionExpression(name("plus"), Location.NONE, candidates, asList(op1, op2));
+        ValueExpression op1 = new ValueExpression(new MockRValue(a));
+        ValueExpression op2 = new ValueExpression(new MockRValue(a));
+        FunctionExpression expression = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(expression).build();
         RValue call = typeChecker.resolve();
         assertThat(call, instanceOf(FunctionCall.class));
-        assertEquals(plusInt, ((FunctionCall) call).getDeclaration().signature());
+        assertEquals(f1, ((FunctionCall) call).getDeclaration().signature());
     }
 
     @Test
     public void resolvesTrees() throws Exception {
-        Signature plusInt = new Signature(name("plus"), Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-        Signature plusString = new Signature(name("plus"), Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE);
+        Signature f1 = new Signature(name("f"), a, a, a);
+        Signature f2 = new Signature(name("f"), b, b, b);
         Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(plusInt, new MockFunctionDeclaration(plusInt));
-        candidates.put(plusString, new MockFunctionDeclaration(plusString));
+        candidates.put(f1, new MockFunctionDeclaration(f1));
+        candidates.put(f2, new MockFunctionDeclaration(f2));
 
-        ValueExpression op1 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
-        ValueExpression op2 = new ValueExpression(new IntegerLiteral(Location.NONE, 2));
-        ValueExpression op3 = new ValueExpression(new IntegerLiteral(Location.NONE, 2));
-        FunctionExpression plus = new FunctionExpression(name("plus"), Location.NONE, new HashMap<>(candidates), asList(op1, op2));
-        FunctionExpression root = new FunctionExpression(name("plus"), Location.NONE, new HashMap<>(candidates), asList(plus, op3));
+        ValueExpression op1 = new ValueExpression(new MockRValue(a));
+        ValueExpression op2 = new ValueExpression(new MockRValue(a));
+        ValueExpression op3 = new ValueExpression(new MockRValue(a));
+        FunctionExpression child = new FunctionExpression(name("f"), Location.NONE, new HashMap<>(candidates), asList(op1, op2));
+        FunctionExpression root = new FunctionExpression(name("f"), Location.NONE, new HashMap<>(candidates), asList(child, op3));
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(root).build();
         RValue call = typeChecker.resolve();
         assertThat(call, instanceOf(FunctionCall.class));
         FunctionCall funCall = (FunctionCall) call;
-        assertEquals(plusInt, (funCall.getDeclaration().signature()));
+        assertEquals(f1, (funCall.getDeclaration().signature()));
         assertThat(funCall.arguments().get(0), instanceOf(FunctionCall.class));
 
         (new ASTPrinter()).visit(call);
@@ -91,15 +93,15 @@ public class TypeCheckerTest {
 
     @Test
     public void unresolvedFunctions() throws Exception {
-        Signature plusInt = new Signature(name("plus"), Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
-        Signature plusString = new Signature(name("plus"), Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE);
+        Signature f1 = new Signature(name("f"), a, a, a);
+        Signature f2 = new Signature(name("f"), b, b, b);
         Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
-        candidates.put(plusInt, new MockFunctionDeclaration(plusInt));
-        candidates.put(plusString, new MockFunctionDeclaration(plusString));
+        candidates.put(f1, new MockFunctionDeclaration(f1));
+        candidates.put(f2, new MockFunctionDeclaration(f2));
 
-        ValueExpression op1 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
-        ValueExpression op2 = new ValueExpression(new StringLiteral(Location.NONE, "hi"));
-        FunctionExpression plus = new FunctionExpression(name("plus"), Location.NONE, candidates, asList(op1, op2));
+        ValueExpression op1 = new ValueExpression(new MockRValue(a));
+        ValueExpression op2 = new ValueExpression(new MockRValue(b));
+        FunctionExpression plus = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(plus).build();
 
@@ -110,18 +112,18 @@ public class TypeCheckerTest {
 
     @Test
     public void topLevelCoercion() throws Exception {
-        Signature coercion = new Signature(SpecialName.IMPLICIT_COERCION, Archetype.REAL_TYPE, Archetype.INTEGER_TYPE);
+        Signature coercion = new Signature(SpecialName.IMPLICIT_COERCION, b, a);
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
-        Signature f = new Signature(name("f"), Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+        Signature f = new Signature(name("f"), a, a, a);
         Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
         candidates.put(f, new MockFunctionDeclaration(f));
 
-        ValueExpression op1 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
-        ValueExpression op2 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
-        FunctionExpression fCall = new FunctionExpression(name("plus"), Location.NONE, candidates, asList(op1, op2));
+        ValueExpression op1 = new ValueExpression(new MockRValue(a));
+        ValueExpression op2 = new ValueExpression(new MockRValue(a));
+        FunctionExpression fCall = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
 
-        TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).expecting(Archetype.REAL_TYPE).build();
+        TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).expecting(b).build();
         RValue call = typeChecker.resolve();
         assertThat(call, instanceOf(FunctionCall.class));
         FunctionCall funCall = (FunctionCall) call;
@@ -131,18 +133,18 @@ public class TypeCheckerTest {
 
     @Test
     public void argumentCoercion() throws Exception {
-        Signature coercion = new Signature(SpecialName.IMPLICIT_COERCION, Archetype.INTEGER_TYPE, Archetype.REAL_TYPE);
+        Signature coercion = new Signature(SpecialName.IMPLICIT_COERCION, a, b);
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
-        Signature f = new Signature(name("f"), Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+        Signature f = new Signature(name("f"), a, a, a);
         Map<Signature, FunctionDeclaration> candidates = new HashMap<>();
         candidates.put(f, new MockFunctionDeclaration(f));
 
-        ValueExpression op1 = new ValueExpression(new RealLiteral(Location.NONE, 1.5));
-        ValueExpression op2 = new ValueExpression(new IntegerLiteral(Location.NONE, 1));
+        ValueExpression op1 = new ValueExpression(new MockRValue(b));
+        ValueExpression op2 = new ValueExpression(new MockRValue(a));
         FunctionExpression fCall = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
 
-        TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).expecting(Archetype.INTEGER_TYPE).build();
+        TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).expecting(a).build();
         RValue call = typeChecker.resolve();
         (new ASTPrinter()).visit(call);
 
@@ -156,7 +158,7 @@ public class TypeCheckerTest {
         assertEquals(coercion, coercionCall.getDeclaration().signature());
     }
 
-    /**
+    /*
      * We have an overloaded functions:
      *
      *      f (a, a) -> a
@@ -169,9 +171,6 @@ public class TypeCheckerTest {
      */
     @Test
     public void resolveCoercionAmbiguity() throws Exception {
-        Type a = new Scalar("A");
-        Type b = new Scalar("B");
-
         Signature coercion = new Signature(SpecialName.IMPLICIT_COERCION, b, a);
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
