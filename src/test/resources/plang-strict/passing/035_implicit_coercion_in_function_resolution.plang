@@ -1,0 +1,7 @@
+**Memory:a=Real(3)
+program coerce
+  változók:
+    a: Valós
+
+  a := 3 + 4.0
+program_vége

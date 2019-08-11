@@ -70,6 +70,7 @@ public class PlangGrammar extends Grammar {
 
             ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.FTOI);
             ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF);
+            ctx.createBuiltin(SpecialName.IMPLICIT_COERCION, Instruction.ITOF);
 
             createComparisons(ctx, Archetype.INTEGER_TYPE);
             createComparisons(ctx, Archetype.REAL_TYPE);

@@ -1,16 +1,24 @@
 package ppke.itk.xplang.parser;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.FunctionCall;
+import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Collections.nCopies;
+import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toSet;
 
 public class TypeChecker {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.TypeChecker");
@@ -32,7 +40,21 @@ public class TypeChecker {
         pullingTypes(root);
         log.info("Pulled types: {}", provides);
 
-        if (!expected.accepts(provides.get(root))) {
+        Type actual = provides.get(root);
+        if (!expected.accepts(actual)) {
+            Optional<FunctionDeclaration> conversion = context.lookupFunction(
+                new Signature(SpecialName.IMPLICIT_COERCION, expected, provides.get(root))
+            );
+
+            if (conversion.isPresent()) {
+                RValue Result = root.toASTNode();
+                return new FunctionCall(
+                    Result.location(),
+                    conversion.get(),
+                    Result
+                );
+            }
+
             throw errorMessageProducer.apply(root.toASTNode());
         }
 
@@ -61,30 +83,110 @@ public class TypeChecker {
 
     private void resolveFunction(FunctionExpression parent) throws FunctionResolutionError {
         log.debug("Resolving function {}", parent.getName());
-        List<Expression> children = parent.childNodes();
 
-        Map<Signature, List<Boolean>> matches = new HashMap<>();
+        Map<Signature, List<MatchType>> matches = new HashMap<>();
         for (Signature signature : parent.getCandidates()) {
-            List<Boolean> match = new ArrayList<>(nCopies(signature.argumentCount(), false));
-            for (int i = 0; i < signature.argumentCount(); ++i) {
-                Type expected = signature.getArg(i);
-                Type actual = provides.get(children.get(i));
-                match.set(i, expected.accepts(actual));
-            }
+            List<MatchType> match = calculateMatch(signature, parent.childNodes());
             matches.put(signature, match);
         }
 
         log.debug("Candidate functions: {}", matches);
         matches.entrySet().stream()
-            .filter(x -> x.getValue().contains(false))
+            .filter(x -> x.getValue().contains(MatchType.NONE))
             .map(Map.Entry::getKey)
             .forEach(parent::removeFromCandidates);
 
-        Signature found = parent.getResolvedSignature();
+        if (parent.hasNoCandidates()) {
+            throw new NoViableFunctionException(parent.getName(), parent.getLocation());
+        }
+
+        if (parent.isNotResolved()) {
+            disambiguateCoercedCandidates(parent, matches);
+        }
+
+        Signature found = parent.getOnlyCandidate();
+        coerceArguments(parent, found, matches.get(found));
 
         log.debug("{} resolved to {}", parent, found);
         provides.put(parent, found.getReturnType());
     }
+
+    private List<MatchType> calculateMatch(Signature signature, List<Expression> children) {
+        List<MatchType> match = new ArrayList<>(nCopies(signature.argumentCount(), MatchType.NONE));
+        for (int i = 0; i < signature.argumentCount(); ++i) {
+            Type expected = signature.getArg(i);
+            Type actual = provides.get(children.get(i));
+
+            if (expected.accepts(actual)) {
+                match.set(i, MatchType.MATCHED);
+            } else {
+                match.set(i, context.lookupFunction(new Signature(SpecialName.IMPLICIT_COERCION, expected, actual))
+                    .map(x -> MatchType.COERCED)
+                    .orElse(MatchType.NONE)
+                );
+            }
+        }
+        return match;
+    }
+
+    private void disambiguateCoercedCandidates(FunctionExpression node, Map<Signature, List<MatchType>> matches) {
+        // FIXME: this considers (f1,f2) then (f2,f1) too
+        for (Map.Entry<Signature, List<MatchType>> f1 : matches.entrySet()) {
+            for (Map.Entry<Signature, List<MatchType>> f2 : matches.entrySet()) {
+                if (f1 == f2) {
+                    continue;
+                }
+
+                List<MatchType> f1Arg = f1.getValue();
+                List<MatchType> f2Arg = f2.getValue();
+                IntSummaryStatistics summary = IntStream
+                    .range(0, f1Arg.size())
+                    .map(i -> f1Arg.get(i).compareTo(f2Arg.get(i)))
+                    .filter(x -> x != 0)
+                    .summaryStatistics();
+
+                int max = summary.getMax();
+                int min = summary.getMin();
+
+                // f1 is in some cases worse, in some cases better than f2, so it's not unambiguous
+                if (max != min) {
+                    continue;
+                }
+
+                // f2 is always better and never worse than f1
+                if (max == 1) {
+                    log.debug("Removing {}: {}", f1.getKey(), f1.getValue());
+                    node.removeFromCandidates(f1.getKey());
+                }
+                // f1 is always better, and never worse than f2
+                if (max == -1) {
+                    log.debug("Removing {}: {}", f2.getKey(), f2.getValue());
+                    node.removeFromCandidates(f2.getKey());
+                }
+            }
+        }
+    }
+
+    private void coerceArguments(FunctionExpression parent, Signature signature, List<MatchType> match) {
+        for (int i = 0; i < match.size(); ++i) {
+            if (match.get(i) == MatchType.COERCED) {
+                Expression original = parent.childNodes().get(i);
+
+                Signature coercionSignature = new Signature(SpecialName.IMPLICIT_COERCION, signature.getArg(i), provides.get(original));
+                FunctionDeclaration coercionFunction = context.lookupFunction(coercionSignature).orElseThrow(IllegalStateException::new);
+
+                Expression coercion = new FunctionExpression(Location.NONE, coercionFunction, singletonList(original));
+                parent.childNodes().set(i, coercion);
+            }
+        }
+    }
+
+    private enum MatchType {
+        MATCHED,
+        COERCED,
+        NONE
+    }
+
 
     public static Builder in(Context context) {
         return new Builder(context);

@@ -20,6 +20,14 @@ public class FunctionExpression extends Expression {
     private final Map<Signature, FunctionDeclaration> candidates;
     private List<Expression> childNodes;
 
+    public FunctionExpression(Location location, FunctionDeclaration declaration, List<Expression> childNodes) {
+        this.location = location;
+        this.name = declaration.signature().getName();
+        this.candidates = new HashMap<>();
+        candidates.put(declaration.signature(), declaration);
+        this.childNodes = childNodes;
+    }
+
     public FunctionExpression(Name name, Location location, Map<Signature, FunctionDeclaration> candidates, List<Expression> childNodes) {
         this.name = name;
         this.location = location;
@@ -46,7 +54,15 @@ public class FunctionExpression extends Expression {
         candidates.remove(toRemove);
     }
 
-    Signature getResolvedSignature() throws FunctionResolutionError {
+    boolean hasNoCandidates() {
+        return candidates.isEmpty();
+    }
+
+    boolean isNotResolved() {
+        return candidates.size() != 1;
+    }
+
+    Signature getOnlyCandidate() throws FunctionResolutionError {
         if (candidates.size() > 1) {
             throw new FunctionAmbiguousException(name, candidates.keySet(), location);
         }

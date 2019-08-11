@@ -152,7 +152,18 @@ public class Context {
      */
     public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> operands) throws NameClashError {
         Signature signature = new Signature(name, returnType, operands);
-        // TODO: validate if this signature may match instruction signature.
+        registerFunction(new BuiltinFunction(Location.NONE, signature, instruction));
+    }
+
+    /**
+     * Register a new function in the current scope.
+     *
+     * @param function the function to be registered.
+     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     */
+    public void registerFunction(FunctionDeclaration function) throws NameClashError {
+        Signature signature = function.signature();
+        Name name = signature.getName();
 
         FunctionSet functionSet;
         if (nameTable.isFree(name)) {
@@ -163,19 +174,19 @@ public class Context {
         NameTableEntry entry = nameTable.lookup(name);
         if (entry.type != NameTableEntry.EntryType.FUNCTION) {
             log.error(
-                "Could not register builtin by name '{}': name already taken in this scope by {}",
-                name, nameTable.lookup(name)
+                "Could not register function '{}': name already taken in this scope by {}",
+                signature, nameTable.lookup(name)
             );
-            throw new NameClashError("Could not register builtin function", Location.NONE);
+            throw new NameClashError("Could not register function", Location.NONE);
         }
         functionSet = entry.getValueAsFuncSet();
         if(functionSet.contains(signature)) {
-            log.error("Could not register builtin by name '{}': same signature already declared in this scope.", name);
-            throw new NameClashError("Could not register builtin function", Location.NONE);
+            log.error("Could not register function '{}': same signature already declared in this scope.", signature);
+            throw new NameClashError("Could not register function", Location.NONE);
         }
 
-        functionSet.add(new BuiltinFunction(Location.NONE, signature, instruction));
-        log.debug("Registered builtin function {} with signature {}", name, signature);
+        functionSet.add(function);
+        log.debug("Registered function {}", signature);
     }
 
     /**
@@ -194,9 +205,9 @@ public class Context {
     }
 
     /** Find the FunctionDeclaration node for a signature. */
-    public FunctionDeclaration lookupFunction(Signature signature) {
+    public Optional<FunctionDeclaration> lookupFunction(Signature signature) {
         FunctionSet functionSet = functionSetFor(signature.getName());
-        return functionSet.getDeclarations().get(signature);
+        return Optional.ofNullable(functionSet.getDeclarations().get(signature));
     }
 
     private FunctionSet functionSetFor(Name name) {
