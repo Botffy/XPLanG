@@ -14,6 +14,7 @@ import java.util.Set;
 
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -231,6 +232,9 @@ public class TypeCheckerTest {
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
         error.printStackTrace();
         assertThat(error, instanceOf(FunctionAmbiguousException.class));
+        assertThat(error.getMessage(), containsString("[A, A]"));
+        assertThat(error.getMessage(), containsString("[A, B] -> A"));
+        assertThat(error.getMessage(), containsString("[B, A] -> A"));
 
     }
 

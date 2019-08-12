@@ -12,9 +12,11 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.*;
+import static java.util.stream.Collectors.toList;
 
 public class TypeChecker {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.TypeChecker");
@@ -100,7 +102,11 @@ public class TypeChecker {
             disambiguateCoercedCandidates(parent, matches);
 
             if (parent.isNotResolved()) {
-                throw new FunctionAmbiguousException(parent.getName(), parent.getCandidates(), parent.getLocation());
+                throw new FunctionAmbiguousException(
+                    parent.getName(),
+                    parent.getCandidates(),
+                    parent.childNodes().stream().map(provides::get).collect(toList()),
+                    parent.getLocation());
             }
         }
 
