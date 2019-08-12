@@ -93,7 +93,6 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("times"), Instruction.IMUL);
             ctx.createBuiltin(operator("div"), Instruction.IDIV);
             ctx.createBuiltin(operator("mod"), Instruction.IMOD);
-            ctx.createBuiltin(operator("rand"), Instruction.RAND);
             ctx.createBuiltin(operator("negate"), Instruction.FNEG);
             ctx.createBuiltin(operator("length"), Instruction.FABS);
             ctx.createBuiltin(operator("minus"), Instruction.FSUB);
