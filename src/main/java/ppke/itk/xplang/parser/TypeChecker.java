@@ -88,6 +88,8 @@ public class TypeChecker {
             matches.put(signature, match);
         }
 
+        Set<Signature> originalCandidates = new HashSet<>(parent.getCandidates());
+
         log.debug("Candidate functions: {}", matches);
         matches.entrySet().stream()
             .filter(x -> x.getValue().contains(MatchType.NONE))
@@ -95,7 +97,11 @@ public class TypeChecker {
             .forEach(parent::removeFromCandidates);
 
         if (parent.hasNoCandidates()) {
-            throw new NoViableFunctionException(parent.getName(), parent.getLocation());
+            throw new NoViableFunctionException(
+                parent.getName(),
+                originalCandidates,
+                parent.childNodes().stream().map(provides::get).collect(toList()),
+                parent.getLocation());
         }
 
         if (parent.isNotResolved()) {

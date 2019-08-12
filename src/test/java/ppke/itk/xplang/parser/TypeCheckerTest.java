@@ -96,7 +96,7 @@ public class TypeCheckerTest {
     }
 
     @Test
-    public void unresolvedFunctions() throws Exception {
+    public void noViableFunction() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
         Set<FunctionDeclaration> candidates = Set.of(
@@ -113,6 +113,8 @@ public class TypeCheckerTest {
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
         error.printStackTrace();
         assertThat(error, instanceOf(NoViableFunctionException.class));
+        assertThat(error.getMessage(), containsString("f: [A, A] -> A"));
+        assertThat(error.getMessage(), containsString("f: [B, B] -> B"));
     }
 
     @Test
