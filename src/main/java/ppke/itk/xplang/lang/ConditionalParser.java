@@ -6,17 +6,15 @@ import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
-import ppke.itk.xplang.parser.*;
-import ppke.itk.xplang.type.Archetype;
+import ppke.itk.xplang.parser.ParseError;
+import ppke.itk.xplang.parser.Parser;
 
 import java.util.Collections;
 
 /**
- * {@code Conditional = IF RValue THEN Sequence ELSE Sequence ENDIF}
+ * {@code Conditional = IF Condition THEN Sequence ELSE Sequence ENDIF}
  */
 final class ConditionalParser {
-    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private ConditionalParser() { /* empty private ctor */ }
@@ -25,15 +23,7 @@ final class ConditionalParser {
         log.debug("Conditional");
         Location startLoc = parser.accept(parser.symbol(PlangSymbol.IF)).location();
 
-        Expression conditionExpression = parser.parseExpression();
-        RValue condition = TypeChecker.in(parser.context())
-            .checking(conditionExpression)
-            .expecting(Archetype.BOOLEAN_TYPE)
-            .withCustomErrorMessage(
-                node -> new TypeError(translator.translate("plang.conditional_must_be_boolean"), node.location())
-            )
-            .build()
-            .resolve();
+        RValue condition = ConditionParser.parse(parser);
 
         parser.accept(parser.symbol(PlangSymbol.THEN));
         Sequence ifBranch = SequenceParser.parse(
