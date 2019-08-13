@@ -105,7 +105,6 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR);
             ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR);
 
-            ctx.createBuiltin(operator("slice"), Instruction.SLICE, Archetype.STRING_TYPE, Archetype.STRING_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
             ctx.createBuiltin(operator("length"), Instruction.ARLEN);
 
             ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND);
@@ -130,7 +129,7 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
             ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, x -> x.charAt(1)));
             ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
-            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon, operator("slice")));
+            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon));
 
             ctx.infix(eq, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));
             ctx.infix(neq, new InfixBinary(operator("neq"), Operator.Precedence.RELATIONAL));

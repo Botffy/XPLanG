@@ -61,12 +61,6 @@ class InstructionProcessor {
         executions.put(Instruction.CONCAT, new BinaryInstruction<>(StringValue.class, StringValue.class, (x, y) -> x.concat(y)));
         executions.put(Instruction.FIND_CHAR, new BinaryInstruction<>(StringValue.class, CharacterValue.class, (x,y) -> new IntegerValue(x.getValue().indexOf(y.getValue()))));
         executions.put(Instruction.FIND_SUBSTR, new BinaryInstruction<>(StringValue.class, StringValue.class, (x,y) -> new IntegerValue(x.getValue().indexOf(y.getValue()))));
-        executions.put(Instruction.SLICE, stack -> {
-            IntegerValue endIndex = stack.pop(IntegerValue.class);
-            IntegerValue startIndex = stack.pop(IntegerValue.class);
-            SlicableValue slicableValue = stack.pop(SlicableValue.class);
-            stack.push(slicableValue.getSlice(startIndex, endIndex));
-        });
     }
 
     static void execute(Instruction instruction, Stack<Value> stack) {

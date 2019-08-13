@@ -152,10 +152,7 @@ public enum Instruction {
     FIND_SUBSTR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
 
     /** Array length: get the number of elements in any addressable type */
-    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE),
-
-    /** Return a slice of an addressable */
-    SLICE(Archetype.ADDRESSABLE, Archetype.ADDRESSABLE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
 
     private final Type returnType;
     private final List<Type> operands;

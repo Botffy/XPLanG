@@ -130,6 +130,18 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(addressable.getComponent(address));
     }
 
+    @Override
+    public void visit(Slice slice) {
+        slice.getSlicable().accept(this);
+        slice.getStartIndex().accept(this);
+        slice.getEndIndex().accept(this);
+
+        IntegerValue endIndex = valueStack.pop(IntegerValue.class);
+        IntegerValue startIndex = valueStack.pop(IntegerValue.class);
+        SlicableValue slicableValue = valueStack.pop(SlicableValue.class);
+        valueStack.push(slicableValue.getSlice(startIndex, endIndex));
+    }
+
     @Override public void visit(IntegerLiteral integerLiteral) {
         valueStack.push(new IntegerValue(integerLiteral.getValue()));
     }

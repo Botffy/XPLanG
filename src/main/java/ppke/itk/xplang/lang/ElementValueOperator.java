@@ -2,13 +2,13 @@ package ppke.itk.xplang.lang;
 
 import ppke.itk.xplang.ast.ElementVal;
 import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.ast.Slice;
 import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.ExpressionParser;
 import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.Archetype;
-
-import static java.util.Arrays.asList;
 
 /**
  * Parse an element access or slice expression.
@@ -17,21 +17,20 @@ import static java.util.Arrays.asList;
  * these elements, or a slice (subarray, substring) of the variable.
  */
 class ElementValueOperator implements Operator.Infix {
+    private static final Translator translator = Translator.getInstance("Plang");
+
     private final Symbol closingBracket;
     private final Symbol sliceSeparator;
-    private final Name sliceFunctionName;
 
     /**
      * Create the operator.
      *
      * @param closingBracket The closing symbol.
      * @param sliceSeparator The optional separator between the startIndex and the endIndex of a slice expression.
-     * @param sliceFunctionName If this is a slice expression, this function will be called to get the slice.
      */
-    ElementValueOperator(Symbol closingBracket, Symbol sliceSeparator, Name sliceFunctionName) {
+    ElementValueOperator(Symbol closingBracket, Symbol sliceSeparator) {
         this.closingBracket = closingBracket;
         this.sliceSeparator = sliceSeparator;
-        this.sliceFunctionName = sliceFunctionName;
     }
 
     @Override
@@ -55,24 +54,42 @@ class ElementValueOperator implements Operator.Infix {
             RValue addressable = TypeChecker.in(parser.context())
                 .checking(addressableExpression)
                 .expecting(Archetype.ADDRESSABLE)
+                .withCustomErrorMessage((x) -> new TypeError(translator.translate("addressable_type_mismatch", x.getType()), location))
                 .build()
                 .resolve();
 
             RValue address = TypeChecker.in(parser.context())
                 .checking(indexExpression)
                 .expecting(addressable.getType().indexType())
+                .withCustomErrorMessage((x) -> new TypeError(translator.translate("plang.array_indextype_mismatch", x.getType()), location))
                 .build()
                 .resolve();
 
             return new ValueExpression(new ElementVal(location, addressable, address));
         }
 
-        return new FunctionExpression(
-            sliceFunctionName,
-            location,
-            parser.context().findFunctionsFor(sliceFunctionName),
-            asList(addressableExpression, indexExpression, endIndexExpression)
-        );
+        RValue slicable = TypeChecker.in(parser.context())
+            .checking(addressableExpression)
+            .expecting(Archetype.STRING_TYPE) // classic PLanG only allows String types to be sliced.
+            .withCustomErrorMessage((x) -> new TypeError(translator.translate("plang.slice_type_mismatch", x.getType()), location))
+            .build()
+            .resolve();
+
+        RValue startIndex = TypeChecker.in(parser.context())
+            .checking(indexExpression)
+            .expecting(slicable.getType().indexType())
+            .withCustomErrorMessage((x) -> new TypeError(translator.translate("plang.slice_indextype_mismatch", x.getType()), location))
+            .build()
+            .resolve();
+
+        RValue endIndex = TypeChecker.in(parser.context())
+            .checking(endIndexExpression)
+            .expecting(slicable.getType().indexType())
+            .withCustomErrorMessage((x) -> new TypeError(translator.translate("plang.slice_indextype_mismatch", x.getType()), location))
+            .build()
+            .resolve();
+
+        return new ValueExpression(new Slice(location, slicable, startIndex, endIndex));
     }
 
     @Override
