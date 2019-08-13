@@ -35,12 +35,12 @@ A hangsúly legyen a compileren, a szakdolgozatot ne elméletieskedjük túl. A 
 ## Augusztus
 
 - 18: MS4: új Java, JUnit, kis refaktorok. Típuskezelés, kifejezések befejezése
-- 21: TOWikit elkezdeni nézni, dokumentumok letöltése, pontos időpontok összedése
+- 20: témebejelentő megírása
 - 31: MS5: IO
 
 ## Szeptember
 
-- 5 körül: diplomázási szándéknyilatkozat, témabejelentő
+- 13: diplomázási szándéknyilatkozat, témabejelentő leadási határideje
 - GUI fejlesztés kezdete
 - Szakdolgozat írásának megkezdése
 - MS6: hiba, elsif, függvénydeklarációk
@@ -53,12 +53,14 @@ A hangsúly legyen a compileren, a szakdolgozatot ne elméletieskedjük túl. A 
 
 ## November
 
+- 5: konzulensi bejelentő és bírálói javaslat határideje
 - MS10: ?
 - MS11: ?
 - fejlesztés vége 1.0 RC1 kiadása
-- Szakdolgozat írásának vége.
+- 10: Szakdolgozat írásának vége, szerkesztés és utómunkák
+- 28: Szakdolgozat leadási határidő 
 
 ## December
 
-- Szakdolgozat leadása.
+- 10: Szakdolgozat leadási utolsó határideje
 
