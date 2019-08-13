@@ -17,7 +17,10 @@ class OptionParser {
     private final ArgumentParser parser;
 
     OptionParser() {
-        parser = ArgumentParsers.newArgumentParser("xplang", false)
+        parser = ArgumentParsers.newFor("xplang")
+            .addHelp(false)
+            .singleMetavar(true)
+            .build()
             .version(String.format("This is XPLanG version %s", Program.getVersion().describe()))
             .defaultHelp(true);
 

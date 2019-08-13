@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     compile group: 'com.github.stefanbirkner', name: 'fishbowl', version: '1.4.0'
-    compile group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.7.0'
+    compile group: 'net.sourceforge.argparse4j', name: 'argparse4j', version: '0.8.1'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
