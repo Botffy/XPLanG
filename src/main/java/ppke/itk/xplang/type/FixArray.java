@@ -44,6 +44,6 @@ public final class FixArray extends Type {
     }
 
     @Override public String toString() {
-        return String.format("[Array of %d %s]", length, elemType);
+        return String.format("%d[%s]", length, elemType);
     }
 }
