@@ -12,7 +12,6 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.*;
@@ -81,6 +80,8 @@ public class TypeChecker {
 
     private void resolveFunction(FunctionExpression parent) throws FunctionResolutionError {
         log.debug("Resolving function {}", parent.getName());
+
+        parent.removeFromCandidatesIf(x -> x.argumentCount() != parent.childNodes().size());
 
         Map<Signature, List<MatchType>> matches = new HashMap<>();
         for (Signature signature : parent.getCandidates()) {

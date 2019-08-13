@@ -96,6 +96,29 @@ public class TypeCheckerTest {
     }
 
     @Test
+    public void handleDifferentArityOverloads() throws Exception {
+        Signature f1 = new Signature(name("f"), a, a);
+        Signature f2 = new Signature(name("f"), a, a, a);
+        Set<FunctionDeclaration> candidates = Set.of(
+            new MockFunctionDeclaration(f1),
+            new MockFunctionDeclaration(f2)
+        );
+
+        ValueExpression op1 = new ValueExpression(new MockRValue(a));
+        ValueExpression op2 = new ValueExpression(new MockRValue(a));
+        FunctionExpression fCall = new FunctionExpression(name("f"), Location.NONE, candidates, asList(op1, op2));
+
+        TypeChecker typeChecker = TypeChecker.in(context).checking(fCall).build();
+
+        RValue call = typeChecker.resolve();
+        (new ASTPrinter()).visit(call);
+
+        assertThat(call, instanceOf(FunctionCall.class));
+        FunctionCall funCall = (FunctionCall) call;
+        assertEquals(f2, (funCall.getDeclaration().signature()));
+    }
+
+    @Test
     public void noViableFunction() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
