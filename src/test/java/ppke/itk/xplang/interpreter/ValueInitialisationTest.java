@@ -14,7 +14,7 @@ public class ValueInitialisationTest {
     private static final Location LOCATION = new Location(1, 1, 1, 1);
 
     @Test public void arrayValuesShouldInitialise() {
-        Type type = FixArray.of(6, Archetype.BOOLEAN_TYPE);
+        Type type = FixArray.of(6, Archetype.BOOLEAN_TYPE).indexedBy(Archetype.INTEGER_TYPE);
         VariableDeclaration var = new VariableDeclaration(LOCATION, "a", type);
 
         Value initialValue = ValueUtils.initialise(var.getType());
@@ -24,7 +24,9 @@ public class ValueInitialisationTest {
     }
 
     @Test public void multiDimensionalArraysShouldInitialiseRecursively() {
-        Type type = FixArray.of(6, FixArray.of(2, Archetype.BOOLEAN_TYPE));
+        Type type = FixArray.of(6,
+                FixArray.of(2, Archetype.BOOLEAN_TYPE).indexedBy(Archetype.INTEGER_TYPE))
+            .indexedBy(Archetype.INTEGER_TYPE);
         VariableDeclaration var = new VariableDeclaration(LOCATION, "a", type);
 
         Value initialValue = ValueUtils.initialise(var.getType());

@@ -46,15 +46,7 @@ public class Archetype {
     public static final Scalar CHARACTER_TYPE = new Scalar("CharacterType");
 
     /** String archetype. */
-    public static final Scalar STRING_TYPE = new Scalar("StringType") {
-        @Override public Type elementType() {
-            return CHARACTER_TYPE;
-        }
-
-        @Override public Type indexType() {
-            return INTEGER_TYPE;
-        }
-    };
+    public static final Scalar STRING_TYPE = new AddressableScalar("StringType", CHARACTER_TYPE, INTEGER_TYPE);
 
     private Archetype() { }
 }

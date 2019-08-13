@@ -24,7 +24,7 @@ final class TypenameParser {
             parser.advance();
             int length = Integer.parseInt(parser.accept(parser.symbol(PlangSymbol.LITERAL_INT)).lexeme());
             parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
-            type = FixArray.of(length, type);
+            type = FixArray.of(length, type).indexedBy(parser.context().integerType());
         }
 
         log.debug("Resolved type: {}", type);

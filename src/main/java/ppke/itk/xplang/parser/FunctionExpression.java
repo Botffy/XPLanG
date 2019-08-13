@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Signature;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class FunctionExpression extends Expression {
         this.name = name;
         this.location = location;
         this.candidates = new HashSet<>(candidates);
-        this.childNodes = childNodes;
+        this.childNodes = new ArrayList<>(childNodes);
     }
 
     public Location getLocation() {

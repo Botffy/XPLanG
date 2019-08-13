@@ -6,7 +6,9 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.*;
+import ppke.itk.xplang.type.AddressableScalar;
 import ppke.itk.xplang.type.Archetype;
+import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 import static ppke.itk.xplang.lang.PlangName.name;
@@ -68,67 +70,75 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.WHITESPACE).notSignificant().register(ctx);
             makeSymbol(PlangSymbol.COMMENT).notSignificant().register(ctx);
 
-            makeType(ctx, Archetype.BOOLEAN_TYPE);
-            makeType(ctx, Archetype.INTEGER_TYPE);
-            makeType(ctx, Archetype.REAL_TYPE);
-            makeType(ctx, Archetype.CHARACTER_TYPE);
-            makeType(ctx, Archetype.STRING_TYPE);
+            Scalar boolType = makeScalar(ctx, Archetype.BOOLEAN_TYPE);
+            Scalar intType = makeScalar(ctx, Archetype.INTEGER_TYPE);
+            Scalar realType = makeScalar(ctx, Archetype.REAL_TYPE);
+            Scalar charType = makeScalar(ctx, Archetype.CHARACTER_TYPE);
+            Scalar stringType = new AddressableScalar(
+                props.getTypeName(Archetype.STRING_TYPE),
+                charType,
+                intType,
+                Archetype.STRING_TYPE
+            );
+            ctx.declareType(name(stringType.getLabel()), stringType);
+            ctx.setBooleanType(boolType);
+            ctx.setIntegerType(intType);
 
-            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.FTOI);
-            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF);
-            ctx.createBuiltin(SpecialName.IMPLICIT_COERCION, Instruction.ITOF);
+            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.FTOI, intType, realType);
+            ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF, realType, intType);
+            ctx.createBuiltin(SpecialName.IMPLICIT_COERCION, Instruction.ITOF, realType, intType);
 
-            createComparisons(ctx, Archetype.INTEGER_TYPE);
-            createComparisons(ctx, Archetype.REAL_TYPE);
-            createComparisons(ctx, Archetype.CHARACTER_TYPE);
-            createComparisons(ctx, Archetype.STRING_TYPE);
-            ctx.createBuiltin(operator("not"), Instruction.NOT);
-            ctx.createBuiltin(operator("or"), Instruction.OR);
-            ctx.createBuiltin(operator("and"), Instruction.AND);
-            ctx.createBuiltin(operator("negate"), Instruction.INEG);
-            ctx.createBuiltin(operator("length"), Instruction.IABS);
-            ctx.createBuiltin(operator("minus"), Instruction.ISUB);
-            ctx.createBuiltin(operator("plus"), Instruction.ISUM);
-            ctx.createBuiltin(operator("times"), Instruction.IMUL);
-            ctx.createBuiltin(operator("idiv"), Instruction.IDIV);
-            ctx.createBuiltin(operator("mod"), Instruction.IMOD);
-            ctx.createBuiltin(operator("negate"), Instruction.FNEG);
-            ctx.createBuiltin(operator("length"), Instruction.FABS);
-            ctx.createBuiltin(operator("minus"), Instruction.FSUB);
-            ctx.createBuiltin(operator("plus"), Instruction.FSUM);
-            ctx.createBuiltin(operator("times"), Instruction.FMUL);
-            ctx.createBuiltin(operator("div"), Instruction.FDIV);
-            ctx.createBuiltin(operator("pow"), Instruction.FEXP);
-            ctx.createBuiltin(operator("plus"), Instruction.APPEND);
-            ctx.createBuiltin(operator("plus"), Instruction.PREPEND);
-            ctx.createBuiltin(operator("plus"), Instruction.CONCAT);
-            ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR);
-            ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR);
+            createComparisons(ctx, boolType, intType);
+            createComparisons(ctx, boolType, realType);
+            createComparisons(ctx, boolType, charType);
+            createComparisons(ctx, boolType, stringType);
+            ctx.createBuiltin(operator("not"), Instruction.NOT, boolType, boolType);
+            ctx.createBuiltin(operator("or"), Instruction.OR, boolType, boolType, boolType);
+            ctx.createBuiltin(operator("and"), Instruction.AND, boolType, boolType, boolType);
+            ctx.createBuiltin(operator("negate"), Instruction.INEG, intType, intType);
+            ctx.createBuiltin(operator("length"), Instruction.IABS, intType, intType);
+            ctx.createBuiltin(operator("minus"), Instruction.ISUB, intType, intType, intType);
+            ctx.createBuiltin(operator("plus"), Instruction.ISUM, intType, intType, intType);
+            ctx.createBuiltin(operator("times"), Instruction.IMUL, intType, intType, intType);
+            ctx.createBuiltin(operator("idiv"), Instruction.IDIV, intType, intType, intType);
+            ctx.createBuiltin(operator("mod"), Instruction.IMOD, intType, intType, intType);
+            ctx.createBuiltin(operator("negate"), Instruction.FNEG, realType, realType);
+            ctx.createBuiltin(operator("length"), Instruction.FABS, realType, realType);
+            ctx.createBuiltin(operator("minus"), Instruction.FSUB, realType, realType, realType);
+            ctx.createBuiltin(operator("plus"), Instruction.FSUM, realType, realType, realType);
+            ctx.createBuiltin(operator("times"), Instruction.FMUL, realType, realType, realType);
+            ctx.createBuiltin(operator("div"), Instruction.FDIV, realType, realType, realType);
+            ctx.createBuiltin(operator("pow"), Instruction.FEXP, realType, realType, realType);
+            ctx.createBuiltin(operator("plus"), Instruction.APPEND, stringType, stringType, charType);
+            ctx.createBuiltin(operator("plus"), Instruction.PREPEND, stringType, charType, stringType);
+            ctx.createBuiltin(operator("plus"), Instruction.CONCAT, stringType, stringType, stringType);
+            ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR, intType, stringType, charType);
+            ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR, intType, stringType, stringType);
 
-            ctx.createBuiltin(operator("length"), Instruction.ARLEN);
+            ctx.createBuiltin(operator("length"), Instruction.ARLEN, intType, Archetype.ADDRESSABLE);
 
-            ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND);
-            ctx.createBuiltin(name(props.getFunctionName("sin")), Instruction.SIN);
-            ctx.createBuiltin(name(props.getFunctionName("cos")), Instruction.COS);
-            ctx.createBuiltin(name(props.getFunctionName("tan")), Instruction.TAN);
-            ctx.createBuiltin(name(props.getFunctionName("asin")), Instruction.ASIN);
-            ctx.createBuiltin(name(props.getFunctionName("acos")), Instruction.ACOS);
-            ctx.createBuiltin(name(props.getFunctionName("atan")), Instruction.ATAN);
-            ctx.createBuiltin(name(props.getFunctionName("ld")), Instruction.LD);
-            ctx.createBuiltin(name(props.getFunctionName("exp")), Instruction.EXP);
-            ctx.createBuiltin(name(props.getFunctionName("round")), Instruction.ROUND);
-            ctx.createBuiltin(name(props.getFunctionName("nagy")), Instruction.NAGY);
-            ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS);
-            ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER);
-            ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT);
+            ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND, intType, intType);
+            ctx.createBuiltin(name(props.getFunctionName("sin")), Instruction.SIN, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("cos")), Instruction.COS, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("tan")), Instruction.TAN, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("asin")), Instruction.ASIN, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("acos")), Instruction.ACOS, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("atan")), Instruction.ATAN, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("ld")), Instruction.LD, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("exp")), Instruction.EXP, realType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("round")), Instruction.ROUND, intType, realType);
+            ctx.createBuiltin(name(props.getFunctionName("nagy")), Instruction.NAGY, charType, charType);
+            ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS, charType, charType);
+            ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER, boolType, charType);
+            ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT, boolType, charType);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangName::new));
-            ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
-            ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, Double::valueOf));
-            ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
-            ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, x -> x.charAt(1)));
-            ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, x -> x.substring(1, x.length() - 1)));
+            ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, intType, Integer::valueOf));
+            ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, realType, Double::valueOf));
+            ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
+            ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, charType, x -> x.charAt(1)));
+            ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, stringType, x -> x.substring(1, x.length() - 1)));
             ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon));
 
             ctx.infix(eq, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));
@@ -159,13 +169,13 @@ public class PlangGrammar extends Grammar {
         }
     }
 
-    private void createComparisons(Context ctx, Type type) throws NameClashError {
-        ctx.createBuiltin(operator("eq"), Instruction.EQ, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(operator("neq"), Instruction.NEQ, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(operator("lt"), Instruction.LT, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(operator("lte"), Instruction.LTE, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(operator("gt"), Instruction.GT, Archetype.BOOLEAN_TYPE, type, type);
-        ctx.createBuiltin(operator("gte"), Instruction.GTE, Archetype.BOOLEAN_TYPE, type, type);
+    private void createComparisons(Context ctx, Scalar booleanType, Type type) throws NameClashError {
+        ctx.createBuiltin(operator("eq"), Instruction.EQ, booleanType, type, type);
+        ctx.createBuiltin(operator("neq"), Instruction.NEQ, booleanType, type, type);
+        ctx.createBuiltin(operator("lt"), Instruction.LT, booleanType, type, type);
+        ctx.createBuiltin(operator("lte"), Instruction.LTE, booleanType, type, type);
+        ctx.createBuiltin(operator("gt"), Instruction.GT, booleanType, type, type);
+        ctx.createBuiltin(operator("gte"), Instruction.GTE, booleanType, type, type);
     }
 
     /**
@@ -184,8 +194,11 @@ public class PlangGrammar extends Grammar {
             .caseInsensitive();
     }
 
-    private void makeType(Context ctx, Type type) throws ParseError {
-        ctx.declareType(name(props.getTypeName(type)), type);
+    private Scalar makeScalar(Context ctx, Type archetype) throws ParseError {
+        String typeName = props.getTypeName(archetype);
+        Scalar type = new Scalar(typeName, archetype);
+        ctx.declareType(name(typeName), type);
+        return type;
     }
 
     private OperatorName operator(String operatorName) {

@@ -1,6 +1,7 @@
 package ppke.itk.xplang.parser;
 
 import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.type.Scalar;
 
 
 /**

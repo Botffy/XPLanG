@@ -14,7 +14,7 @@ class ConditionParser {
         Expression conditionExpression = parser.parseExpression();
         return TypeChecker.in(parser.context())
             .checking(conditionExpression)
-            .expecting(Archetype.BOOLEAN_TYPE)
+            .expecting(parser.context().booleanType())
             .withCustomErrorMessage(
                 node -> new TypeError(translator.translate("plang.conditional_must_be_boolean"), node.location())
             )

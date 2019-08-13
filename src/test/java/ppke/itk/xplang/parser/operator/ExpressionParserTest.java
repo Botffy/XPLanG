@@ -58,16 +58,16 @@ public class ExpressionParserTest {
             try {
                 ctx.declareType(name("Int"), Archetype.INTEGER_TYPE);
 
-                ctx.createBuiltin(name("plus"), Instruction.ISUM);
-                ctx.createBuiltin(name("times"), Instruction.IMUL);
-                ctx.createBuiltin(name("id"), Instruction.ID);
+                ctx.createBuiltin(name("plus"), Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+                ctx.createBuiltin(name("times"), Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
+                ctx.createBuiltin(name("id"), Instruction.ID, Archetype.ANY, Archetype.ANY);
             } catch(NameClashError nameClashError) {
                 throw new IllegalStateException(nameClashError);
             }
 
             ctx.infix(PLUS, new InfixBinary(name("plus"), Operator.Precedence.SUM));
             ctx.infix(TIMES, new InfixBinary(name("times"), Operator.Precedence.PRODUCT));
-            ctx.prefix(NUMBER, new LiteralOperator<>(IntegerLiteral::new, Integer::valueOf));
+            ctx.prefix(NUMBER, new LiteralOperator<>(IntegerLiteral::new, Archetype.INTEGER_TYPE, Integer::valueOf));
             ctx.prefix(IDENTIFIER, new IdentifierOperator(ExpressionParserTest::name));
         }
 

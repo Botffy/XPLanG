@@ -8,13 +8,14 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.operator.Operator;
+import ppke.itk.xplang.type.Archetype;
+import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static java.util.Arrays.binarySearch;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -28,6 +29,9 @@ public class Context {
     private final ScopedMap<Name, NameTableEntry> nameTable = new ScopedMap<>();
     private final Map<Symbol, Operator.Prefix> prefixOperators = new HashMap<>();
     private final Map<Symbol, Operator.Infix> infixOperators = new HashMap<>();
+
+    private Type booleanType = Archetype.NONE;
+    private Type integerType = Archetype.NONE;
 
     public Context() {
         log.debug("New context created.");
@@ -124,17 +128,6 @@ public class Context {
         VariableDeclaration var = entry.getValueAsVariable();
         log.trace("Looked up variable for name '{}'", name);
         return var;
-    }
-
-    /**
-     * Create and register a new builtin function, using its default signature.
-     *
-     * @param name the name of the function.
-     * @param instruction the instruction to process when the function is called.
-     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
-     */
-    public void createBuiltin(Name name, Instruction instruction) throws NameClashError {
-        createBuiltin(name, instruction, instruction.returnType(), instruction.operands());
     }
 
     public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
@@ -298,6 +291,30 @@ public class Context {
         Type typ = entry.getValueAsType();
         log.trace("Looked up type for name '{}'", name);
         return typ;
+    }
+
+    /**
+     * The type acting as the Boolean type in the current context. The boolean type is special, because that's what the
+     * conditions expect.
+     */
+    public Type booleanType() {
+        return booleanType;
+    }
+
+    public void setBooleanType(Type booleanType) {
+        this.booleanType = booleanType;
+    }
+
+    /**
+     * The type acting as the Integer type in the current context. The integer type is special, because that acts as
+     *
+     */
+    public Type integerType() {
+        return integerType;
+    }
+
+    public void setIntegerType(Type integerType) {
+        this.integerType = integerType;
     }
 
     /**
