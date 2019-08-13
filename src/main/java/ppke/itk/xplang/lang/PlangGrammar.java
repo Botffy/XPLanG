@@ -10,7 +10,6 @@ import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
 import static ppke.itk.xplang.lang.PlangName.name;
-import static ppke.itk.xplang.parser.OperatorName.operator;
 
 /**
  * The description of the PLanG programming language (PLanG-strict)
@@ -18,62 +17,62 @@ import static ppke.itk.xplang.parser.OperatorName.operator;
 public class PlangGrammar extends Grammar {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
+    private final LexicalProperties props = new LexicalProperties();
+
     @Override
     public void setup(Context ctx) {
         log.debug("Setting up context");
         try {
-            LexicalProperties props = new LexicalProperties();
+            makeSymbol(PlangSymbol.PROGRAM).register(ctx);
+            makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
+            makeSymbol(PlangSymbol.DECLARE).register(ctx);
+            makeSymbol(PlangSymbol.IF).register(ctx);
+            makeSymbol(PlangSymbol.THEN).register(ctx);
+            makeSymbol(PlangSymbol.ELSE).register(ctx);
+            makeSymbol(PlangSymbol.ENDIF).register(ctx);
+            makeSymbol(PlangSymbol.LOOP).register(ctx);
+            makeSymbol(PlangSymbol.WHILE).register(ctx);
+            makeSymbol(PlangSymbol.END_LOOP).register(ctx);
+            makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
+            Symbol colon = makeSymbol(PlangSymbol.COLON).register(ctx);
+            Symbol comma = makeSymbol(PlangSymbol.COMMA).register(ctx);
+            Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN).register(ctx);
+            Symbol parenClose = makeSymbol(PlangSymbol.PAREN_CLOSE).register(ctx);
+            Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN).register(ctx);
+            Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE).register(ctx);
+            Symbol not = makeSymbol(PlangSymbol.OPERATOR_NOT).register(ctx);
+            Symbol or = makeSymbol(PlangSymbol.OPERATOR_OR).register(ctx);
+            Symbol and = makeSymbol(PlangSymbol.OPERATOR_AND).register(ctx);
+            Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS).register(ctx);
+            Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS).register(ctx);
+            Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES).register(ctx);
+            Symbol idiv = makeSymbol(PlangSymbol.OPERATOR_IDIV).register(ctx);
+            Symbol div = makeSymbol(PlangSymbol.OPERATOR_DIV).register(ctx);
+            Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD).register(ctx);
+            Symbol exp = makeSymbol(PlangSymbol.OPERATOR_EXP).register(ctx);
+            Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE).register(ctx);
+            Symbol eq = makeSymbol(PlangSymbol.OPERATOR_EQ).register(ctx);
+            Symbol neq = makeSymbol(PlangSymbol.OPERATOR_NEQ).register(ctx);
+            Symbol lt = makeSymbol(PlangSymbol.OPERATOR_LT).register(ctx);
+            Symbol lte = makeSymbol(PlangSymbol.OPERATOR_LTE).register(ctx);
+            Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT).register(ctx);
+            Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE).register(ctx);
+            Symbol find = makeSymbol(PlangSymbol.OPERATOR_FIND).register(ctx);
+            Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
+            Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            Symbol literalBool = makeSymbol(PlangSymbol.LITERAL_BOOL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            Symbol literalChar = makeSymbol(PlangSymbol.LITERAL_CHAR).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            Symbol literalText = makeSymbol(PlangSymbol.LITERAL_STRING).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
+            makeSymbol(PlangSymbol.EOL).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.WHITESPACE).notSignificant().register(ctx);
+            makeSymbol(PlangSymbol.COMMENT).notSignificant().register(ctx);
 
-            makeSymbol(PlangSymbol.PROGRAM, props).register(ctx);
-            makeSymbol(PlangSymbol.END_PROGRAM, props).register(ctx);
-            makeSymbol(PlangSymbol.DECLARE, props).register(ctx);
-            makeSymbol(PlangSymbol.IF, props).register(ctx);
-            makeSymbol(PlangSymbol.THEN, props).register(ctx);
-            makeSymbol(PlangSymbol.ELSE, props).register(ctx);
-            makeSymbol(PlangSymbol.ENDIF, props).register(ctx);
-            makeSymbol(PlangSymbol.LOOP, props).register(ctx);
-            makeSymbol(PlangSymbol.WHILE, props).register(ctx);
-            makeSymbol(PlangSymbol.END_LOOP, props).register(ctx);
-            makeSymbol(PlangSymbol.ASSIGNMENT, props).register(ctx);
-            Symbol colon = makeSymbol(PlangSymbol.COLON, props).register(ctx);
-            Symbol comma = makeSymbol(PlangSymbol.COMMA, props).register(ctx);
-            Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN, props).register(ctx);
-            Symbol parenClose = makeSymbol(PlangSymbol.PAREN_CLOSE, props).register(ctx);
-            Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN, props).register(ctx);
-            Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE, props).register(ctx);
-            Symbol not = makeSymbol(PlangSymbol.OPERATOR_NOT, props).register(ctx);
-            Symbol or = makeSymbol(PlangSymbol.OPERATOR_OR, props).register(ctx);
-            Symbol and = makeSymbol(PlangSymbol.OPERATOR_AND, props).register(ctx);
-            Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS, props).register(ctx);
-            Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS, props).register(ctx);
-            Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES, props).register(ctx);
-            Symbol idiv = makeSymbol(PlangSymbol.OPERATOR_IDIV, props).register(ctx);
-            Symbol div = makeSymbol(PlangSymbol.OPERATOR_DIV, props).register(ctx);
-            Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD, props).register(ctx);
-            Symbol exp = makeSymbol(PlangSymbol.OPERATOR_EXP, props).register(ctx);
-            Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE, props).register(ctx);
-            Symbol eq = makeSymbol(PlangSymbol.OPERATOR_EQ, props).register(ctx);
-            Symbol neq = makeSymbol(PlangSymbol.OPERATOR_NEQ, props).register(ctx);
-            Symbol lt = makeSymbol(PlangSymbol.OPERATOR_LT, props).register(ctx);
-            Symbol lte = makeSymbol(PlangSymbol.OPERATOR_LTE, props).register(ctx);
-            Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT, props).register(ctx);
-            Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE, props).register(ctx);
-            Symbol find = makeSymbol(PlangSymbol.OPERATOR_FIND, props).register(ctx);
-            Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER, props).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
-            Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalBool = makeSymbol(PlangSymbol.LITERAL_BOOL, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalChar = makeSymbol(PlangSymbol.LITERAL_CHAR, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalText = makeSymbol(PlangSymbol.LITERAL_STRING, props).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.EOL, props).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.WHITESPACE, props).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.COMMENT, props).notSignificant().register(ctx);
-
-            makeType(ctx, Archetype.BOOLEAN_TYPE, props);
-            makeType(ctx, Archetype.INTEGER_TYPE, props);
-            makeType(ctx, Archetype.REAL_TYPE, props);
-            makeType(ctx, Archetype.CHARACTER_TYPE, props);
-            makeType(ctx, Archetype.STRING_TYPE, props);
+            makeType(ctx, Archetype.BOOLEAN_TYPE);
+            makeType(ctx, Archetype.INTEGER_TYPE);
+            makeType(ctx, Archetype.REAL_TYPE);
+            makeType(ctx, Archetype.CHARACTER_TYPE);
+            makeType(ctx, Archetype.STRING_TYPE);
 
             ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.FTOI);
             ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF);
@@ -91,7 +90,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("minus"), Instruction.ISUB);
             ctx.createBuiltin(operator("plus"), Instruction.ISUM);
             ctx.createBuiltin(operator("times"), Instruction.IMUL);
-            ctx.createBuiltin(operator("div"), Instruction.IDIV);
+            ctx.createBuiltin(operator("idiv"), Instruction.IDIV);
             ctx.createBuiltin(operator("mod"), Instruction.IMOD);
             ctx.createBuiltin(operator("negate"), Instruction.FNEG);
             ctx.createBuiltin(operator("length"), Instruction.FABS);
@@ -99,7 +98,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("plus"), Instruction.FSUM);
             ctx.createBuiltin(operator("times"), Instruction.FMUL);
             ctx.createBuiltin(operator("div"), Instruction.FDIV);
-            ctx.createBuiltin(operator("exp"), Instruction.FEXP);
+            ctx.createBuiltin(operator("pow"), Instruction.FEXP);
             ctx.createBuiltin(operator("plus"), Instruction.APPEND);
             ctx.createBuiltin(operator("plus"), Instruction.PREPEND);
             ctx.createBuiltin(operator("plus"), Instruction.CONCAT);
@@ -150,10 +149,10 @@ public class PlangGrammar extends Grammar {
             ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
             ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
             ctx.infix(times, new InfixBinary(operator("times"), Operator.Precedence.PRODUCT));
-            ctx.infix(idiv, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
+            ctx.infix(idiv, new InfixBinary(operator("idiv"), Operator.Precedence.PRODUCT));
             ctx.infix(div, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
             ctx.infix(mod, new InfixBinary(operator("mod"), Operator.Precedence.PRODUCT));
-            ctx.infix(exp, new InfixBinary(operator("exp"), Operator.Precedence.EXPONENT));
+            ctx.infix(exp, new InfixBinary(operator("pow"), Operator.Precedence.EXPONENT));
 
             ctx.infix(find, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
         } catch(ParseError | IllegalStateException error) {
@@ -179,14 +178,18 @@ public class PlangGrammar extends Grammar {
         return new Root(program.location(), program);
     }
 
-    private Symbol.Builder makeSymbol(PlangSymbol symbol, LexicalProperties props) {
+    private Symbol.Builder makeSymbol(PlangSymbol symbol) {
         return Symbol.create()
             .named(symbol.name())
             .matching(props.getSymbolPattern(symbol))
             .caseInsensitive();
     }
 
-    private void makeType(Context ctx, Type type, LexicalProperties props) throws ParseError {
+    private void makeType(Context ctx, Type type) throws ParseError {
         ctx.declareType(name(props.getTypeName(type)), type);
+    }
+
+    private OperatorName operator(String operatorName) {
+        return new OperatorName(props.getFunctionName(operatorName));
     }
 }

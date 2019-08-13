@@ -29,7 +29,4 @@ public class OperatorName implements Name {
         return "Operator#" + label;
     }
 
-    public static OperatorName operator(String label) {
-        return new OperatorName(label);
-    }
 }

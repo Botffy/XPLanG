@@ -9,6 +9,7 @@ import ppke.itk.xplang.type.Signature;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -45,6 +46,10 @@ public class FunctionExpression extends Expression {
      */
     void removeFromCandidates(Signature toRemove) {
         candidates.removeIf(x -> x.signature().equals(toRemove));
+    }
+
+    void removeFromCandidatesIf(Predicate<Signature> predicate) {
+        candidates.removeIf(x -> predicate.test(x.signature()));
     }
 
     boolean hasNoCandidates() {
