@@ -39,8 +39,8 @@ public final class FixArray extends Type {
         return this.length;
     }
 
-    @Override public boolean isScalar() {
-        return false;
+    @Override public Initialization getInitialization() {
+        return Initialization.ARRAY;
     }
 
     @Override public String toString() {

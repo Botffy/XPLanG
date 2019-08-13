@@ -4,8 +4,6 @@ package ppke.itk.xplang.type;
  * A type associated with a value.
  */
 public abstract class Type {
-
-
     private final String label;
 
     protected Type(String label) {
@@ -51,9 +49,10 @@ public abstract class Type {
      * Is this type a scalar type?
      *
      * By default, a type is scalar if it has no elements.
+     * @return
      */
-    public boolean isScalar() {
-        return indexType() == Archetype.NONE;
+    public Initialization getInitialization() {
+        return Initialization.SCALAR;
     }
 
     public String getLabel() {
@@ -62,5 +61,10 @@ public abstract class Type {
 
     @Override public String toString() {
         return label;
+    }
+
+    public enum Initialization {
+        SCALAR,
+        ARRAY
     }
 }

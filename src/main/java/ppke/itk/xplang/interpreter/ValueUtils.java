@@ -5,6 +5,8 @@ import ppke.itk.xplang.type.Type;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 public class ValueUtils {
     private static final Value NULL = new Value() {
         @Override public Value copy() {
@@ -29,10 +31,13 @@ public class ValueUtils {
     }
 
     static Value initialise(Type type) {
-        if(!type.isScalar()) {
-            return new ArrayValue(
-                Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(Collectors.toList())
-            );
+        switch (type.getInitialization()) {
+            case SCALAR:
+                return NULL;
+            case ARRAY:
+                return new ArrayValue(
+                    Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(toList())
+                );
         }
         return NULL;
     }

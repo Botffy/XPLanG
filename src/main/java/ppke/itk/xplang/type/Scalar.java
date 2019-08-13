@@ -17,8 +17,7 @@ public class Scalar extends Type {
         return 0;
     }
 
-    // FIXME we only use this to determine if the value should be initialized?
-    @Override public boolean isScalar() {
-        return true;
+    @Override public Initialization getInitialization() {
+        return Initialization.SCALAR;
     }
 }
