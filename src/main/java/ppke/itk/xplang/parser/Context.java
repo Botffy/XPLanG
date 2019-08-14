@@ -282,10 +282,16 @@ public class Context {
 
         if (entry == null) {
             log.error("Lookup of type '{}' failed.", name);
-            throw new NameError("No type named %s", token);
+            throw new NameError(translator.translate("parser.TypeError.no_such_type", name), token);
         }
 
         if (entry.type != NameTableEntry.EntryType.TYPE) {
+            log.error("Lookup of type '{}' failed: is {}.", name, entry.type);
+            throw new NameError(translator.translate(
+                "parser.TypeError.is_not_typename",
+                name,
+                translator.translate("parser.context.NameTableEntry." + entry.type + ".name")
+            ), token);
         }
 
         Type typ = entry.getValueAsType();

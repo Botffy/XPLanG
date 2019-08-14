@@ -11,7 +11,7 @@ import ppke.itk.xplang.type.Archetype;
 import static ppke.itk.xplang.lang.PlangName.name;
 
 /**
- * {@code LValue = IDENTIFIER [BRACKET_OPEN INT_LITERAL BRACKET_CLOSE] }
+ * {@code LValue = IDENTIFIER [BRACKET_OPEN Expression BRACKET_CLOSE] }
  */
 final class LValueParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -24,8 +24,14 @@ final class LValueParser {
         Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
 
         LValue Result = parser.context().getVariableReference(name(token.lexeme()), token);
-        log.trace("LValue {}", Result.getType());
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
+            if (Result.getType().indexType().equals(Archetype.NONE)) {
+                throw new TypeError(
+                    translator.translate("plang.assignment_element_access_for_scalar", Result.getType()),
+                    parser.actual().location()
+                );
+            }
+
             Token startToken = parser.advance();
 
             Expression indexExpression = parser.parseExpression();
@@ -45,7 +51,6 @@ final class LValueParser {
                 new Location(startToken.location().start, endToken.location().end),
                 toRValue(Result), index
             );
-            log.trace("LValue {}", Result.getType());
         }
         return Result;
     }
