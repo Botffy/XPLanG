@@ -66,6 +66,7 @@ public class Interpreter implements ASTVisitor {
     @Override public void visit(Conditional conditional) {
         conditional.getCondition().accept(this);
         Value value = valueStack.pop();
+        log.debug("Conditional condition evaulated to {}", value);
         if(value.equals(BooleanValue.TRUE)) {
             conditional.getTrueSequence().accept(this);
         } else {
@@ -79,10 +80,12 @@ public class Interpreter implements ASTVisitor {
             case TEST_FIRST: {
                 loop.getCondition().accept(this);
                 Value value = valueStack.pop();
+                log.debug("Loop condition evaulated to {}", value);
                 while (value.equals(BooleanValue.TRUE)) {
                     loop.getSequence().accept(this);
                     loop.getCondition().accept(this);
                     value = valueStack.pop();
+                    log.debug("Loop condition evaulated to {}", value);
                 }
             } break;
             case TEST_LAST:{
@@ -91,9 +94,11 @@ public class Interpreter implements ASTVisitor {
                     loop.getSequence().accept(this);
                     loop.getCondition().accept(this);
                     value = valueStack.pop();
+                    log.debug("Loop condition evaulated to {}", value);
                 } while (value.equals(BooleanValue.TRUE));
             } break;
         }
+        log.debug("Exit loop");
     }
 
     @Override public void visit(FunctionCall call) {

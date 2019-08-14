@@ -1,5 +1,7 @@
 package ppke.itk.xplang.interpreter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.util.Stack;
 
@@ -12,6 +14,8 @@ import static ppke.itk.xplang.interpreter.BooleanValue.FALSE;
 import static ppke.itk.xplang.interpreter.BooleanValue.TRUE;
 
 class InstructionProcessor {
+    private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
+
     private static Random random = new Random();
 
     private static EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
@@ -67,7 +71,7 @@ class InstructionProcessor {
         if (!executions.containsKey(instruction)) {
             throw new IllegalStateException(String.format("Unknown instruction %s", instruction));
         }
-
+        log.debug("Call instruction {}", instruction);
         executions.get(instruction).execute(stack);
     }
 
