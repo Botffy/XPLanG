@@ -24,6 +24,11 @@ class OptionParser {
             .version(String.format("This is XPLanG version %s", Program.getVersion().describe()))
             .defaultHelp(true);
 
+        parser.addArgument("--gui")
+            .required(false)
+            .action(Arguments.storeTrue())
+            .help("Start the editor");
+
         parser.addArgument("source")
             .metavar("<source-file>")
             .type(Arguments.fileType().acceptSystemIn().verifyCanRead().verifyIsFile())
@@ -70,6 +75,10 @@ class OptionParser {
             Program.Action action = Program.Action.INTERPRET;
             if (res.get("dry_run")) {
                 action = Program.Action.PARSE_ONLY;
+            }
+
+            if (res.getBoolean("gui")) {
+                action = Program.Action.SHOW_GUI;
             }
 
             RunConfig run = new RunConfig(action);

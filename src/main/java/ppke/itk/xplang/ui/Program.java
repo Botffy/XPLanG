@@ -7,11 +7,13 @@ import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.StreamHandler;
+import ppke.itk.xplang.gui.MainFrame;
 import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.Parser;
 
+import javax.swing.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -31,6 +33,9 @@ class Program {
     enum Action {
         /** The program should just call it a day and quit. */
         NONE,
+
+        /** The GUI should start. */
+        SHOW_GUI,
 
         /** The program should perform a dry-run: analyse the source, but do nothing afterwards. */
         PARSE_ONLY,
@@ -57,6 +62,11 @@ class Program {
 
         if(run.getAction() == Action.NONE) {
             log.info("Exiting");
+            return;
+        }
+
+        if (run.getAction() == Action.SHOW_GUI) {
+            SwingUtilities.invokeLater(() -> (new MainFrame()).loadFile(run.getSourceFile()));
             return;
         }
 
