@@ -18,10 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -84,7 +81,8 @@ public class LanguageIT {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
 
-                Interpreter interpreter = new Interpreter();
+                TestStreamHandler streamHandler = new TestStreamHandler("", Collections.emptyMap());
+                Interpreter interpreter = new Interpreter(streamHandler);
                 interpreter.visit(root);
 
                 if(expectedMemory != null) {

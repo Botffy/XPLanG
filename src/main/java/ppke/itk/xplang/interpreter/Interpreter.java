@@ -3,6 +3,7 @@ package ppke.itk.xplang.interpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
@@ -10,8 +11,13 @@ import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
+    private final StreamHandler streamHandler;
     private final Memory memory = new Memory();
     private final Stack<Value> valueStack = new Stack<>();
+
+    public Interpreter(StreamHandler streamHandler) {
+        this.streamHandler = streamHandler;
+    }
 
     @Override public void visit(Root root) {
         root.entryPoint().accept(this);

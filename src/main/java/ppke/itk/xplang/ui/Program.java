@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.ASTPrinter;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
+import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.interpreter.Interpreter;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
@@ -77,7 +78,8 @@ class Program {
         ASTPrinter printer = new ASTPrinter();
         printer.visit(root);
 
-        Interpreter interpreter = new Interpreter();
+        StreamHandler streamHandler = new FileStreamHandler();
+        Interpreter interpreter = new Interpreter(streamHandler);
         interpreter.visit(root);
     }
 
