@@ -15,6 +15,8 @@ enum PlangSymbol {
     WHILE,
     END_LOOP,
     ASSIGNMENT,
+    IN,
+    OUT,
     COLON,
     COMMA,
     PAREN_OPEN,

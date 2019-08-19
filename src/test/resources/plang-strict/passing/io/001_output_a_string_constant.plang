@@ -1,0 +1,4 @@
+**#Should be able to output a string constant to the stdOut
+program out
+  ki: "hi"
+program_vége

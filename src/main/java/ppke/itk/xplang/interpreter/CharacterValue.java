@@ -1,6 +1,9 @@
 package ppke.itk.xplang.interpreter;
 
-class CharacterValue implements ComparableValue {
+import java.io.IOException;
+import java.io.Writer;
+
+class CharacterValue implements ComparableValue, WritableValue {
     public final char value;
 
     CharacterValue(char value) {
@@ -13,6 +16,11 @@ class CharacterValue implements ComparableValue {
 
     @Override public Value copy() {
         return this;
+    }
+
+    @Override
+    public void writeTo(Writer writer) throws IOException {
+        writer.write(value);
     }
 
     @Override public String toString() {

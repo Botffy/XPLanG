@@ -7,5 +7,7 @@ Program testing
   ciklus amíg a < 3 vagy a < 10
     a := rnd 14
   ciklus_vége
+
+  ki: a
 program_vége
 

@@ -1,8 +1,13 @@
 package ppke.itk.xplang.interpreter;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DecimalFormat;
 import java.util.Locale;
 
-public class RealValue implements ComparableValue {
+public class RealValue implements ComparableValue, WritableValue {
+    private static final DecimalFormat format = new DecimalFormat();
+
     private final double value;
 
     RealValue(double value) {
@@ -15,6 +20,11 @@ public class RealValue implements ComparableValue {
 
     @Override public RealValue copy() {
         return this;
+    }
+
+    @Override
+    public void writeTo(Writer writer) throws IOException {
+        writer.write(format.format(value));
     }
 
     @Override public String toString() {

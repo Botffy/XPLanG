@@ -1,10 +1,12 @@
 package ppke.itk.xplang.interpreter;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Arrays;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class StringValue implements AddressableValue, ComparableValue, SlicableValue {
+class StringValue implements AddressableValue, ComparableValue, SlicableValue, WritableValue {
     private final char[] chars;
 
     StringValue(String value) {
@@ -29,6 +31,11 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue {
 
     @Override public StringValue copy() {
         return new StringValue(Arrays.copyOf(chars, chars.length));
+    }
+
+    @Override
+    public void writeTo(Writer writer) throws IOException {
+        writer.write(this.chars);
     }
 
     @Override public int size() {

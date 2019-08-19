@@ -11,7 +11,7 @@ import ppke.itk.xplang.parser.SyntaxError;
 import static java.util.Arrays.asList;
 
 /**
- * {@code Statement = Assignment | Conditional | Loop }
+ * {@code Statement = Assignment | Conditional | Loop | IOStatement }
  */
 final class StatementParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -27,12 +27,15 @@ final class StatementParser {
             return ConditionalParser.parse(parser);
         } else if (act.equals(parser.symbol(PlangSymbol.LOOP))) {
             return LoopParser.parse(parser);
+        } else if (act.equals(parser.symbol(PlangSymbol.OUT))) {
+            return IOStatementParser.parse(parser);
         }
 
         throw new SyntaxError(asList(
             parser.symbol(PlangSymbol.IDENTIFIER),
             parser.symbol(PlangSymbol.IF),
-            parser.symbol(PlangSymbol.LOOP)
+            parser.symbol(PlangSymbol.LOOP),
+            parser.symbol(PlangSymbol.OUT)
         ), act, parser.actual());
     }
 }

@@ -13,7 +13,7 @@ public class FileStreamHandler implements StreamHandler {
 
     @Override
     public Writer getStandardOutput() {
-        return new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
+        return new BufferedWriter(new OutputStreamWriter(System.out, StandardCharsets.UTF_8));
     }
 
     @Override

@@ -36,6 +36,8 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.WHILE).register(ctx);
             makeSymbol(PlangSymbol.END_LOOP).register(ctx);
             makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
+            makeSymbol(PlangSymbol.IN).register(ctx);
+            makeSymbol(PlangSymbol.OUT).register(ctx);
             Symbol colon = makeSymbol(PlangSymbol.COLON).register(ctx);
             Symbol comma = makeSymbol(PlangSymbol.COMMA).register(ctx);
             Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN).register(ctx);

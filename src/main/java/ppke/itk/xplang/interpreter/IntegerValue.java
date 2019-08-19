@@ -1,6 +1,12 @@
 package ppke.itk.xplang.interpreter;
 
-class IntegerValue implements ComparableValue {
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DecimalFormat;
+
+class IntegerValue implements ComparableValue, WritableValue {
+    private static final DecimalFormat format = new DecimalFormat();
+
     private final int value;
 
     IntegerValue(int value) {
@@ -13,6 +19,12 @@ class IntegerValue implements ComparableValue {
 
     @Override public IntegerValue copy() {
         return this;
+    }
+
+    @Override
+    public void writeTo(Writer writer) throws IOException {
+        writer.write(format.format(value));
+        writer.flush();
     }
 
     @Override public String toString() {

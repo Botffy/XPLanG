@@ -6,6 +6,9 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
 
 public class Interpreter implements ASTVisitor {
@@ -21,9 +24,9 @@ public class Interpreter implements ASTVisitor {
 
     @Override public void visit(Root root) {
         root.entryPoint().accept(this);
-
-        System.out.println(valueStack);
-        System.out.println(memory);
+        System.out.println();
+//        System.out.println(valueStack);
+//        System.out.println(memory);
     }
 
     @Override public void visit(Program program) {
@@ -105,6 +108,19 @@ public class Interpreter implements ASTVisitor {
             } break;
         }
         log.debug("Exit loop");
+    }
+
+    @Override
+    public void visit(Output output) {
+        output.getOutput().accept(this);
+        WritableValue value = valueStack.pop(WritableValue.class);
+        Writer standardOutput = streamHandler.getStandardOutput();
+        try {
+            log.debug("Writing value to standard output");
+            value.writeTo(standardOutput);
+        } catch (IOException e) {
+            throw new InterpreterError("Could not write to standard output", e);
+        }
     }
 
     @Override public void visit(FunctionCall call) {
