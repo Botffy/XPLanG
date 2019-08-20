@@ -49,20 +49,9 @@ final class LValueParser {
             Token endToken = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
             Result = new ElementRef(
                 new Location(startToken.location().start, endToken.location().end),
-                toRValue(Result), index
+                Result.toRValue(), index
             );
         }
         return Result;
-    }
-
-    private static RValue toRValue(LValue lValue) {
-        if(lValue instanceof VarRef) {
-            return new VarVal(lValue.location(), ((VarRef) lValue).getVariable());
-        } else if(lValue instanceof ElementRef) {
-            ElementRef ref = (ElementRef) lValue;
-            return new ElementVal(lValue.location(), ref.getAddressable(), ref.getAddress());
-        }
-
-        throw new IllegalStateException("Could not convert LValue to RValue");
     }
 }

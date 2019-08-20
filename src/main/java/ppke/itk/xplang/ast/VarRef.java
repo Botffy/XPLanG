@@ -34,6 +34,11 @@ public final class VarRef extends LValue {
         return this.var.getType();
     }
 
+    @Override
+    public RValue toRValue() {
+        return new VarVal(this.location(), this.getVariable());
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

@@ -33,6 +33,11 @@ public class ElementRef extends LValue {
         return getAddressable().getType().elementType();
     }
 
+    @Override
+    public RValue toRValue() {
+        return new ElementVal(this.location(), this.getAddressable(), this.getAddress());
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

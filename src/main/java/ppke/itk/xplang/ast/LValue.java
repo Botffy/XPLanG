@@ -13,4 +13,6 @@ public abstract class LValue extends Node {
     }
 
     abstract public Type getType();
+
+    abstract public RValue toRValue();
 }
