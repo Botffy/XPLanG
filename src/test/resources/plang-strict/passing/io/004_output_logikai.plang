@@ -1,0 +1,6 @@
+**#Should be able to output boolean values to the stdOut
+**stdOut:igazhamis
+program out
+  ki: igaz
+  ki: hamis
+program_vége

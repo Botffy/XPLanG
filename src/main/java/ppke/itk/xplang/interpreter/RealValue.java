@@ -1,10 +1,11 @@
 package ppke.itk.xplang.interpreter;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class RealValue implements ComparableValue, WritableValue {
-    private static final DecimalFormat format = new DecimalFormat();
+    private static final DecimalFormat format = new DecimalFormat("#.##########", new DecimalFormatSymbols(Locale.US));
 
     private final double value;
 

@@ -1,0 +1,5 @@
+**#Should be able to output real numbers to the stdOut, with correct formatting
+**stdOut:3.1415926536
+program out
+  ki: 3.14159265359
+program_vége

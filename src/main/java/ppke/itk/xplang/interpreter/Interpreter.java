@@ -25,9 +25,6 @@ public class Interpreter implements ASTVisitor {
     @Override public void visit(Root root) {
         root.entryPoint().accept(this);
         this.stdOut.printLn();
-
-        System.out.println(valueStack);
-        System.out.println(memory);
     }
 
     @Override public void visit(Program program) {

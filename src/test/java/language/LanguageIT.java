@@ -1,5 +1,6 @@
 package language;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -20,8 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class LanguageIT {
@@ -48,6 +48,7 @@ public class LanguageIT {
             String errorMessage = reader.readLine().substring(3);
             String expectedMemory = null;
             CursorPosition firstErrorLoc = null;
+            String expectedStdOut = null;
 
             String line = reader.readLine();
             do {
@@ -60,6 +61,8 @@ public class LanguageIT {
                     line = line.substring(14);
                     String[] loc = line.split(",");
                     firstErrorLoc = new CursorPosition(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
+                } else if (line.startsWith("stdOut:")) {
+                    expectedStdOut = line.substring(7);
                 }
                 line = reader.readLine();
             } while(line.startsWith("**"));
@@ -75,7 +78,6 @@ public class LanguageIT {
                 if(firstErrorLoc != null) {
                     assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getCursorPosition());
                 }
-
             } else {
                 if(!errorLog.isEmpty()) {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
@@ -89,6 +91,12 @@ public class LanguageIT {
                     assertEquals("Memory dump should match the expected one",
                         expectedMemory, interpreter.memoryDump()
                     );
+                }
+
+                if (expectedStdOut != null) {
+                    String actual = streamHandler.getStdOut();
+                    assertTrue(actual.endsWith("\n"));
+                    assertEquals(expectedStdOut + "\n", actual);
                 }
             }
         }

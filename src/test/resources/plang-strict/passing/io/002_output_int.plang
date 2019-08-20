@@ -1,0 +1,5 @@
+**#Should be able to output an integer constant to the stdOut
+**stdOut:5
+program out
+  ki: 5
+program_vége
