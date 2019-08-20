@@ -1,7 +1,5 @@
 package ppke.itk.xplang.interpreter;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.Arrays;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
@@ -34,8 +32,8 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
     }
 
     @Override
-    public void writeTo(Writer writer) throws IOException {
-        writer.write(this.chars);
+    public String asOutputString() {
+        return new String(this.chars);
     }
 
     @Override public int size() {

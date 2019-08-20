@@ -1,7 +1,5 @@
 package ppke.itk.xplang.interpreter;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.text.DecimalFormat;
 
 class IntegerValue implements ComparableValue, WritableValue {
@@ -22,9 +20,8 @@ class IntegerValue implements ComparableValue, WritableValue {
     }
 
     @Override
-    public void writeTo(Writer writer) throws IOException {
-        writer.write(format.format(value));
-        writer.flush();
+    public String asOutputString() {
+        return format.format(this.value);
     }
 
     @Override public String toString() {

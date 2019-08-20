@@ -1,8 +1,5 @@
 package ppke.itk.xplang.interpreter;
 
-import java.io.IOException;
-import java.io.Writer;
-
 final class BooleanValue implements WritableValue {
     final static BooleanValue TRUE = new BooleanValue(true);
     final static BooleanValue FALSE = new BooleanValue(false);
@@ -22,8 +19,8 @@ final class BooleanValue implements WritableValue {
     }
 
     @Override
-    public void writeTo(Writer writer) throws IOException {
-        writer.write(value ? "igaz" : "hamis"); //FIXME these words should come from the lexical properties. somehow.
+    public String asOutputString() {
+        return this.value ? "igaz" : "hamis";
     }
 
     public BooleanValue negate() {

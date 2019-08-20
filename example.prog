@@ -1,12 +1,9 @@
 Program testing
   Változók:
-    a: Egész
+    a: Logikai[2]
 
-  a := 1
-
-  ciklus amíg a < 3 vagy a < 10
-    a := rnd 14
-  ciklus_vége
+  a[0] := igaz
+  a[1] := hamis
 
   ki: a
 program_vége

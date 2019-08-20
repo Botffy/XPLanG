@@ -44,14 +44,11 @@ class ArrayValue implements SlicableValue, AddressableValue, WritableValue {
     }
 
     @Override
-    public void writeTo(Writer writer) throws IOException {
-        String separator = "";
-        for (Value value : values) {
-            WritableValue writable = (WritableValue) value;
-            writer.write(separator);
-            separator = " ";
-            writable.writeTo(writer);
-        }
+    public String asOutputString() {
+        return values.stream()
+            .map(x -> (WritableValue) x)
+            .map(WritableValue::asOutputString)
+            .collect(joining(" "));
     }
 
     @Override public int size() {

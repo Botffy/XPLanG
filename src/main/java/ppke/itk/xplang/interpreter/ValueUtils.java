@@ -2,21 +2,14 @@ package ppke.itk.xplang.interpreter;
 
 import ppke.itk.xplang.type.Type;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class ValueUtils {
-    private static final Value NULL = new WritableValue() {
+    private static final Value NULL = new Value() {
         @Override public Value copy() {
             return this;
-        }
-
-        @Override
-        public void writeTo(Writer writer) throws IOException {
-            writer.write("NULL");
         }
 
         @Override public String toString() {
