@@ -90,6 +90,11 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.TYPE_CONVERSION, Instruction.ITOF, realType, intType);
             ctx.createBuiltin(SpecialName.IMPLICIT_COERCION, Instruction.ITOF, realType, intType);
 
+            ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.IREAD, intType);
+            ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.FREAD, realType);
+            ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.BREAD, boolType);
+            ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.SREAD, stringType);
+
             createComparisons(ctx, boolType, intType);
             createComparisons(ctx, boolType, realType);
             createComparisons(ctx, boolType, charType);

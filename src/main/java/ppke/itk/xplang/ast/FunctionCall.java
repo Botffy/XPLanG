@@ -26,7 +26,7 @@ public class FunctionCall extends RValue {
     }
 
     public List<RValue> arguments() {
-        return children.subList(0, function.signature().getArgs().size()).stream()
+        return children.subList(0, this.children.size()).stream()
             .map(x -> (RValue) x)
             .collect(toList());
     }

@@ -11,7 +11,12 @@ public enum SpecialName implements Name {
      * An unary type conversion function registered by this name can be used by the {@link TypeChecker} to coerce types
      * during function resolutions.
      */
-    IMPLICIT_COERCION;
+    IMPLICIT_COERCION,
+
+    /**
+     * A nullary operator reading from the standard input.
+     */
+    READ_INPUT;
 
     @Override
     public String toString() {

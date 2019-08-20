@@ -2,7 +2,7 @@ package ppke.itk.xplang.interpreter;
 
 import java.text.DecimalFormat;
 
-class IntegerValue implements ComparableValue, WritableValue {
+class IntegerValue implements ComparableValue, WritableValue, ReadableValue {
     private static final DecimalFormat format = new DecimalFormat();
 
     private final int value;
@@ -44,5 +44,10 @@ class IntegerValue implements ComparableValue, WritableValue {
 
         IntegerValue that = (IntegerValue) other;
         return Integer.compare(this.value, that.value);
+    }
+
+    @Override
+    public Value readFrom(InputStreamValue input) {
+        return new IntegerValue(input.readInt());
     }
 }

@@ -1,0 +1,9 @@
+**#Should be able to read booleans from the stdIn
+**stdIn:y
+**Memory:a=Boolean(true)
+program out
+  változók:
+    a: logikai
+
+  be: a
+program_vége

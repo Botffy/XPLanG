@@ -1,0 +1,9 @@
+**#Should be able to read a real number from the stdIn
+**stdIn:87.523
+**Memory:a=Real(87.5230)
+program out
+  változók:
+    a: valós
+
+  be: a
+program_vége

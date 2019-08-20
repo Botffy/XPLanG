@@ -27,7 +27,7 @@ final class StatementParser {
             return ConditionalParser.parse(parser);
         } else if (act.equals(parser.symbol(PlangSymbol.LOOP))) {
             return LoopParser.parse(parser);
-        } else if (act.equals(parser.symbol(PlangSymbol.OUT))) {
+        } else if (act.equals(parser.symbol(PlangSymbol.OUT)) || act.equals(parser.symbol(PlangSymbol.IN))) {
             return IOStatementParser.parse(parser);
         }
 
@@ -35,7 +35,8 @@ final class StatementParser {
             parser.symbol(PlangSymbol.IDENTIFIER),
             parser.symbol(PlangSymbol.IF),
             parser.symbol(PlangSymbol.LOOP),
-            parser.symbol(PlangSymbol.OUT)
+            parser.symbol(PlangSymbol.OUT),
+            parser.symbol(PlangSymbol.IN)
         ), act, parser.actual());
     }
 }

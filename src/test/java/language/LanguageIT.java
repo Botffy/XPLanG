@@ -49,6 +49,7 @@ public class LanguageIT {
             String expectedMemory = null;
             CursorPosition firstErrorLoc = null;
             String expectedStdOut = null;
+            String stdIn = "";
 
             String line = reader.readLine();
             do {
@@ -63,6 +64,8 @@ public class LanguageIT {
                     firstErrorLoc = new CursorPosition(Integer.parseInt(loc[0]), Integer.parseInt(loc[1]));
                 } else if (line.startsWith("stdOut:")) {
                     expectedStdOut = line.substring(7);
+                } else if (line.startsWith("stdIn:")) {
+                    stdIn = line.substring(6);
                 }
                 line = reader.readLine();
             } while(line.startsWith("**"));
@@ -83,7 +86,7 @@ public class LanguageIT {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
 
-                TestStreamHandler streamHandler = new TestStreamHandler("", Collections.emptyMap());
+                TestStreamHandler streamHandler = new TestStreamHandler(stdIn, Collections.emptyMap());
                 Interpreter interpreter = new Interpreter(streamHandler);
                 interpreter.visit(root);
 

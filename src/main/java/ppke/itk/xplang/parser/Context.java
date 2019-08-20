@@ -198,7 +198,7 @@ public class Context {
     }
 
     /** Find the FunctionDeclaration node for a signature. */
-    Optional<FunctionDeclaration> lookupFunction(Signature signature) {
+    public Optional<FunctionDeclaration> lookupFunction(Signature signature) {
         FunctionSet functionSet = functionSetFor(signature.getName());
         return functionSet.find(signature);
     }

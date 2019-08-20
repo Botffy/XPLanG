@@ -1,0 +1,9 @@
+**#Should be able to read an integer from the stdIn
+**stdIn:6
+**Memory:a=Integer(6)
+program out
+  változók:
+    a: egész
+
+  be: a
+program_vége

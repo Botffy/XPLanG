@@ -152,7 +152,22 @@ public enum Instruction {
     FIND_SUBSTR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
 
     /** Array length: get the number of elements in any addressable type */
-    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE);
+    ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE),
+
+    /** Read an integer from the standard input. */
+    IREAD(Archetype.INTEGER_TYPE),
+
+    /** Read a float from the standard input */
+    FREAD(Archetype.REAL_TYPE),
+
+    /** Read a boolean from the standard input */
+    BREAD(Archetype.BOOLEAN_TYPE),
+
+    /** Read a string from the standard input */
+    SREAD(Archetype.STRING_TYPE),
+
+    /** Read an array from the standard input */
+    AREAD(Archetype.STRING_TYPE);
 
     private final Type returnType;
     private final List<Type> operands;
