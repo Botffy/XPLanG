@@ -97,4 +97,5 @@ run {
     }
     main = "ppke.itk.xplang.ui.Main"
     classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
 }

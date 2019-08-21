@@ -5,6 +5,7 @@ Program testing
   a[0] := igaz
   a[1] := hamis
 
+  be: a[0]
   ki: a
 program_vége
 
