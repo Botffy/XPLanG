@@ -6,8 +6,11 @@ import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * {@code OutputStatement = OUT COLON Expression }
+ * {@code OutputStatement = OUT COLON Expression { COMMA Expression} }
  */
 public class OutputStatementParser {
     public static Statement parse(Parser parser) throws ParseError {
@@ -15,14 +18,28 @@ public class OutputStatementParser {
 
         Location startLoc = in.location();
         parser.accept(parser.symbol(PlangSymbol.COLON));
-        Expression expression = parser.parseExpression();
 
-        RValue out = TypeChecker.in(parser.context())
+        List<RValue> values = new ArrayList<>();
+
+        RValue value = parseOutputValue(parser);
+        values.add(value);
+        Location endLoc = value.location();
+
+        while (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+            parser.advance();
+            value = parseOutputValue(parser);
+            values.add(value);
+            endLoc = value.location();
+        }
+
+        return new Output(Location.between(startLoc, endLoc), values);
+    }
+
+    private static RValue parseOutputValue(Parser parser) throws ParseError {
+        Expression expression = parser.parseExpression();
+        return TypeChecker.in(parser.context())
             .checking(expression)
             .build()
             .resolve();
-        Location endLoc = out.location();
-
-        return new Output(Location.between(startLoc, endLoc), out);
     }
 }

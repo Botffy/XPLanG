@@ -1,0 +1,5 @@
+**#Should be able to output multiple values, of diverse types
+**stdOut:hi510
+program out
+  ki: "hi", 5, 10
+program_vége

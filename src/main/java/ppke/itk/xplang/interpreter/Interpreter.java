@@ -112,10 +112,12 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Output output) {
-        output.getOutput().accept(this);
-        WritableValue value = valueStack.pop(WritableValue.class);
-        log.debug("Writing value to standard output");
-        this.stdOut.write(value);
+        for (RValue val : output.getOutputs()) {
+            val.accept(this);
+            WritableValue value = valueStack.pop(WritableValue.class);
+            log.debug("Writing value to standard output");
+            this.stdOut.write(value);
+        }
     }
 
     @Override public void visit(FunctionCall call) {
