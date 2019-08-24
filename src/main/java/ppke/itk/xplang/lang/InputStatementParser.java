@@ -12,34 +12,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code InputStatement = IN COLON LValue { COMMA LValue } }
+ * {@code InputStatement = IN [ LValue ] COLON LValue { COMMA LValue } }
  */
 public class InputStatementParser {
     private final static Translator translator = Translator.getInstance("Plang");
 
     public static Input parse(Parser parser) throws ParseError {
         Token in = parser.accept(parser.symbol(PlangSymbol.IN));
-
         Location startLoc = in.location();
+
+        RValue inputStream = new StandardInput();
+        if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
+            inputStream = LValueParser.parse(parser).toRValue();
+        }
+
         parser.accept(parser.symbol(PlangSymbol.COLON));
 
         List<Assignment> assignments = new ArrayList<>();
         LValue lValue = LValueParser.parse(parser);
         Location endLoc = lValue.location();
-        assignments.addAll(getAssignments(parser, lValue));
+        assignments.addAll(getAssignments(parser, lValue, inputStream));
 
         while (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
             parser.advance();
             lValue = LValueParser.parse(parser);
             endLoc = lValue.location();
-            assignments.addAll(getAssignments(parser, lValue));
+            assignments.addAll(getAssignments(parser, lValue, inputStream));
         }
 
         Location location = Location.between(startLoc, endLoc);
         return new Input(location, assignments);
     }
 
-    private static List<Assignment> getAssignments(Parser parser, LValue lValue) throws TypeError {
+    private static List<Assignment> getAssignments(Parser parser, LValue lValue, RValue inputStream) throws TypeError {
         Type type = lValue.getType();
         if (Archetype.ANY_ARRAY.accepts(type)) {
             List<Assignment> assignments = new ArrayList<>();
@@ -51,7 +56,7 @@ public class InputStatementParser {
                     index
                 );
 
-                assignments.addAll(getAssignments(parser, ref));
+                assignments.addAll(getAssignments(parser, ref, inputStream));
             }
 
             return assignments;
@@ -63,7 +68,7 @@ public class InputStatementParser {
             lValue.location()
         ));
 
-        RValue rValue = new FunctionCall(lValue.location(), function, new InputStreamVal(lValue.location()));
+        RValue rValue = new FunctionCall(lValue.location(), function, inputStream);
         return List.of(new Assignment(lValue.location(), lValue, rValue));
     }
 }

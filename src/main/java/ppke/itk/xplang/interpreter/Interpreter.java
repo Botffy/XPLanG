@@ -194,8 +194,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(InputStreamVal inputStreamVal) {
-        // TODO inputStreamVal should tell us which stream to push
+    public void visit(StandardInput standardInput) {
         valueStack.push(stdIn);
     }
 

@@ -4,9 +4,9 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
-public class InputStreamVal extends RValue {
-    public InputStreamVal(Location location) {
-        super(location);
+public class StandardInput extends RValue {
+    public StandardInput() {
+        super(Location.NONE);
     }
 
     @Override
@@ -16,7 +16,6 @@ public class InputStreamVal extends RValue {
 
     @Override
     public Type getType() {
-        // Todo: actually have a type
-        return Archetype.NONE;
+        return Archetype.INSTREAM_TYPE;
     }
 }

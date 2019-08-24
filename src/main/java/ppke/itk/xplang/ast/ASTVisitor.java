@@ -29,5 +29,5 @@ public interface ASTVisitor {
     void visit(BooleanLiteral booleanLiteral);
     void visit(CharacterLiteral characterLiteral);
     void visit(StringLiteral stringLiteral);
-    void visit(InputStreamVal inputStreamVal);
+    void visit(StandardInput standardInput);
 }

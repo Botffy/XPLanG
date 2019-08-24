@@ -1,10 +1,12 @@
-**#Should be able to open and close input streams
+**#Should be able to open, close and read from input streams.
 **InFile:hello.txt:hi
-**Memory:f=ClosedInputStream
+**Memory:a=String(hi),f=ClosedInputStream
 program out
   változók:
+    a: Szöveg,
     f: Befájl
 
   megnyit f: "hello.txt"
+  be f: a
   lezár f
 program_vége
