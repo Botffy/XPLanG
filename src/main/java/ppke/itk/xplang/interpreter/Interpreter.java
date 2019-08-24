@@ -12,7 +12,6 @@ public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
     private final InstructionProcessor instructionProcessor;
-    private final StreamHandler streamHandler;
     private final Memory memory = new Memory();
     private final Stack<Value> valueStack = new Stack<>();
 
@@ -20,8 +19,7 @@ public class Interpreter implements ASTVisitor {
     private final OpenInputStreamValue stdIn;
 
     public Interpreter(StreamHandler streamHandler) {
-        this.instructionProcessor = new InstructionProcessor();
-        this.streamHandler = streamHandler;
+        this.instructionProcessor = new InstructionProcessor(streamHandler);
         this.stdOut = new OutputStreamValue(streamHandler.getStandardOutput());
         this.stdIn = new OpenInputStreamValue(streamHandler.getStandardInput());
     }

@@ -167,7 +167,13 @@ public enum Instruction {
     SREAD(Archetype.STRING_TYPE),
 
     /** Read an array from the standard input */
-    AREAD(Archetype.STRING_TYPE);
+    AREAD(Archetype.STRING_TYPE),
+
+    /** Open the given file as an input stream */
+    IFILE_OPEN(Archetype.INSTREAM_TYPE, Archetype.STRING_TYPE),
+
+    /** Close the given input stream */
+    IFILE_CLOSE(Archetype.INSTREAM_TYPE, Archetype.INSTREAM_TYPE);
 
     private final Type returnType;
     private final List<Type> operands;

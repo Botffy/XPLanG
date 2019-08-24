@@ -50,6 +50,7 @@ public class LanguageIT {
             CursorPosition firstErrorLoc = null;
             String expectedStdOut = null;
             String stdIn = "";
+            Map<String, String> inputFiles = new HashMap<>();
 
             String line = reader.readLine();
             do {
@@ -66,6 +67,10 @@ public class LanguageIT {
                     expectedStdOut = line.substring(7);
                 } else if (line.startsWith("stdIn:")) {
                     stdIn = line.substring(6);
+                } else if (line.startsWith("InFile:")) {
+                    line = line.substring(7);
+                    int split = line.indexOf(':');
+                    inputFiles.put(line.substring(0, split), line.substring(split));
                 }
                 line = reader.readLine();
             } while(line.startsWith("**"));
@@ -86,7 +91,7 @@ public class LanguageIT {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
 
-                TestStreamHandler streamHandler = new TestStreamHandler(stdIn, Collections.emptyMap());
+                TestStreamHandler streamHandler = new TestStreamHandler(stdIn, inputFiles);
                 Interpreter interpreter = new Interpreter(streamHandler);
                 interpreter.visit(root);
 

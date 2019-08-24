@@ -38,6 +38,8 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
             makeSymbol(PlangSymbol.IN).register(ctx);
             makeSymbol(PlangSymbol.OUT).register(ctx);
+            makeSymbol(PlangSymbol.OPEN).register(ctx);
+            makeSymbol(PlangSymbol.CLOSE).register(ctx);
             Symbol colon = makeSymbol(PlangSymbol.COLON).register(ctx);
             Symbol comma = makeSymbol(PlangSymbol.COMMA).register(ctx);
             Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN).register(ctx);
@@ -95,6 +97,9 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.FREAD, realType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.BREAD, boolType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.SREAD, stringType);
+
+            ctx.createBuiltin(SpecialName.OPEN_FILE, Instruction.IFILE_OPEN, inputStreamType, stringType);
+            ctx.createBuiltin(SpecialName.CLOSE_FILE, Instruction.IFILE_CLOSE, inputStreamType, inputStreamType);
 
             createComparisons(ctx, boolType, intType);
             createComparisons(ctx, boolType, realType);

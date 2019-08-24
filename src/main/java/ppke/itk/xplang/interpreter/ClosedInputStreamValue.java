@@ -27,8 +27,11 @@ public class ClosedInputStreamValue implements InputStreamValue {
     }
 
     @Override
+    public void close() { }
+
+    @Override
     public Value copy() {
-        throw new UnopenedStreamException();
+        return this;
     }
 
     @Override

@@ -81,6 +81,7 @@ class Program {
         StreamHandler streamHandler = new FileStreamHandler();
         Interpreter interpreter = new Interpreter(streamHandler);
         interpreter.visit(root);
+        System.out.println(interpreter.memoryDump());
     }
 
     private Reader getSourceReader(RunConfig run) {

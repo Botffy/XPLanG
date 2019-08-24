@@ -2,9 +2,11 @@ package ppke.itk.xplang.interpreter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.util.Stack;
 
+import java.io.FileNotFoundException;
 import java.util.EnumMap;
 import java.util.Random;
 import java.util.function.BiFunction;
@@ -19,7 +21,7 @@ class InstructionProcessor {
     private final Random random = new Random();
     private final EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
 
-    InstructionProcessor() {
+    InstructionProcessor(StreamHandler streamHandler) {
         executions.put(Instruction.EQ, comparison(x -> x == 0));
         executions.put(Instruction.NEQ, comparison(x -> x != 0));
         executions.put(Instruction.LT, comparison(x -> x < 0));
@@ -69,6 +71,19 @@ class InstructionProcessor {
         executions.put(Instruction.FREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new RealValue(x.readReal())));
         executions.put(Instruction.BREAD, new UnaryInstruction<>(InputStreamValue.class, x -> BooleanValue.valueOf(x.readBoolean())));
         executions.put(Instruction.SREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new StringValue(x.readLine())));
+        executions.put(Instruction.IFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {
+            String fileName = x.getValue();
+            try {
+                return new OpenInputStreamValue(streamHandler.getFileInput(fileName));
+            } catch (FileNotFoundException e) {
+                throw new InterpreterError(String.format("Could not open file '%s'", fileName) , e);
+            }
+        }));
+        executions.put(Instruction.IFILE_CLOSE, stack -> {
+            InputStreamValue stream = stack.pop(InputStreamValue.class);
+            stream.close();
+            stack.push(new ClosedInputStreamValue());
+        });
     }
 
     void execute(Instruction instruction, Stack<Value> stack) {

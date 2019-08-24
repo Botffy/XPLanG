@@ -16,7 +16,13 @@ public enum SpecialName implements Name {
     /**
      * A nullary operator reading from the standard input.
      */
-    READ_INPUT;
+    READ_INPUT,
+
+    /** Open a file for reading or writing. */
+    OPEN_FILE,
+
+    /** Close an open inputstream or outputstream. */
+    CLOSE_FILE;
 
     @Override
     public String toString() {

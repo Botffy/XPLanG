@@ -6,4 +6,5 @@ interface InputStreamValue extends Value {
     String readLine();
     char readCharacter();
     boolean readBoolean();
+    void close();
 }

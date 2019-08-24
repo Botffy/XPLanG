@@ -1,11 +1,8 @@
 Program testing
   Változók:
+    f: befájl,
     a: Logikai[2]
 
-  a[0] := igaz
-  a[1] := hamis
-
-  be: a[0]
-  ki: a
+  megnyit f: 'hello.txt'
 program_vége
 

@@ -74,6 +74,15 @@ public class OpenInputStreamValue implements InputStreamValue {
         throw new BadInputException();
     }
 
+    @Override
+    public void close() {
+        try {
+            reader.close();
+        } catch (IOException e) {
+            throw new InterpreterError("Could not close stream", e);
+        }
+    }
+
     private int get() {
         try {
             return reader.read();
@@ -136,5 +145,10 @@ public class OpenInputStreamValue implements InputStreamValue {
     @Override
     public Value copy() {
         return new OpenInputStreamValue(originalReader);
+    }
+
+    @Override
+    public String toString() {
+        return "OpenInputStream";
     }
 }
