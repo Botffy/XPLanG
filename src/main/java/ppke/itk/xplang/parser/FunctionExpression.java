@@ -28,6 +28,7 @@ public class FunctionExpression extends Expression {
         this.childNodes = new ArrayList<>(childNodes);
     }
 
+    @Override
     public Location getLocation() {
         return location;
     }

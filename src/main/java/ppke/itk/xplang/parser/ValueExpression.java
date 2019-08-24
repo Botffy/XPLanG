@@ -1,6 +1,7 @@
 package ppke.itk.xplang.parser;
 
 import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
 import java.util.Collections;
@@ -32,6 +33,11 @@ public class ValueExpression extends Expression {
     @Override
     RValue toASTNode() {
         return value;
+    }
+
+    @Override
+    public Location getLocation() {
+        return value.location();
     }
 
     @Override

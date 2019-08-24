@@ -1,6 +1,7 @@
 package ppke.itk.xplang.parser;
 
 import ppke.itk.xplang.ast.RValue;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.operator.ExpressionParser;
 
 import java.util.List;
@@ -11,4 +12,5 @@ import java.util.List;
 public abstract class Expression {
     abstract public List<Expression> childNodes();
     abstract RValue toASTNode();
+    abstract public Location getLocation();
 }
