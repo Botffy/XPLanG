@@ -16,10 +16,10 @@ import static ppke.itk.xplang.interpreter.BooleanValue.TRUE;
 class InstructionProcessor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
-    private static Random random = new Random();
+    private final Random random = new Random();
+    private final EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
 
-    private static EnumMap<Instruction, Execution> executions = new EnumMap<>(Instruction.class);
-    static {
+    InstructionProcessor() {
         executions.put(Instruction.EQ, comparison(x -> x == 0));
         executions.put(Instruction.NEQ, comparison(x -> x != 0));
         executions.put(Instruction.LT, comparison(x -> x < 0));
@@ -71,7 +71,7 @@ class InstructionProcessor {
         executions.put(Instruction.SREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new StringValue(x.readLine())));
     }
 
-    static void execute(Instruction instruction, Stack<Value> stack) {
+    void execute(Instruction instruction, Stack<Value> stack) {
         if (!executions.containsKey(instruction)) {
             throw new IllegalStateException(String.format("Unknown instruction %s", instruction));
         }
@@ -132,7 +132,6 @@ class InstructionProcessor {
             V right = stack.pop(arg2Type);
             U left = stack.pop(arg1Type);
             stack.push(function.apply(left, right));
-
         }
     }
 }

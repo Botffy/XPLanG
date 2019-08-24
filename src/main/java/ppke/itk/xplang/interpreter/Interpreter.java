@@ -11,6 +11,7 @@ import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
 public class Interpreter implements ASTVisitor {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
+    private final InstructionProcessor instructionProcessor;
     private final StreamHandler streamHandler;
     private final Memory memory = new Memory();
     private final Stack<Value> valueStack = new Stack<>();
@@ -19,6 +20,7 @@ public class Interpreter implements ASTVisitor {
     private final OpenInputStreamValue stdIn;
 
     public Interpreter(StreamHandler streamHandler) {
+        this.instructionProcessor = new InstructionProcessor();
         this.streamHandler = streamHandler;
         this.stdOut = new OutputStreamValue(streamHandler.getStandardOutput());
         this.stdIn = new OpenInputStreamValue(streamHandler.getStandardInput());
@@ -49,7 +51,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(BuiltinFunction function) {
-        InstructionProcessor.execute(function.getInstruction(), valueStack);
+        instructionProcessor.execute(function.getInstruction(), valueStack);
     }
 
     @Override public void visit(Sequence sequence) {
