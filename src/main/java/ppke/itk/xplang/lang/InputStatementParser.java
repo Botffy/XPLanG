@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@code InputStatement = IN COLON LValue }
+ * {@code InputStatement = IN COLON LValue { COMMA LValue } }
  */
 public class InputStatementParser {
     private final static Translator translator = Translator.getInstance("Plang");
@@ -23,13 +23,20 @@ public class InputStatementParser {
         Location startLoc = in.location();
         parser.accept(parser.symbol(PlangSymbol.COLON));
 
+        List<Assignment> assignments = new ArrayList<>();
         LValue lValue = LValueParser.parse(parser);
         Location endLoc = lValue.location();
+        assignments.addAll(getAssignments(parser, lValue));
+
+        while (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+            parser.advance();
+            lValue = LValueParser.parse(parser);
+            endLoc = lValue.location();
+            assignments.addAll(getAssignments(parser, lValue));
+        }
+
         Location location = Location.between(startLoc, endLoc);
-
-        List<Assignment> assignment = getAssignments(parser, lValue);
-
-        return new Input(location, assignment);
+        return new Input(location, assignments);
     }
 
     private static List<Assignment> getAssignments(Parser parser, LValue lValue) throws TypeError {

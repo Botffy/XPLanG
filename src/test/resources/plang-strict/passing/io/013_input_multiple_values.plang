@@ -1,0 +1,10 @@
+**#Should be able to read into multiple variables from the stdIn
+**stdIn:y 14 54
+**Memory:a=Boolean(true),b=Integer(14),c=Integer(54)
+program out
+  változók:
+    a: logikai,
+    b, c: egész
+
+  be: a, b, c
+program_vége
