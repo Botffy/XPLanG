@@ -1,0 +1,9 @@
+**#Should be able to read arrays from the stdIn
+**stdIn:1 2 3 4
+**Memory:a=Array(Integer(1),Integer(2),Integer(3),Integer(4))
+program out
+  változók:
+    a: Egész[4]
+
+  be: a
+program_vége

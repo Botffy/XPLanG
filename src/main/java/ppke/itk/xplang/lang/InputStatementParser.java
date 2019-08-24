@@ -4,8 +4,11 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Signature;
+import ppke.itk.xplang.type.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,15 +27,36 @@ public class InputStatementParser {
         Location endLoc = lValue.location();
         Location location = Location.between(startLoc, endLoc);
 
+        List<Assignment> assignment = getAssignments(parser, lValue);
+
+        return new Input(location, assignment);
+    }
+
+    private static List<Assignment> getAssignments(Parser parser, LValue lValue) throws TypeError {
+        Type type = lValue.getType();
+        if (Archetype.ANY_ARRAY.accepts(type)) {
+            List<Assignment> assignments = new ArrayList<>();
+            for (int i = 0; i < type.size(); ++i) {
+                IntegerLiteral index = new IntegerLiteral(Location.NONE, type.indexType(), i);
+                ElementRef ref = new ElementRef(
+                    Location.NONE,
+                    lValue.toRValue(),
+                    index
+                );
+
+                assignments.addAll(getAssignments(parser, ref));
+            }
+
+            return assignments;
+        }
+
         Signature reading = new Signature(SpecialName.READ_INPUT, lValue.getType());
         FunctionDeclaration function = parser.context().lookupFunction(reading).orElseThrow(() -> new TypeError(
             translator.translate("plang.cannot_read", lValue.getType()),
-            location
+            lValue.location()
         ));
 
-        RValue rValue = new FunctionCall(location, function, new InputStreamVal(location));
-        Assignment assignment = new Assignment(location, lValue, rValue);
-
-        return new Input(location, List.of(assignment));
+        RValue rValue = new FunctionCall(lValue.location(), function, new InputStreamVal(lValue.location()));
+        return List.of(new Assignment(lValue.location(), lValue, rValue));
     }
 }
