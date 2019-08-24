@@ -70,7 +70,7 @@ public class LanguageIT {
                 } else if (line.startsWith("InFile:")) {
                     line = line.substring(7);
                     int split = line.indexOf(':');
-                    inputFiles.put(line.substring(0, split), line.substring(split));
+                    inputFiles.put(line.substring(0, split), line.substring(split + 1));
                 }
                 line = reader.readLine();
             } while(line.startsWith("**"));
