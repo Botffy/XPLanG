@@ -33,6 +33,8 @@ public class ValueUtils {
         switch (type.getInitialization()) {
             case SCALAR:
                 return NULL;
+            case INPUT_STREAM:
+                return new ClosedInputStreamValue();
             case ARRAY:
                 return new ArrayValue(
                     Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(toList())

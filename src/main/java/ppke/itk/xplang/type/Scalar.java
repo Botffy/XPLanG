@@ -2,14 +2,24 @@ package ppke.itk.xplang.type;
 
 public class Scalar extends Type {
     private final Type superType;
+    private final Initialization initialization;
 
     public Scalar(String label) {
-        this(label, null);
+        this(label, null, Initialization.SCALAR);
     }
 
     public Scalar(String label, Type superType) {
+        this(label, superType, Initialization.SCALAR);
+    }
+
+    public Scalar(String label, Initialization initialization) {
+        this(label, null, initialization);
+    }
+
+    public Scalar(String label, Type superType, Initialization initialization) {
         super(label);
         this.superType = superType;
+        this.initialization = initialization;
     }
 
     /**
@@ -34,6 +44,6 @@ public class Scalar extends Type {
     }
 
     @Override public Initialization getInitialization() {
-        return Initialization.SCALAR;
+        return initialization;
     }
 }

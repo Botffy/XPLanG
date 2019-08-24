@@ -76,6 +76,7 @@ public class PlangGrammar extends Grammar {
             Scalar intType = makeScalar(ctx, Archetype.INTEGER_TYPE);
             Scalar realType = makeScalar(ctx, Archetype.REAL_TYPE);
             Scalar charType = makeScalar(ctx, Archetype.CHARACTER_TYPE);
+            Scalar inputStreamType = makeScalar(ctx, Archetype.INSTREAM_TYPE);
             Scalar stringType = new AddressableScalar(
                 props.getTypeName(Archetype.STRING_TYPE),
                 charType,
@@ -203,7 +204,7 @@ public class PlangGrammar extends Grammar {
 
     private Scalar makeScalar(Context ctx, Type archetype) throws ParseError {
         String typeName = props.getTypeName(archetype);
-        Scalar type = new Scalar(typeName, archetype);
+        Scalar type = new Scalar(typeName, archetype, archetype.getInitialization());
         ctx.declareType(name(typeName), type);
         return type;
     }

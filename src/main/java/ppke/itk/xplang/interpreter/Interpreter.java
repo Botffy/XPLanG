@@ -16,12 +16,12 @@ public class Interpreter implements ASTVisitor {
     private final Stack<Value> valueStack = new Stack<>();
 
     private final OutputStreamValue stdOut;
-    private final InputStreamValue stdIn;
+    private final OpenInputStreamValue stdIn;
 
     public Interpreter(StreamHandler streamHandler) {
         this.streamHandler = streamHandler;
         this.stdOut = new OutputStreamValue(streamHandler.getStandardOutput());
-        this.stdIn = new InputStreamValue(streamHandler.getStandardInput());
+        this.stdIn = new OpenInputStreamValue(streamHandler.getStandardInput());
     }
 
     @Override public void visit(Root root) {

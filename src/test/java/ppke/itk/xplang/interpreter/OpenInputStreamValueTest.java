@@ -12,11 +12,11 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-public class InputStreamValueTest {
+public class OpenInputStreamValueTest {
     @Test
     public void readChar() {
         Reader input = getReader(" vőr ");
-        InputStreamValue is = new InputStreamValue(input);
+        OpenInputStreamValue is = new OpenInputStreamValue(input);
         assertEquals(' ', is.readCharacter());
         assertEquals('v', is.readCharacter());
         assertEquals('ő', is.readCharacter());
@@ -25,7 +25,7 @@ public class InputStreamValueTest {
     @Test
     public void readInt() {
         Reader input = getReader("13 -13  \t\n  67512 0 24.3");
-        InputStreamValue is = new InputStreamValue(input);
+        OpenInputStreamValue is = new OpenInputStreamValue(input);
 
         assertEquals(13, is.readInt());
         assertEquals(-13, is.readInt());
@@ -39,7 +39,7 @@ public class InputStreamValueTest {
     @Test
     public void readReal() {
         Reader input = getReader("0.2 3 -823.1345   0.12345678909");
-        InputStreamValue is = new InputStreamValue(input);
+        OpenInputStreamValue is = new OpenInputStreamValue(input);
 
         assertEquals(0.2, is.readReal(),  0.0f);
         assertEquals(3.0, is.readReal(), 0.0f);
@@ -50,7 +50,7 @@ public class InputStreamValueTest {
     @Test
     public void readLine() {
         Reader input = getReader("your day breaks\nyour mind aches\r\nyou find that all the words of kindness linger on\n\nwhen she no longer needs you");
-        InputStreamValue is = new InputStreamValue(input);
+        OpenInputStreamValue is = new OpenInputStreamValue(input);
 
         assertEquals("your day breaks", is.readLine());
         assertEquals("your mind aches", is.readLine());
@@ -62,7 +62,7 @@ public class InputStreamValueTest {
     @Test
     public void readBoolean() {
         Reader input = getReader(" ii     h y\n f F");
-        InputStreamValue is = new InputStreamValue(input);
+        OpenInputStreamValue is = new OpenInputStreamValue(input);
 
         assertEquals(true, is.readBoolean());
         assertEquals(true, is.readBoolean());

@@ -48,5 +48,7 @@ public class Archetype {
     /** String archetype. */
     public static final Scalar STRING_TYPE = new AddressableScalar("StringType", CHARACTER_TYPE, INTEGER_TYPE);
 
+    public static final Scalar INSTREAM_TYPE = new Scalar("InputStreamType", Type.Initialization.INPUT_STREAM);
+
     private Archetype() { }
 }
