@@ -111,6 +111,13 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
+    public void visit(Input input) {
+        for (Assignment assignment : input.getAssignments()) {
+            assignment.accept(this);
+        }
+    }
+
+    @Override
     public void visit(Output output) {
         for (RValue val : output.getOutputs()) {
             val.accept(this);

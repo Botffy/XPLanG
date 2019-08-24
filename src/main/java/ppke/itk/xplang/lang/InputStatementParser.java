@@ -6,13 +6,15 @@ import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Signature;
 
+import java.util.List;
+
 /**
- * {@code InputStatement = IN COLON Expression }
+ * {@code InputStatement = IN COLON LValue }
  */
 public class InputStatementParser {
     private final static Translator translator = Translator.getInstance("Plang");
 
-    public static Statement parse(Parser parser) throws ParseError {
+    public static Input parse(Parser parser) throws ParseError {
         Token in = parser.accept(parser.symbol(PlangSymbol.IN));
 
         Location startLoc = in.location();
@@ -29,7 +31,8 @@ public class InputStatementParser {
         ));
 
         RValue rValue = new FunctionCall(location, function, new InputStreamVal(location));
+        Assignment assignment = new Assignment(location, lValue, rValue);
 
-        return new Assignment(location, lValue, rValue);
+        return new Input(location, List.of(assignment));
     }
 }
