@@ -173,7 +173,7 @@ public enum Instruction {
     IFILE_OPEN(Archetype.INSTREAM_TYPE, Archetype.STRING_TYPE),
 
     /** Close the given input stream */
-    IFILE_CLOSE(Archetype.INSTREAM_TYPE, Archetype.INSTREAM_TYPE);
+    IFILE_CLOSE(Archetype.NONE, Archetype.INSTREAM_TYPE);
 
     private final Type returnType;
     private final List<Type> operands;

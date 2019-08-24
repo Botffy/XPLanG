@@ -99,7 +99,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.SREAD, stringType);
 
             ctx.createBuiltin(SpecialName.OPEN_FILE, Instruction.IFILE_OPEN, inputStreamType, stringType);
-            ctx.createBuiltin(SpecialName.CLOSE_FILE, Instruction.IFILE_CLOSE, inputStreamType, inputStreamType);
+            ctx.createBuiltin(SpecialName.CLOSE_FILE, Instruction.IFILE_CLOSE, Archetype.NONE, inputStreamType);
 
             createComparisons(ctx, boolType, intType);
             createComparisons(ctx, boolType, realType);

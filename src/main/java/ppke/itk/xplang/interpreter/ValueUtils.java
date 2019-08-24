@@ -34,7 +34,7 @@ public class ValueUtils {
             case SCALAR:
                 return NULL;
             case INPUT_STREAM:
-                return new ClosedInputStreamValue();
+                return new InputStreamValue();
             case ARRAY:
                 return new ArrayValue(
                     Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(toList())

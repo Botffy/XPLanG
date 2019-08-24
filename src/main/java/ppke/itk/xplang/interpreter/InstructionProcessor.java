@@ -74,7 +74,7 @@ class InstructionProcessor {
         executions.put(Instruction.IFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {
             String fileName = x.getValue();
             try {
-                return new OpenInputStreamValue(streamHandler.getFileInput(fileName));
+                return new InputStreamValue(streamHandler.getFileInput(fileName));
             } catch (FileNotFoundException e) {
                 throw new InterpreterError(String.format("Could not open file '%s'", fileName) , e);
             }
@@ -82,7 +82,7 @@ class InstructionProcessor {
         executions.put(Instruction.IFILE_CLOSE, stack -> {
             InputStreamValue stream = stack.pop(InputStreamValue.class);
             stream.close();
-            stack.push(new ClosedInputStreamValue());
+            stack.push(stream);
         });
     }
 
