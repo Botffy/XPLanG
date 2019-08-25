@@ -96,6 +96,7 @@ public class PlangGrammar extends Grammar {
 
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.IREAD, intType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.FREAD, realType);
+            ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.CREAD, charType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.BREAD, boolType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.SREAD, stringType);
 

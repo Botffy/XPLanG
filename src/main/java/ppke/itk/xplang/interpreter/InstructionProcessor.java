@@ -69,6 +69,7 @@ class InstructionProcessor {
         executions.put(Instruction.FIND_SUBSTR, new BinaryInstruction<>(StringValue.class, StringValue.class, (x,y) -> new IntegerValue(x.getValue().indexOf(y.getValue()))));
         executions.put(Instruction.IREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readIntegerValue));
         executions.put(Instruction.FREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readRealValue));
+        executions.put(Instruction.CREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readCharacterValue));
         executions.put(Instruction.BREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readBooleanValue));
         executions.put(Instruction.SREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readStringValue));
         executions.put(Instruction.IFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {

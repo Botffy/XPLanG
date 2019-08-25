@@ -1,0 +1,9 @@
+**#Should be able to read strings from the stdIn
+**stdIn:hello
+**Memory:a=Character(h)
+program out
+  változók:
+    a: Karakter
+
+  be: a
+program_vége

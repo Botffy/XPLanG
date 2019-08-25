@@ -161,6 +161,9 @@ public enum Instruction {
     FREAD(Archetype.REAL_TYPE),
 
     /** Read a boolean from the standard input */
+    CREAD(Archetype.CHARACTER_TYPE),
+
+    /** Read a boolean from the standard input */
     BREAD(Archetype.BOOLEAN_TYPE),
 
     /** Read a string from the standard input */
