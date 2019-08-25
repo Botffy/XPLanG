@@ -62,6 +62,7 @@ public class InputStatementParser {
             return assignments;
         }
 
+        // FIXME: this is very naive. Maybe there should be a full function resolution here, but I'm not really sure it's worth it
         Signature reading = new Signature(SpecialName.READ_INPUT, lValue.getType());
         FunctionDeclaration function = parser.context().lookupFunction(reading).orElseThrow(() -> new TypeError(
             translator.translate("plang.cannot_read", lValue.getType()),

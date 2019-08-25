@@ -157,19 +157,20 @@ public enum Instruction {
     /** Read an integer from the standard input. */
     IREAD(Archetype.INTEGER_TYPE),
 
-    /** Read a float from the standard input */
+    // TODO add inputstream as argument for the reading ops.
+    /** Read a float from an sinput */
     FREAD(Archetype.REAL_TYPE),
 
-    /** Read a boolean from the standard input */
+    /** Read a boolean from an input */
     CREAD(Archetype.CHARACTER_TYPE),
 
-    /** Read a boolean from the standard input */
+    /** Read a boolean from an input */
     BREAD(Archetype.BOOLEAN_TYPE),
 
-    /** Read a string from the standard input */
+    /** Read a string from an input */
     SREAD(Archetype.STRING_TYPE),
 
-    /** Read an array from the standard input */
+    /** Read an array from an input */
     AREAD(Archetype.STRING_TYPE),
 
     /** Open the given file as an input stream */
