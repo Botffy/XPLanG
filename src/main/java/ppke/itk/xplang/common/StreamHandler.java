@@ -1,10 +1,12 @@
 package ppke.itk.xplang.common;
 
+import ppke.itk.xplang.interpreter.ProgramInput;
+
 import java.io.*;
 
 public interface StreamHandler {
-    Reader getStandardInput();
+    ProgramInput getStandardInput();
     Writer getStandardOutput();
-    Reader getFileInput(String name) throws FileNotFoundException;
+    ProgramInput getFileInput(String name) throws FileNotFoundException;
     Writer getFileOutput(String name) throws FileNotFoundException;
 }

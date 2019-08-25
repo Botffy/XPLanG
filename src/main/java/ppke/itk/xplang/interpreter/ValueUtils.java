@@ -35,7 +35,7 @@ public class ValueUtils {
             case SCALAR:
                 return NULL;
             case INPUT_STREAM:
-                return new InputStreamValue();
+                return new InputStreamValue(null);
             case OUTPUT_STREAM:
                 return new OutputStreamValue();
             case ARRAY:

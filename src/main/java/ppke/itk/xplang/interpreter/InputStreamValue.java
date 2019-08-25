@@ -1,194 +1,55 @@
 package ppke.itk.xplang.interpreter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static ppke.itk.xplang.interpreter.ValueUtils.nullValue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
+class InputStreamValue implements Value {
+    private ProgramInput input;
 
-public class InputStreamValue implements Value {
-    private static final Logger log = LoggerFactory.getLogger("Root.Interpreter");
-
-    private Reader reader;
-
-    InputStreamValue() { }
-
-    InputStreamValue(Reader reader) {
-        if (!reader.markSupported()) {
-            reader = new BufferedReader(reader);
-        }
-
-        setReader(reader);
+    InputStreamValue(ProgramInput input) {
+        this.input = input;
     }
 
-    public void setReader(Reader reader) {
-        this.reader = reader;
+    Value readIntegerValue() {
+        Integer val = input.readInt();
+        return val == null ? nullValue() : new IntegerValue(val);
     }
 
-    public Integer readInt() {
-        throwIfNotOpen();
-        skipWs();
-        if (isExhausted()) {
-            return null;
-        }
-        return Integer.parseInt(readNumber());
+    Value readRealValue() {
+        Double val = input.readReal();
+        return val == null ? nullValue() : new RealValue(val);
     }
 
-    public Double readReal() {
-        throwIfNotOpen();
-        skipWs();
-        if (isExhausted()) {
-            return null;
-        }
-
-        StringBuilder builder = new StringBuilder(readNumber());
-
-        int dot = peek();
-        if (dot == '.') {
-            builder.append((char) get());
-            builder.append(readNumber());
-        }
-        return Double.parseDouble(builder.toString());
+    Value readCharacterValue() {
+        Character val = input.readCharacter();
+        return val == null ? nullValue() : new CharacterValue(val);
     }
 
-    public String readLine() {
-        throwIfNotOpen();
-        if (isExhausted()) {
-            return null;
-        }
-
-        StringBuilder line = new StringBuilder();
-
-        int c = get();
-        if (isExhausted()) {
-            return null;
-        }
-        while (c != -1 && c != '\n' && c != '\r') {
-            line.append((char) c);
-            c = get();
-        }
-
-        if (c == '\r' && peek() == '\n') {
-            get();
-        }
-
-        return line.toString();
+    Value readBooleanValue() {
+        Boolean val = input.readBoolean();
+        return val == null ? nullValue() : BooleanValue.valueOf(val);
     }
 
-    public Character readCharacter() {
-        throwIfNotOpen();
-        if (isExhausted()) {
-            return null;
-        }
-
-        return (char) get();
+    Value readStringValue() {
+        String val = input.readLine();
+        return val == null ? nullValue() : new StringValue(val);
     }
 
-    public Boolean readBoolean() {
-        throwIfNotOpen();
-        skipWs();
-        if (isExhausted()) {
-            return null;
-        }
-
-        char c = Character.toLowerCase(readCharacter());
-        if (c == 'h' || c == 'f') {
-            return false;
-        }
-        if (c == 'i' || c == 'y') {
-            return true;
-        }
-        throw new BadInputException();
+    void close() {
+        input.close();
+        input = null;
     }
 
-    public void close() {
-        if (isClosed()) {
-            return;
-        }
-
-        try {
-            reader.close();
-            this.reader = null;
-        } catch (IOException e) {
-            throw new InterpreterError("Could not close stream", e);
-        }
+    boolean isClosed() {
+        return input == null;
     }
 
-    private boolean isClosed() {
-        return this.reader == null;
-    }
-
-    private boolean isExhausted() {
-        return peek() == -1;
-    }
-
-    private void throwIfNotOpen() {
-        if (isClosed()) {
-            throw new UnopenedStreamException();
-        }
-    }
-
-    private int get() {
-        try {
-            return reader.read();
-        } catch (IOException e) {
-            throw new BadInputException(e);
-        }
-    }
-
-    private String readNumber() {
-        StringBuilder builder = new StringBuilder();
-        int c = peek();
-        if (c == '-') {
-            builder.append((char) get());
-        }
-
-        char digit = readDigit();
-        builder.append(digit);
-
-        int nextDigit = peek();
-        while (nextDigit >= '0' && nextDigit <= '9') {
-            builder.append(readDigit());
-            nextDigit = peek();
-        }
-
-        return builder.toString();
-    }
-
-    private int peek() {
-        try {
-            reader.mark(1);
-            int c = get();
-            reader.reset();
-            return c;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private void skipWs() {
-        int c = peek();
-        while (Character.isWhitespace(c)) {
-            get();
-            c = peek();
-        }
-    }
-
-    private char readDigit() {
-        int c = get();
-        if ((c < '0' || c > '9') && c != -1) {
-            log.warn("Tried to read a digit, found '{}'", c);
-            throw new BadInputException();
-        }
-        return (char) c;
-    }
-
+    @Override
     public Value copy() {
-        return isClosed() ? new InputStreamValue() : new InputStreamValue(reader);
+        return new InputStreamValue(input);
     }
 
+    @Override
     public String toString() {
-        return isClosed() ? "ClosedInputStream" : "OpenInputStream";
+        return isClosed() ? "ClosedInputStream" : String.format("OpenInputStream(%s)", input.getName());
     }
 }

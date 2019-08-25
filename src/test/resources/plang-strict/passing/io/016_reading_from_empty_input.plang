@@ -1,0 +1,13 @@
+**#When reading from an exhausted stream, the read value should be null.
+**InFile:test:15
+**Memory:a=DEADBEEF,f=ClosedInputStream
+program out
+  változók:
+    a: egész,
+    f: befájl
+
+  megnyit f: "test"
+  be f: a
+  be f: a
+  lezár f
+program_vége

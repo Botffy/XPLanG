@@ -67,10 +67,10 @@ class InstructionProcessor {
         executions.put(Instruction.CONCAT, new BinaryInstruction<>(StringValue.class, StringValue.class, (x, y) -> x.concat(y)));
         executions.put(Instruction.FIND_CHAR, new BinaryInstruction<>(StringValue.class, CharacterValue.class, (x,y) -> new IntegerValue(x.getValue().indexOf(y.getValue()))));
         executions.put(Instruction.FIND_SUBSTR, new BinaryInstruction<>(StringValue.class, StringValue.class, (x,y) -> new IntegerValue(x.getValue().indexOf(y.getValue()))));
-        executions.put(Instruction.IREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new IntegerValue(x.readInt())));
-        executions.put(Instruction.FREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new RealValue(x.readReal())));
-        executions.put(Instruction.BREAD, new UnaryInstruction<>(InputStreamValue.class, x -> BooleanValue.valueOf(x.readBoolean())));
-        executions.put(Instruction.SREAD, new UnaryInstruction<>(InputStreamValue.class, x -> new StringValue(x.readLine())));
+        executions.put(Instruction.IREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readIntegerValue));
+        executions.put(Instruction.FREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readRealValue));
+        executions.put(Instruction.BREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readBooleanValue));
+        executions.put(Instruction.SREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readStringValue));
         executions.put(Instruction.IFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {
             String fileName = x.getValue();
             try {

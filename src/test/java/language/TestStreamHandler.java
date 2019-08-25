@@ -1,5 +1,6 @@
 package language;
 
+import ppke.itk.xplang.interpreter.ProgramInput;
 import ppke.itk.xplang.common.StreamHandler;
 
 import java.io.*;
@@ -38,8 +39,8 @@ public class TestStreamHandler implements StreamHandler {
     }
 
     @Override
-    public Reader getStandardInput() {
-        return new InputStreamReader(stdIn);
+    public ProgramInput getStandardInput() {
+        return new ProgramInput(new InputStreamReader(stdIn), "stdIn");
     }
 
     @Override
@@ -48,13 +49,13 @@ public class TestStreamHandler implements StreamHandler {
     }
 
     @Override
-    public Reader getFileInput(String name) throws FileNotFoundException {
+    public ProgramInput getFileInput(String name) throws FileNotFoundException {
         InputStream stream = inFiles.get(name);
         if (stream == null) {
             throw new FileNotFoundException("No test input called " + name);
         }
 
-        return new InputStreamReader(stream, StandardCharsets.UTF_8);
+        return new ProgramInput(new InputStreamReader(stream, StandardCharsets.UTF_8), name);
     }
 
     @Override
