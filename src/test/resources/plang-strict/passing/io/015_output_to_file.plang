@@ -1,0 +1,11 @@
+**#Should be able to open, close and read from input streams.
+**Memory:f=ClosedOutputStream
+**OutFile:hello.txt:hi
+program out
+  változók:
+    f: Kifájl
+
+  megnyit f: "hello.txt"
+  ki f: "hi"
+  lezár f
+program_vége

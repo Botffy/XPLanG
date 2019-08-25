@@ -1,8 +1,9 @@
 Program testing
   Változók:
-    f: befájl,
-    a: Logikai[2]
+    f: kifájl
 
-  megnyit f: 'hello.txt'
+  megnyit f: "hello.txt"
+  ki f: "hello world"
+  lezár f
 program_vége
 

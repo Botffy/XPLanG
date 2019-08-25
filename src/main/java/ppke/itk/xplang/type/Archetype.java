@@ -50,5 +50,7 @@ public class Archetype {
 
     public static final Scalar INSTREAM_TYPE = new Scalar("InputStreamType", Type.Initialization.INPUT_STREAM);
 
+    public static final Scalar OUTSTREAM_TYPE = new Scalar("OutputStreamType", Type.Initialization.OUTPUT_STREAM);
+
     private Archetype() { }
 }

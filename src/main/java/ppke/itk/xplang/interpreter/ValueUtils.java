@@ -4,6 +4,7 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
 
 public class ValueUtils {
@@ -35,6 +36,8 @@ public class ValueUtils {
                 return NULL;
             case INPUT_STREAM:
                 return new InputStreamValue();
+            case OUTPUT_STREAM:
+                return new OutputStreamValue();
             case ARRAY:
                 return new ArrayValue(
                     Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(toList())

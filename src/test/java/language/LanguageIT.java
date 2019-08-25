@@ -51,6 +51,7 @@ public class LanguageIT {
             String expectedStdOut = null;
             String stdIn = "";
             Map<String, String> inputFiles = new HashMap<>();
+            Map<String, String> expectedOutputFiles = new HashMap<>();
 
             String line = reader.readLine();
             do {
@@ -71,7 +72,12 @@ public class LanguageIT {
                     line = line.substring(7);
                     int split = line.indexOf(':');
                     inputFiles.put(line.substring(0, split), line.substring(split + 1));
+                } else if (line.startsWith("OutFile:")) {
+                    line = line.substring(8);
+                    int split = line.indexOf(':');
+                    expectedOutputFiles.put(line.substring(0, split), line.substring(split + 1));
                 }
+
                 line = reader.readLine();
             } while(line.startsWith("**"));
             reader.reset();
@@ -105,6 +111,16 @@ public class LanguageIT {
                     String actual = streamHandler.getStdOut();
                     assertTrue(actual.endsWith("\n"));
                     assertEquals(expectedStdOut + "\n", actual);
+                }
+
+                for (Map.Entry<String, String> expect : expectedOutputFiles.entrySet()) {
+                    String fileName = expect.getKey();
+                    String expectedContent = expect.getValue();
+                    String actualContent = streamHandler.getOutFile(fileName);
+                    assertEquals(
+                        String.format("File %s should contain the expected data", fileName),
+                        expectedContent, actualContent
+                    );
                 }
             }
         }

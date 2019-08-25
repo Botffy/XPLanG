@@ -66,6 +66,7 @@ public abstract class Type {
     public enum Initialization {
         SCALAR,
         ARRAY,
-        INPUT_STREAM
+        INPUT_STREAM,
+        OUTPUT_STREAM
     }
 }

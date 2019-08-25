@@ -18,11 +18,17 @@ public enum SpecialName implements Name {
      */
     READ_INPUT,
 
-    /** Open a file for reading or writing. */
-    OPEN_FILE,
+    /** Open a file for reading. */
+    OPEN_INPUT_FILE,
 
-    /** Close an open inputstream or outputstream. */
-    CLOSE_FILE;
+    /** Open a file for writing. */
+    OPEN_OUTPUT_FILE,
+
+    /** Close an open inputstream. */
+    CLOSE_INPUTSTREAM,
+
+    /** Close an open outputstream. */
+    CLOSE_OUTPUTSTREAM;
 
     @Override
     public String toString() {

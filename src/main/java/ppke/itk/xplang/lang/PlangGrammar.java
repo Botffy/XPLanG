@@ -79,6 +79,7 @@ public class PlangGrammar extends Grammar {
             Scalar realType = makeScalar(ctx, Archetype.REAL_TYPE);
             Scalar charType = makeScalar(ctx, Archetype.CHARACTER_TYPE);
             Scalar inputStreamType = makeScalar(ctx, Archetype.INSTREAM_TYPE);
+            Scalar outputStreamType = makeScalar(ctx, Archetype.OUTSTREAM_TYPE);
             Scalar stringType = new AddressableScalar(
                 props.getTypeName(Archetype.STRING_TYPE),
                 charType,
@@ -98,8 +99,10 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.BREAD, boolType);
             ctx.createBuiltin(SpecialName.READ_INPUT, Instruction.SREAD, stringType);
 
-            ctx.createBuiltin(SpecialName.OPEN_FILE, Instruction.IFILE_OPEN, inputStreamType, stringType);
-            ctx.createBuiltin(SpecialName.CLOSE_FILE, Instruction.IFILE_CLOSE, Archetype.NONE, inputStreamType);
+            ctx.createBuiltin(SpecialName.OPEN_INPUT_FILE, Instruction.IFILE_OPEN, inputStreamType, stringType);
+            ctx.createBuiltin(SpecialName.CLOSE_INPUTSTREAM, Instruction.IFILE_CLOSE, Archetype.NONE, inputStreamType);
+            ctx.createBuiltin(SpecialName.OPEN_OUTPUT_FILE, Instruction.OFILE_OPEN, outputStreamType, stringType);
+            ctx.createBuiltin(SpecialName.CLOSE_OUTPUTSTREAM, Instruction.OFILE_CLOSE, Archetype.NONE, outputStreamType);
 
             createComparisons(ctx, boolType, intType);
             createComparisons(ctx, boolType, realType);

@@ -7,6 +7,8 @@ import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Archetype;
+import ppke.itk.xplang.type.Type;
 
 import java.util.List;
 
@@ -22,15 +24,30 @@ public class OpenStatementParser {
         LValue var = LValueParser.parse(parser);
         parser.accept(parser.symbol(PlangSymbol.COLON));
         Expression fileName = parser.parseExpression();
+        Location endLocation = fileName.getLocation();
+        Location location = Location.between(startLocation, endLocation);
+
+        Type varType = var.getType();
+        Name openFunctionName = null;
+        if (Archetype.INSTREAM_TYPE.accepts(varType)) {
+            openFunctionName = SpecialName.OPEN_INPUT_FILE;
+        } else if (Archetype.OUTSTREAM_TYPE.accepts(varType)) {
+            openFunctionName = SpecialName.OPEN_OUTPUT_FILE;
+        } else {
+            throw new TypeError(
+                translator.translate("plang.open_only_streams", Archetype.INSTREAM_TYPE, Archetype.OUTSTREAM_TYPE, varType),
+                location
+            );
+        }
+
         Expression callExpression = new FunctionExpression(
-            SpecialName.OPEN_FILE,
-            fileName.getLocation(),
-            parser.context().findFunctionsFor(SpecialName.OPEN_FILE),
+            openFunctionName,
+            location,
+            parser.context().findFunctionsFor(openFunctionName),
             List.of(fileName)
         );
 
         RValue call = TypeChecker.in(parser.context()).checking(callExpression).build().resolve();
-        Location endLocation = call.location();
-        return new Assignment(Location.between(startLocation, endLocation), var, call);
+        return new Assignment(location, var, call);
     }
 }

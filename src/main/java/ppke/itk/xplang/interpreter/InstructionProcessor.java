@@ -84,6 +84,19 @@ class InstructionProcessor {
             stream.close();
             stack.push(stream);
         });
+        executions.put(Instruction.OFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {
+            String fileName = x.getValue();
+            try {
+                return new OutputStreamValue(streamHandler.getFileOutput(fileName));
+            } catch (FileNotFoundException e) {
+                throw new InterpreterError(String.format("Could not open file '%s'", fileName) , e);
+            }
+        }));
+        executions.put(Instruction.OFILE_CLOSE, stack -> {
+            OutputStreamValue stream = stack.pop(OutputStreamValue.class);
+            stream.close();
+            stack.push(stream);
+        });
     }
 
     void execute(Instruction instruction, Stack<Value> stack) {

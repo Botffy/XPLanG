@@ -119,11 +119,12 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Output output) {
+        output.getOutputStream().accept(this);
+        OutputStreamValue outputStream = valueStack.pop(OutputStreamValue.class);
         for (RValue val : output.getOutputs()) {
             val.accept(this);
             WritableValue value = valueStack.pop(WritableValue.class);
-            log.debug("Writing value to standard output");
-            this.stdOut.write(value);
+            outputStream.write(value);
         }
     }
 
@@ -196,6 +197,11 @@ public class Interpreter implements ASTVisitor {
     @Override
     public void visit(StandardInput standardInput) {
         valueStack.push(stdIn);
+    }
+
+    @Override
+    public void visit(StandardOutput standardOutput) {
+        valueStack.push(stdOut);
     }
 
     public String memoryDump() {
