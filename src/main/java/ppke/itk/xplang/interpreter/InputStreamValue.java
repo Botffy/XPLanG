@@ -3,53 +3,67 @@ package ppke.itk.xplang.interpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PushbackReader;
 import java.io.Reader;
 
 public class InputStreamValue implements Value {
     private static final Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
-    private Reader originalReader;
-    private PushbackReader reader;
+    private Reader reader;
 
     InputStreamValue() { }
 
     InputStreamValue(Reader reader) {
+        if (!reader.markSupported()) {
+            reader = new BufferedReader(reader);
+        }
+
         setReader(reader);
     }
 
     public void setReader(Reader reader) {
-        this.originalReader = reader;
-        this.reader = new PushbackReader(reader);
+        this.reader = reader;
     }
 
-    public int readInt() {
+    public Integer readInt() {
         throwIfNotOpen();
         skipWs();
+        if (isExhausted()) {
+            return null;
+        }
         return Integer.parseInt(readNumber());
     }
 
-    public double readReal() {
+    public Double readReal() {
         throwIfNotOpen();
         skipWs();
+        if (isExhausted()) {
+            return null;
+        }
+
         StringBuilder builder = new StringBuilder(readNumber());
 
-        char dot = (char) get();
+        int dot = peek();
         if (dot == '.') {
-            builder.append(dot);
+            builder.append((char) get());
             builder.append(readNumber());
-        } else {
-            unread(dot);
         }
         return Double.parseDouble(builder.toString());
     }
 
     public String readLine() {
         throwIfNotOpen();
+        if (isExhausted()) {
+            return null;
+        }
+
         StringBuilder line = new StringBuilder();
 
         int c = get();
+        if (isExhausted()) {
+            return null;
+        }
         while (c != -1 && c != '\n' && c != '\r') {
             line.append((char) c);
             c = get();
@@ -62,14 +76,22 @@ public class InputStreamValue implements Value {
         return line.toString();
     }
 
-    public char readCharacter() {
+    public Character readCharacter() {
         throwIfNotOpen();
+        if (isExhausted()) {
+            return null;
+        }
+
         return (char) get();
     }
 
-    public boolean readBoolean() {
+    public Boolean readBoolean() {
         throwIfNotOpen();
         skipWs();
+        if (isExhausted()) {
+            return null;
+        }
+
         char c = Character.toLowerCase(readCharacter());
         if (c == 'h' || c == 'f') {
             return false;
@@ -88,7 +110,6 @@ public class InputStreamValue implements Value {
         try {
             reader.close();
             this.reader = null;
-            this.originalReader = null;
         } catch (IOException e) {
             throw new InterpreterError("Could not close stream", e);
         }
@@ -96,6 +117,10 @@ public class InputStreamValue implements Value {
 
     private boolean isClosed() {
         return this.reader == null;
+    }
+
+    private boolean isExhausted() {
+        return peek() == -1;
     }
 
     private void throwIfNotOpen() {
@@ -114,16 +139,15 @@ public class InputStreamValue implements Value {
 
     private String readNumber() {
         StringBuilder builder = new StringBuilder();
-        char c = (char) get();
+        int c = peek();
         if (c == '-') {
-            builder.append(c);
-        } else {
-            unread(c);
+            builder.append((char) get());
         }
 
-        builder.append(readDigit());
+        char digit = readDigit();
+        builder.append(digit);
 
-        char nextDigit = peek();
+        int nextDigit = peek();
         while (nextDigit >= '0' && nextDigit <= '9') {
             builder.append(readDigit());
             nextDigit = peek();
@@ -132,39 +156,36 @@ public class InputStreamValue implements Value {
         return builder.toString();
     }
 
-    private char peek() {
-        char c = (char) get();
-        unread(c);
-        return c;
+    private int peek() {
+        try {
+            reader.mark(1);
+            int c = get();
+            reader.reset();
+            return c;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     private void skipWs() {
-        char c = (char) get();
+        int c = peek();
         while (Character.isWhitespace(c)) {
-            c = (char) get();
-        }
-        unread(c);
-    }
-
-    private void unread(char c) {
-        try {
-            reader.unread(c);
-        } catch (IOException e) {
-            throw new IllegalStateException();
+            get();
+            c = peek();
         }
     }
 
     private char readDigit() {
-        char c = (char) get();
-        if (c < '0' || c > '9') {
+        int c = get();
+        if ((c < '0' || c > '9') && c != -1) {
             log.warn("Tried to read a digit, found '{}'", c);
             throw new BadInputException();
         }
-        return c;
+        return (char) c;
     }
 
     public Value copy() {
-        return isClosed() ? new InputStreamValue() : new InputStreamValue(originalReader);
+        return isClosed() ? new InputStreamValue() : new InputStreamValue(reader);
     }
 
     public String toString() {
