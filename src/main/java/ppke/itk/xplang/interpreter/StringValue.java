@@ -65,6 +65,25 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
         return new StringValue(n);
     }
 
+    IntegerValue findSubstring(StringValue that) {
+        int i = this.getValue().indexOf(that.getValue());
+        if (i == -1) {
+            i = this.chars.length;
+        }
+        return new IntegerValue(i);
+    }
+
+    IntegerValue findCharacter(CharacterValue that) {
+        char value = that.getValue();
+        int i;
+        for (i = 0; i < chars.length; ++i) {
+            if (chars[i] == value) {
+                break;
+            }
+        }
+        return new IntegerValue(i);
+    }
+
     @Override
     public StringValue getSlice(IntegerValue from, IntegerValue to) throws InterpreterError {
         char[] n = Arrays.copyOfRange(this.chars, from.getValue(), to.getValue());

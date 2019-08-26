@@ -1,0 +1,8 @@
+**#If the character is not found, it should return the string length
+**Memory:d=Integer(27)
+PROGRAM t
+  VÁLTOZÓK:
+    d: EGÉSZ
+
+  d := "egy ilyen mindig ilyen lesz" @ 'x'
+PROGRAM_VÉGE
