@@ -9,6 +9,7 @@ class RunConfig {
     private final Program.Action action;
     private File sourceFile;
     private Program.Encoding sourceEncoding = Program.Encoding.UTF8;
+    private Program.Encoding outputEncoding = null;
     private boolean printAst = false;
     private  boolean dumpMemory = false;
 
@@ -43,6 +44,14 @@ class RunConfig {
 
     public void setSourceEncoding(Program.Encoding sourceEncoding) {
         this.sourceEncoding = sourceEncoding;
+    }
+
+    public Program.Encoding getOutputEncoding() {
+        return outputEncoding;
+    }
+
+    public void setOutputEncoding(Program.Encoding outputEncoding) {
+        this.outputEncoding = outputEncoding;
     }
 
     public void shouldPrintAst(boolean printAst) {

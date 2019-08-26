@@ -60,6 +60,13 @@ class Program {
             return;
         }
 
+        if (run.getOutputEncoding() != null) {
+            System.setOut(new PrintStream(
+                new FileOutputStream(FileDescriptor.out), true,
+                run.getOutputEncoding().getCharset())
+            );
+        }
+
         Reader source = getSourceReader(run);
 
         ErrorLog errorLog = new ErrorLog();

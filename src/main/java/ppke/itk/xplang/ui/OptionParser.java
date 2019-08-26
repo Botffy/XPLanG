@@ -35,6 +35,10 @@ class OptionParser {
             .setDefault(Program.Encoding.UTF8)
             .help("The encoding of the source code.");
 
+        parser.addArgument("--output-encoding")
+            .type(Program.Encoding.class)
+            .help("The encoding of the standard output. When not set, the system default will be used.");
+
         parser.addArgument("-d", "--dry-run")
             .action(Arguments.storeTrue())
             .help("Perform a dry run: parse and analyse the source, displaying any errors, but do not interpret it.");
@@ -76,6 +80,10 @@ class OptionParser {
 
             if (res.get("dump_memory")) {
                 run.shouldDumpMemory(true);
+            }
+
+            if (res.get("output_encoding") != null) {
+                run.setOutputEncoding(res.get("output_encoding"));
             }
 
             run.setSourceEncoding(res.get("source_encoding"));
