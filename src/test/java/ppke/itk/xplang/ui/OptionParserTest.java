@@ -46,7 +46,7 @@ public class OptionParserTest {
     public void specifyingSourceFiles() {
         RunConfig config = parser.parseOptions(new String[]{"example.prog"});
         assertSame("Existing file as source input should be accepted, and should trigger the default action",
-            Program.Action.getDefaultAction(), config.getAction()
+            Program.Action.INTERPRET, config.getAction()
         );
         assertEquals("Existing file as source input should be accepted.",
             "example.prog", config.getSourceFile().getName()
@@ -57,7 +57,7 @@ public class OptionParserTest {
     public void stdInSource() {
         RunConfig config = parser.parseOptions(new String[]{"-"});
         assertSame("- as source input should be accepted, and should trigger the default action",
-            Program.Action.getDefaultAction(), config.getAction()
+            Program.Action.INTERPRET, config.getAction()
         );
         assertEquals("- as source input should be accepted (representing the standard input)",
             new File("-"), config.getSourceFile()

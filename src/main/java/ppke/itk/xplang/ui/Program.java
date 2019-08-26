@@ -36,10 +36,6 @@ class Program {
 
         /** The program should take the source code, parse it, build up the AST, then execute it. */
         INTERPRET;
-
-        static Action getDefaultAction() {
-            return INTERPRET;
-        }
     };
 
     Program() {
@@ -75,13 +71,20 @@ class Program {
             return;
         }
 
-        ASTPrinter printer = new ASTPrinter();
-        printer.visit(root);
+        if (run.shouldPrintAst()) {
+            ASTPrinter printer = new ASTPrinter();
+            printer.visit(root);
+        }
 
-        StreamHandler streamHandler = new FileStreamHandler();
-        Interpreter interpreter = new Interpreter(streamHandler);
-        interpreter.visit(root);
-        System.out.println(interpreter.memoryDump());
+        if (run.getAction() == Action.INTERPRET) {
+            StreamHandler streamHandler = new FileStreamHandler();
+            Interpreter interpreter = new Interpreter(streamHandler);
+            interpreter.visit(root);
+
+            if (run.shouldDumpMemory()) {
+                System.out.println(interpreter.memoryDump());
+            }
+        }
     }
 
     private Reader getSourceReader(RunConfig run) {

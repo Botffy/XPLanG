@@ -7,19 +7,23 @@ import java.io.File;
  */
 class RunConfig {
     private final Program.Action action;
-    private final File sourceFile;
+    private File sourceFile;
+    private boolean printAst;
+    private  boolean dumpMemory;
 
-    RunConfig(Program.Action action, File sourceFile) {
+    RunConfig(Program.Action action) {
         this.action = action;
-        this.sourceFile = sourceFile;
     }
 
     /**
      * The course of action the program should take.
-     * @return
      */
     Program.Action getAction() {
         return action;
+    }
+
+    public void setSourceFile(File sourceFile) {
+        this.sourceFile = sourceFile;
     }
 
     /**
@@ -31,4 +35,21 @@ class RunConfig {
     File getSourceFile() {
         return sourceFile;
     }
+
+    public void shouldPrintAst(boolean printAst) {
+        this.printAst = printAst;
+    }
+
+    boolean shouldPrintAst() {
+        return printAst;
+    }
+
+    public void shouldDumpMemory(boolean dumpMemory) {
+        this.dumpMemory = dumpMemory;
+    }
+
+    boolean shouldDumpMemory() {
+        return dumpMemory;
+    }
+
 }

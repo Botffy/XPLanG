@@ -30,6 +30,18 @@ class OptionParser {
             .nargs(1)
             .help("Source file");
 
+        parser.addArgument("-d", "--dry-run")
+            .action(Arguments.storeTrue())
+            .help("Perform a dry run: parse and analyse the source, displaying any errors, but do not interpret it.");
+
+        parser.addArgument("--print-ast")
+            .action(Arguments.storeTrue())
+            .help("Print the Abstract Syntax Tree after parsing the program");
+
+        parser.addArgument("--dump-memory")
+            .action(Arguments.storeTrue())
+            .help("Dump the contents of the memory to the StdOut after running the program.");
+
         parser.addArgument("-h", "-?", "--help")
             .action(new Helplike(ParserInterrupt.Type.HELP))
             .help("Display this help and exit.");
@@ -45,7 +57,24 @@ class OptionParser {
         try {
             Namespace res = parser.parseArgs(args);
             List<File> files = res.get("source");
-            return new RunConfig(Program.Action.getDefaultAction(), files.get(0));
+
+            Program.Action action = Program.Action.INTERPRET;
+            if (res.get("dry_run")) {
+                action = Program.Action.PARSE_ONLY;
+            }
+
+            RunConfig run = new RunConfig(action);
+
+            if (res.get("print_ast")) {
+                run.shouldPrintAst(true);
+            }
+
+            if (res.get("dump_memory")) {
+                run.shouldDumpMemory(true);
+            }
+
+            run.setSourceFile(files.get(0));
+            return run;
         } catch(ParserInterrupt interrupt) {
             switch(interrupt.type) {
                 case HELP:
@@ -55,11 +84,11 @@ class OptionParser {
                     System.out.println(parser.formatVersion());
                     break;
             }
-            return new RunConfig(Program.Action.NONE, null);
+            return new RunConfig(Program.Action.NONE);
         } catch(ArgumentParserException e) {
             log.error("Argument error: {}", e.getMessage());
             parser.handleError(e);
-            return new RunConfig(Program.Action.NONE, null);
+            return new RunConfig(Program.Action.NONE);
         }
     }
 
