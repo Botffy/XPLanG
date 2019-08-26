@@ -4,6 +4,7 @@
 
 # logfiles
 logs/
+*.log
 
 # generated docs
 docs/javadoc
