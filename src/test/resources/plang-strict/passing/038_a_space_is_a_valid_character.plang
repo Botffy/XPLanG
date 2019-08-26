@@ -1,0 +1,7 @@
+**#A space is a valid character
+**Memory:a=Character( )
+program Space
+  Változók:
+    a: karakter
+  a := ' '
+program_vége
