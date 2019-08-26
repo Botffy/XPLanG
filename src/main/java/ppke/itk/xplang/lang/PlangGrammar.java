@@ -148,6 +148,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS, charType, charType);
             ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER, boolType, charType);
             ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT, boolType, charType);
+            ctx.createBuiltin(name(props.getFunctionName("end")), Instruction.IFILE_END, boolType, inputStreamType);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangName::new));

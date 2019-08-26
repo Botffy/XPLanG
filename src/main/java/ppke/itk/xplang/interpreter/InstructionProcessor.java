@@ -85,6 +85,12 @@ class InstructionProcessor {
             stream.close();
             stack.push(stream);
         });
+        executions.put(Instruction.IFILE_END, new UnaryInstruction<>(InputStreamValue.class, x -> {
+            if (x.isClosed()) {
+                throw new InterpreterError("The file is not open!");
+            }
+            return BooleanValue.valueOf(x.hasBeenExhausted());
+        }));
         executions.put(Instruction.OFILE_OPEN, new UnaryInstruction<>(StringValue.class, x -> {
             String fileName = x.getValue();
             try {

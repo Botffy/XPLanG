@@ -1,0 +1,17 @@
+**#There should be a VÉGE function to show if the inputStream is exhausted
+**InFile:test:12
+**Memory:a=DEADBEEF,b=Boolean(false),c=Boolean(false),d=Boolean(true),f=ClosedInputStream
+program t
+  változók:
+    a: egész,
+    b, c, d: logikai,
+    f: befájl
+
+megnyit f: "test"
+b := vége f
+be f: a
+c := vége f
+be f: a
+d := vége f
+lezár f
+program_vége

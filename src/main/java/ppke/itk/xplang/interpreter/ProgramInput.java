@@ -113,12 +113,12 @@ public class ProgramInput {
         }
     }
 
-    private boolean isClosed() {
-        return this.reader == null;
+    public boolean isExhausted() {
+        return peek() == -1;
     }
 
-    private boolean isExhausted() {
-        return peek() == -1;
+    private boolean isClosed() {
+        return this.reader == null;
     }
 
     private void throwIfNotOpen() {

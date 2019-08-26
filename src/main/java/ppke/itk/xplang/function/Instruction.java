@@ -179,6 +179,9 @@ public enum Instruction {
     /** Close the given input stream */
     IFILE_CLOSE(Archetype.INSTREAM_TYPE, Archetype.INSTREAM_TYPE),
 
+    /** Is an input stream exhausted? */
+    IFILE_END(Archetype.BOOLEAN_TYPE, Archetype.INSTREAM_TYPE),
+
     /** Open the given file as an input stream */
     OFILE_OPEN(Archetype.OUTSTREAM_TYPE, Archetype.STRING_TYPE),
 
