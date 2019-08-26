@@ -72,7 +72,7 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
     }
 
     @Override public String toString() {
-        return String.format("String(%s)", new String(this.chars));
+        return String.format("String(%s)", new String(this.chars).replace("\n", "\\n"));
     }
 
     @Override public int hashCode() {

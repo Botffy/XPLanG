@@ -151,6 +151,9 @@ public enum Instruction {
     /** Find first location of a substring in a string */
     FIND_SUBSTR(Archetype.INTEGER_TYPE, Archetype.STRING_TYPE, Archetype.STRING_TYPE),
 
+    /** Get a newline character */
+    NEWLINE(Archetype.CHARACTER_TYPE),
+
     /** Array length: get the number of elements in any addressable type */
     ARLEN(Archetype.INTEGER_TYPE, Archetype.ADDRESSABLE),
 

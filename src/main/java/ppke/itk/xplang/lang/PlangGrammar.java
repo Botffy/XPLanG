@@ -64,6 +64,7 @@ public class PlangGrammar extends Grammar {
             Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT).register(ctx);
             Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE).register(ctx);
             Symbol find = makeSymbol(PlangSymbol.OPERATOR_FIND).register(ctx);
+            Symbol sv = makeSymbol(PlangSymbol.OPERATOR_SV).register(ctx);
             Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
             Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
             Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
@@ -131,6 +132,7 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("plus"), Instruction.CONCAT, stringType, stringType, stringType);
             ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR, intType, stringType, charType);
             ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR, intType, stringType, stringType);
+            ctx.createBuiltin(operator("sv"), Instruction.NEWLINE, charType);
 
             ctx.createBuiltin(operator("length"), Instruction.ARLEN, intType, Archetype.ADDRESSABLE);
 
@@ -182,6 +184,7 @@ public class PlangGrammar extends Grammar {
             ctx.infix(exp, new InfixBinary(operator("pow"), Operator.Precedence.EXPONENT));
 
             ctx.infix(find, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
+            ctx.prefix(sv, new NullaryOperator(operator("sv")));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

@@ -1,0 +1,8 @@
+**#Newline character constant
+**Memory:a=String(hello\nworld)
+Program testing
+  változók:
+    a: szöveg
+
+  a := "hello" + SV + "world"
+Program_vége

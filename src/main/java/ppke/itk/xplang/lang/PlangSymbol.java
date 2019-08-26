@@ -43,6 +43,7 @@ enum PlangSymbol {
     OPERATOR_GT,
     OPERATOR_GTE,
     OPERATOR_FIND,
+    OPERATOR_SV,
     IDENTIFIER,
     LITERAL_INT,
     LITERAL_REAL,
