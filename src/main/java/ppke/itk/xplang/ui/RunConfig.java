@@ -8,8 +8,9 @@ import java.io.File;
 class RunConfig {
     private final Program.Action action;
     private File sourceFile;
-    private boolean printAst;
-    private  boolean dumpMemory;
+    private Program.Encoding sourceEncoding = Program.Encoding.UTF8;
+    private boolean printAst = false;
+    private  boolean dumpMemory = false;
 
     RunConfig(Program.Action action) {
         this.action = action;
@@ -34,6 +35,14 @@ class RunConfig {
      */
     File getSourceFile() {
         return sourceFile;
+    }
+
+    public Program.Encoding getSourceEncoding() {
+        return sourceEncoding;
+    }
+
+    public void setSourceEncoding(Program.Encoding sourceEncoding) {
+        this.sourceEncoding = sourceEncoding;
     }
 
     public void shouldPrintAst(boolean printAst) {

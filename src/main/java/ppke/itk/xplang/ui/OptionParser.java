@@ -28,7 +28,12 @@ class OptionParser {
             .metavar("<source-file>")
             .type(Arguments.fileType().acceptSystemIn().verifyCanRead().verifyIsFile())
             .nargs(1)
-            .help("Source file");
+            .help("Source file.");
+
+        parser.addArgument("--source-encoding")
+            .type(Program.Encoding.class)
+            .setDefault(Program.Encoding.UTF8)
+            .help("The encoding of the source code.");
 
         parser.addArgument("-d", "--dry-run")
             .action(Arguments.storeTrue())
@@ -73,6 +78,7 @@ class OptionParser {
                 run.shouldDumpMemory(true);
             }
 
+            run.setSourceEncoding(res.get("source_encoding"));
             run.setSourceFile(files.get(0));
             return run;
         } catch(ParserInterrupt interrupt) {

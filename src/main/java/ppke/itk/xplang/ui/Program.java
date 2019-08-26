@@ -13,6 +13,7 @@ import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.Parser;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 
@@ -94,7 +95,10 @@ class Program {
                 Result = new InputStreamReader(System.in);
                 log.info("Opened stdin for reading");
             } else {
-                Result = new InputStreamReader(new FileInputStream(run.getSourceFile()), StandardCharsets.UTF_8);
+                Result = new InputStreamReader(new FileInputStream(
+                    run.getSourceFile()),
+                    run.getSourceEncoding().getCharset()
+                );
                 log.info("Opened {} for reading", run.getSourceFile());
             }
         } catch(FileNotFoundException e) {
@@ -106,6 +110,21 @@ class Program {
     private void printErrors(ErrorLog errorLog) {
         for(CompilerMessage message : errorLog.getErrorMessages()) {
             System.out.println(message);
+        }
+    }
+
+    public enum Encoding {
+        LATIN1(StandardCharsets.ISO_8859_1),
+        UTF8(StandardCharsets.UTF_8);
+
+        private final Charset charset;
+
+        Encoding(Charset charset) {
+            this.charset = charset;
+        }
+
+        public Charset getCharset() {
+            return charset;
         }
     }
 }
