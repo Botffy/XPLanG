@@ -74,20 +74,12 @@ class OptionParser {
 
             RunConfig run = new RunConfig(action);
 
-            if (res.get("print_ast")) {
-                run.shouldPrintAst(true);
-            }
-
-            if (res.get("dump_memory")) {
-                run.shouldDumpMemory(true);
-            }
-
-            if (res.get("output_encoding") != null) {
-                run.setOutputEncoding(res.get("output_encoding"));
-            }
-
+            run.shouldPrintAst(res.get("print_ast"));
+            run.shouldDumpMemory(res.get("dump_memory"));
+            run.setOutputEncoding(res.get("output_encoding"));
             run.setSourceEncoding(res.get("source_encoding"));
             run.setSourceFile(files.get(0));
+
             return run;
         } catch(ParserInterrupt interrupt) {
             switch(interrupt.type) {
