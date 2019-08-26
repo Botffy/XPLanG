@@ -39,6 +39,7 @@ class InstructionProcessor {
         executions.put(Instruction.IMUL, integerBinary((x, y) -> x * y));
         executions.put(Instruction.IDIV, integerBinary((x, y) -> x / y));
         executions.put(Instruction.IMOD, integerBinary((x, y) -> x % y));
+        executions.put(Instruction.IEXP, integerBinary((x, y) -> (int) Math.pow((int) x, (int) y)));
         executions.put(Instruction.RAND, new UnaryInstruction<>(IntegerValue.class, x -> new IntegerValue(random.nextInt(x.getValue()))));
         executions.put(Instruction.ITOF, new UnaryInstruction<>(IntegerValue.class, x -> new RealValue(x.getValue())));
         executions.put(Instruction.FNEG, new UnaryInstruction<>(RealValue.class, x -> new RealValue(- x.getValue())));

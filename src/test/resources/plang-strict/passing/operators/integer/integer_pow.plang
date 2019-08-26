@@ -1,0 +1,9 @@
+**#Egészes hatványozás
+**Memory:a=Integer(4),b=Integer(16)
+PROGRAM powIntegers
+  VÁLTOZÓK:
+    a, b: EGÉSZ
+
+  a := 4
+  b:= a ^ 2
+PROGRAM_VÉGE
