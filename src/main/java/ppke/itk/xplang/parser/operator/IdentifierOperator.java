@@ -45,7 +45,7 @@ public class IdentifierOperator implements Operator.Prefix {
 
         if (parser.context().isFunction(name)) {
             List<Expression> args = new ArrayList<>();
-            args.add(parser.parse());
+            args.add(parser.parse(Precedence.UNARY_PREFIX));
             // TODO more than one parameters :)
 
             return new FunctionExpression(
@@ -61,6 +61,6 @@ public class IdentifierOperator implements Operator.Prefix {
 
     @Override
     public int getPrecedence() {
-        return Precedence.FUNCTION;
+        return Precedence.UNARY_PREFIX;
     }
 }

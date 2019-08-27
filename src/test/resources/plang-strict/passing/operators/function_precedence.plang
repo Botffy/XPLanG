@@ -1,0 +1,12 @@
+**#Function precedence
+**Memory:b=Boolean(false),s=String(Hell)
+program Vardecl
+  Változók:
+    b: Logikai,
+    s: Szöveg
+
+  s := "hello"
+
+  b := NAGY 'a' = NAGY 'z'
+  s := nagy s[0]+(s[1:|s|-1])
+program_vége
