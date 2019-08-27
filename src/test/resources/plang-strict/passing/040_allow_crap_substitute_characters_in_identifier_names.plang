@@ -1,0 +1,8 @@
+**#Variable declaration
+**Memory:õôs=Integer(10),ũûr=Integer(5)
+program Vardecl
+  Változók:
+    õôs, ũûr: Egész
+  õôs := 10
+  ũûr := 5
+program_vége
