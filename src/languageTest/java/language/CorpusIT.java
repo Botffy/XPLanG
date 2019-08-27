@@ -101,7 +101,7 @@ public class CorpusIT {
     public void test() throws Exception {
         String output = IOUtils.toString(new InputStreamReader(new FileInputStream(o), StandardCharsets.UTF_8)).trim();
         String hiba = IOUtils.toString(new InputStreamReader(new FileInputStream(h), StandardCharsets.UTF_8)).trim();
-        String inputString = IOUtils.toString(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8)).trim();
+        String inputString = IOUtils.toString(new InputStreamReader(new FileInputStream(input), StandardCharsets.UTF_8));
         try(BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(source), StandardCharsets.ISO_8859_1))) {
             ErrorLog errorLog = new ErrorLog();
             Parser parser = new Parser(errorLog);
