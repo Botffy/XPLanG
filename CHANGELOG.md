@@ -1,5 +1,19 @@
 # Change log
 
+## MS4 - 2019-08-18
+
+Development was resumed after a brief hiatus of three years, and we're back with expressions! All classic PLanG operators and functions have been implemented, complete with function resolution and implicit type coercion.
+
+As for restarting the development: the CI has been repaired, and now we're using JDK11.
+
+## Features
+
+- Pratt parser for exceptions
+- typechecker object
+- resolution for overloaded functions. Only parameter overloading is supported yet
+- all PLanG operators and functions (except I/O)
+- loops
+
 ## MS3 - 2016-12-16
 
 The highlights of this iteration was fleshing out the memory to handle
