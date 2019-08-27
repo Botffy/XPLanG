@@ -67,7 +67,7 @@ public class LanguageIT {
                 } else if (line.startsWith("stdOut:")) {
                     expectedStdOut = line.substring(7);
                 } else if (line.startsWith("stdIn:")) {
-                    stdIn = line.substring(6);
+                    stdIn = line.substring(6).replace("\\n", "\n");
                 } else if (line.startsWith("InFile:")) {
                     line = line.substring(7);
                     int split = line.indexOf(':');
