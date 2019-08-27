@@ -7,7 +7,7 @@ import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 
 /**
- * {@code Declarations = DECLARE COLON {variableDeclaration} [{COMMA variableDeclaration}}
+ * {@code Declarations = DECLARE [ COLON ] {variableDeclaration} [{COMMA variableDeclaration}}
  */
 final class DeclarationsParser {
     private final static Translator translator = Translator.getInstance("Plang");
@@ -22,12 +22,10 @@ final class DeclarationsParser {
                 "plang.missing_declarations_keyword", parser.symbol(PlangSymbol.DECLARE).getPatternAsString()
             )
         );
-        parser.accept(parser.symbol(PlangSymbol.COLON),
-            translator.translate(
-                "plang.missing_colon_after_declarations_keyword",
-                parser.symbol(PlangSymbol.DECLARE).getPatternAsString()
-            )
-        );
+
+        if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COLON))) {
+            parser.advance();
+        }
 
         VariableDeclarationParser.parse(parser);
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
