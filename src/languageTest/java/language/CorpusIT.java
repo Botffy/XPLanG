@@ -108,10 +108,10 @@ public class CorpusIT {
             Root root = parser.parse(reader, grammar);
 
             if (!errorLog.isEmpty()) {
-                for(CompilerMessage message : errorLog.getErrorMessages()) {
-                    System.out.println(message);
-                }
                 if (hiba.isEmpty()) {
+                    for(CompilerMessage message : errorLog.getErrorMessages()) {
+                        System.out.println(message);
+                    }
                     Assert.fail("Failed parsing while original passed.");
                 }
                 return;
@@ -121,8 +121,6 @@ public class CorpusIT {
             Interpreter interpreter = new Interpreter(streamHandler);
             try {
                 interpreter.visit(root);
-                System.out.println(output);
-                System.out.println(streamHandler.getStdOut());
                 Assert.assertEquals(output, streamHandler.getStdOut().trim());
             } catch (Exception e) {
                 System.out.println(e.getClass().getSimpleName() + ": " + e.getMessage());

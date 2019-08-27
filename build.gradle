@@ -44,7 +44,7 @@ testSets {
 languageTest {
     systemProperties["plang.corpus.directory"] = System.getProperty("plang.corpus.directory")
     testLogging {
-        events "passed", "skipped", "failed"
+        events "failed"
         showStandardStreams true
     }
 }
