@@ -64,9 +64,6 @@ public class ProgramInput {
         StringBuilder line = new StringBuilder();
 
         int c = get();
-        if (isExhausted()) {
-            return null;
-        }
         while (c != -1 && c != '\n' && c != '\r') {
             line.append((char) c);
             c = get();

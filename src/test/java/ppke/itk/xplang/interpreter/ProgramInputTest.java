@@ -1,6 +1,7 @@
 package ppke.itk.xplang.interpreter;
 
 import org.junit.Test;
+import ppke.itk.xplang.ast.Program;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -57,6 +58,13 @@ public class ProgramInputTest {
         assertEquals("you find that all the words of kindness linger on", is.readLine());
         assertEquals("", is.readLine());
         assertEquals("when she no longer needs you", is.readLine());
+    }
+
+    @Test
+    public void oneCharacter() {
+        Reader input = getReader("a");
+        ProgramInput is = new ProgramInput(input, "test");
+        assertEquals("a", is.readLine());
     }
 
     @Test
