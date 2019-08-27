@@ -17,11 +17,18 @@ public class Interpreter implements ASTVisitor {
 
     private final OutputStreamValue stdOut;
     private final InputStreamValue stdIn;
+    private int executionLimit;
+    private int steps = 0;
 
     public Interpreter(StreamHandler streamHandler) {
+        this(streamHandler, 10000);
+    }
+
+    public Interpreter(StreamHandler streamHandler, int executionLimit) {
         this.instructionProcessor = new InstructionProcessor(streamHandler);
         this.stdOut = new OutputStreamValue(streamHandler.getStandardOutput());
         this.stdIn = new InputStreamValue(streamHandler.getStandardInput());
+        this.executionLimit = executionLimit;
     }
 
     @Override public void visit(Root root) {
@@ -70,6 +77,8 @@ public class Interpreter implements ASTVisitor {
         ReferenceValue ref = valueStack.pop(ReferenceValue.class);
         Value value = valueStack.pop();
         ref.assign(value.copy());
+
+        step();
     }
 
     @Override public void visit(Conditional conditional) {
@@ -81,6 +90,8 @@ public class Interpreter implements ASTVisitor {
         } else {
             conditional.getElseSequence().accept(this);
         }
+
+        step();
     }
 
     @Override
@@ -108,6 +119,8 @@ public class Interpreter implements ASTVisitor {
             } break;
         }
         log.debug("Exit loop");
+
+        step();
     }
 
     @Override
@@ -115,6 +128,8 @@ public class Interpreter implements ASTVisitor {
         for (Assignment assignment : input.getAssignments()) {
             assignment.accept(this);
         }
+
+        step();
     }
 
     @Override
@@ -126,6 +141,8 @@ public class Interpreter implements ASTVisitor {
             WritableValue value = valueStack.pop(WritableValue.class);
             outputStream.write(value);
         }
+
+        step();
     }
 
     @Override public void visit(FunctionCall call) {
@@ -206,5 +223,12 @@ public class Interpreter implements ASTVisitor {
 
     public String memoryDump() {
         return this.memory.dump();
+    }
+
+    private void step() {
+        ++steps;
+        if (steps >= executionLimit) {
+            throw new ExecutionLimitReachedException(executionLimit);
+        }
     }
 }
