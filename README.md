@@ -1,6 +1,9 @@
+[![Gittens](http://gittens.r15.railsrumble.com/badge/Botffy/XPLanG)](http://gittens.r15.railsrumble.com/gitten/Botffy/XPLanG)
+
 [![Code Climate](https://codeclimate.com/github/Botffy/XPLanG/badges/gpa.svg)](https://codeclimate.com/github/Botffy/XPLanG)
 [![Test Coverage](https://codeclimate.com/github/Botffy/XPLanG/badges/coverage.svg)](https://codeclimate.com/github/Botffy/XPLanG/coverage)
 [![Codeship](https://app.codeship.com/projects/d19f6fd0-9464-0137-af5e-22e0f80832fb/status?branch=master)](https://app.codeship.com/projects/356917)
+
 
 The PLanG programming language is an educational programming language used at the Faculty of Information Technology of the Péter Pázmány Catholic University, Hungary, for teaching the very basics of programming in the first semester. The language and the small IDE/interpreter accompanying it was designed and implemented by László Lövei in the summer of 2005, based on a pseudocode language used earlier to describe algorithms on paper. A Pascal-like language, its main distinguishing feature is that its keywords are in Hungarian.
 
