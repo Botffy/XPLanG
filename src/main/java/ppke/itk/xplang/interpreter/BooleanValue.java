@@ -1,6 +1,6 @@
 package ppke.itk.xplang.interpreter;
 
-final class BooleanValue implements WritableValue {
+final class BooleanValue implements WritableValue, ComparableValue {
     final static BooleanValue TRUE = new BooleanValue(true);
     final static BooleanValue FALSE = new BooleanValue(false);
 
@@ -49,5 +49,15 @@ final class BooleanValue implements WritableValue {
 
     static BooleanValue valueOf(boolean value) {
         return value? TRUE : FALSE;
+    }
+
+    @Override
+    public int compareTo(Value other) {
+        if (!(other instanceof BooleanValue)) {
+            throw new InterpreterError("Can only compare values of the same type.");
+        }
+
+        BooleanValue that = (BooleanValue) other;
+        return Boolean.compare(this.value, that.value);
     }
 }

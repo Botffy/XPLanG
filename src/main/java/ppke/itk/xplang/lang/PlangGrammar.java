@@ -106,6 +106,8 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.OPEN_OUTPUT_FILE, Instruction.OFILE_OPEN, outputStreamType, stringType);
             ctx.createBuiltin(SpecialName.CLOSE_OUTPUTSTREAM, Instruction.OFILE_CLOSE, Archetype.NONE, outputStreamType);
 
+            ctx.createBuiltin(operator("eq"), Instruction.EQ, boolType, boolType, boolType);
+            ctx.createBuiltin(operator("neq"), Instruction.NEQ, boolType, boolType, boolType);
             createComparisons(ctx, boolType, intType);
             createComparisons(ctx, boolType, realType);
             createComparisons(ctx, boolType, charType);

@@ -1,0 +1,11 @@
+**Memory:eq_true=Boolean(true),eq_false=Boolean(false),neq_true=Boolean(true),neq_false=Boolean(false)
+program Vardecl
+  Változók:
+    eq_true, eq_false: Logikai,
+    neq_true, neq_false: Logikai
+
+  eq_true := igaz = igaz
+  eq_false := igaz = hamis
+  neq_true := hamis /= igaz
+  neq_false := hamis /= hamis
+program_vége
