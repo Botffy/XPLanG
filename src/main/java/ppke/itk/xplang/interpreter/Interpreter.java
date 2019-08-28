@@ -152,6 +152,25 @@ public class Interpreter implements ASTVisitor {
         call.getDeclaration().accept(this);
     }
 
+    @Override
+    public void visit(ConditionalConnective conditionalConnective) {
+        boolean val = conditionalConnective.operator().stopValue;
+
+        conditionalConnective.getLeft().accept(this);
+        boolean eval = valueStack.pop(BooleanValue.class).getValue();
+        if (eval == val) {
+            valueStack.push(BooleanValue.valueOf(val));
+        } else {
+            conditionalConnective.getRight().accept(this);
+            eval = valueStack.pop(BooleanValue.class).getValue();
+            if (eval == val) {
+                valueStack.push(BooleanValue.valueOf(val));
+            } else {
+                valueStack.push(BooleanValue.valueOf(!val));
+            }
+        }
+    }
+
     @Override public void visit(VarRef varRef) {
         valueStack.push(memory.getReference(varRef.getVariable()));
     }

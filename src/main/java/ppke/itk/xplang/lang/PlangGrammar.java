@@ -113,8 +113,6 @@ public class PlangGrammar extends Grammar {
             createComparisons(ctx, boolType, charType);
             createComparisons(ctx, boolType, stringType);
             ctx.createBuiltin(operator("not"), Instruction.NOT, boolType, boolType);
-            ctx.createBuiltin(operator("or"), Instruction.OR, boolType, boolType, boolType);
-            ctx.createBuiltin(operator("and"), Instruction.AND, boolType, boolType, boolType);
             ctx.createBuiltin(operator("negate"), Instruction.INEG, intType, intType);
             ctx.createBuiltin(operator("length"), Instruction.IABS, intType, intType);
             ctx.createBuiltin(operator("minus"), Instruction.ISUB, intType, intType, intType);
@@ -172,8 +170,8 @@ public class PlangGrammar extends Grammar {
             ctx.infix(gte, new InfixBinary(operator("gte"), Operator.Precedence.RELATIONAL));
 
             ctx.prefix(not, new PrefixUnary(operator("not")));
-            ctx.infix(or, new InfixBinary(operator("or"), Operator.Precedence.LOGIC));
-            ctx.infix(and, new InfixBinary(operator("and"), Operator.Precedence.LOGIC));
+            ctx.infix(or, new ConditionalConnectiveOperator(ConditionalConnective.Op.OR, boolType));
+            ctx.infix(and, new ConditionalConnectiveOperator(ConditionalConnective.Op.AND, boolType));
 
             ctx.prefix(minus, new PrefixUnary(operator("negate")));
             ctx.prefix(pipe, new CircumfixOperator(pipe, operator("length")));
