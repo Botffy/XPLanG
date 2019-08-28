@@ -11,6 +11,8 @@ import ppke.itk.xplang.type.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
+
 /**
  * {@code InputStatement = IN [ LValue ] COLON LValue { COMMA LValue } }
  */
@@ -69,7 +71,7 @@ public class InputStatementParser {
             lValue.location()
         ));
 
-        RValue rValue = new FunctionCall(lValue.location(), function, inputStream);
+        RValue rValue = function.call(lValue.location(), singletonList(inputStream));
         return List.of(new Assignment(lValue.location(), lValue, rValue));
     }
 }

@@ -1,6 +1,5 @@
 package ppke.itk.xplang.parser;
 
-import ppke.itk.xplang.ast.FunctionCall;
 import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
@@ -83,7 +82,7 @@ public class FunctionExpression extends Expression {
     @Override
     public RValue toASTNode() {
         FunctionDeclaration declaration = candidates.iterator().next();
-        return new FunctionCall(location, declaration, childNodes.stream().map(Expression::toASTNode).collect(toList()));
+        return declaration.call(location, childNodes.stream().map(Expression::toASTNode).collect(toList()));
     }
 
     @Override

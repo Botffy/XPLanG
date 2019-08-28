@@ -2,7 +2,6 @@ package ppke.itk.xplang.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.FunctionCall;
 import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
@@ -45,11 +44,7 @@ public class TypeChecker {
 
             if (conversion.isPresent()) {
                 RValue Result = root.toASTNode();
-                return new FunctionCall(
-                    Result.location(),
-                    conversion.get(),
-                    Result
-                );
+                return conversion.get().call(Result.location(), singletonList(Result));
             }
 
             throw errorMessageProducer.apply(root.toASTNode());
