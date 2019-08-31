@@ -34,7 +34,7 @@ public class IdentifierOperator implements Operator.Prefix {
         }
 
         if (parser.context().isType(name)) {
-            Expression rhs = parser.parse();
+            Expression rhs = parser.parse(getPrecedence());
             return new FunctionExpression(
                 SpecialName.TYPE_CONVERSION,
                 location,
@@ -45,7 +45,7 @@ public class IdentifierOperator implements Operator.Prefix {
 
         if (parser.context().isFunction(name)) {
             List<Expression> args = new ArrayList<>();
-            args.add(parser.parse(Precedence.UNARY_PREFIX));
+            args.add(parser.parse(getPrecedence()));
             // TODO more than one parameters :)
 
             return new FunctionExpression(

@@ -1,0 +1,5 @@
+**#The type conversion is of a higher precedence than division
+**stdOut:0.5
+program t
+  ki: valós 1 / 2
+program_vége
