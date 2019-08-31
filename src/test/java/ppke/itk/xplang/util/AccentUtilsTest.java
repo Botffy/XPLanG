@@ -39,7 +39,9 @@ public class AccentUtilsTest {
     public void twoCharactersDoubleAcute() {
         Set<String> result = calculateVariants("űrék");
         System.out.println(result);
-        assertEquals(8, result.size());
+        assertEquals(10, result.size());
+        assertTrue("ü should be accepted for ű", result.contains("ürek"));
+        assertTrue("ü should be accepted for ű", result.contains("ürék"));
     }
 
     @Test

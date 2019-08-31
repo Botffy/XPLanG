@@ -13,8 +13,8 @@ public class AccentUtils {
         accentMapping.put('í', asList('i', 'í'));
         accentMapping.put('ó', asList('o', 'ó'));
         accentMapping.put('ö', asList('o', 'ö'));
-        accentMapping.put('ő', asList('o', 'õ', 'ô', 'ő'));
-        accentMapping.put('ű', asList('u', 'ũ', 'û', 'ű'));
+        accentMapping.put('ő', asList('o', 'õ', 'ô', 'ő', 'ö'));
+        accentMapping.put('ű', asList('u', 'ũ', 'û', 'ű', 'ü'));
         accentMapping.put('ü', asList('u', 'ü'));
     }
 
