@@ -11,6 +11,10 @@ import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toSet;
 import static ppke.itk.xplang.lang.PlangName.name;
 import static ppke.itk.xplang.util.AccentUtils.calculateVariants;
 
@@ -138,24 +142,23 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR, intType, stringType, charType);
             ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR, intType, stringType, stringType);
             ctx.createBuiltin(operator("sv"), Instruction.NEWLINE, charType);
-
             ctx.createBuiltin(operator("length"), Instruction.ARLEN, intType, Archetype.ADDRESSABLE);
 
-            ctx.createBuiltin(name(props.getFunctionName("rand")), Instruction.RAND, intType, intType);
-            ctx.createBuiltin(name(props.getFunctionName("sin")), Instruction.SIN, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("cos")), Instruction.COS, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("tan")), Instruction.TAN, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("asin")), Instruction.ASIN, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("acos")), Instruction.ACOS, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("atan")), Instruction.ATAN, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("ld")), Instruction.LD, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("exp")), Instruction.EXP, realType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("round")), Instruction.ROUND, intType, realType);
-            ctx.createBuiltin(name(props.getFunctionName("nagy")), Instruction.NAGY, charType, charType);
-            ctx.createBuiltin(name(props.getFunctionName("kis")), Instruction.KIS, charType, charType);
-            ctx.createBuiltin(name(props.getFunctionName("is_letter")), Instruction.IS_LETTER, boolType, charType);
-            ctx.createBuiltin(name(props.getFunctionName("is_digit")), Instruction.IS_DIGIT, boolType, charType);
-            ctx.createBuiltin(name(props.getFunctionName("end")), Instruction.IFILE_END, boolType, inputStreamType);
+            ctx.createBuiltin(aliases(props.getFunctionName("rand")), Instruction.RAND, intType, intType);
+            ctx.createBuiltin(aliases(props.getFunctionName("sin")), Instruction.SIN, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("cos")), Instruction.COS, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("tan")), Instruction.TAN, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("asin")), Instruction.ASIN, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("acos")), Instruction.ACOS, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("atan")), Instruction.ATAN, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("ld")), Instruction.LD, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("exp")), Instruction.EXP, realType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("round")), Instruction.ROUND, intType, realType);
+            ctx.createBuiltin(aliases(props.getFunctionName("nagy")), Instruction.NAGY, charType, charType);
+            ctx.createBuiltin(aliases(props.getFunctionName("kis")), Instruction.KIS, charType, charType);
+            ctx.createBuiltin(aliases(props.getFunctionName("is_letter")), Instruction.IS_LETTER, boolType, charType);
+            ctx.createBuiltin(aliases(props.getFunctionName("is_digit")), Instruction.IS_DIGIT, boolType, charType);
+            ctx.createBuiltin(aliases(props.getFunctionName("end")), Instruction.IFILE_END, boolType, inputStreamType);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
             ctx.prefix(identifier, new IdentifierOperator(PlangName::new));
@@ -233,5 +236,11 @@ public class PlangGrammar extends Grammar {
 
     private OperatorName operator(String operatorName) {
         return new OperatorName(props.getFunctionName(operatorName));
+    }
+
+    private Set<Name> aliases(String name) {
+        return calculateVariants(name).stream()
+            .map(PlangName::name)
+            .collect(toSet());
     }
 }

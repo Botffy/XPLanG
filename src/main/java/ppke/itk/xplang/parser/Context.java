@@ -130,12 +130,36 @@ public class Context {
         return var;
     }
 
+    /**
+     * Create and register a new builtin function.
+     *
+     * @param name the name of the function.
+     * @param instruction the instruction to process when the function is called.
+     * @param returnType the return type of the function.
+     * @param operands the types of the operands of the function.
+     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     */
     public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
         createBuiltin(name, instruction, returnType, asList(operands));
     }
 
     /**
-     * Create and register a new builtin function, using a specified signature.
+     * Create and register a new builtin function under several aliases.
+     *
+     * @param aliases the names of the functions.
+     * @param instruction the instruction to process when the function is called.
+     * @param returnType the return type of the function.
+     * @param operands the types of the operands of the function.
+     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     */
+    public void createBuiltin(Set<Name> aliases, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
+        for (Name alias : aliases) {
+            createBuiltin(alias, instruction, returnType, asList(operands));
+        }
+    }
+
+    /**
+     * Create and register a new builtin function.
      *
      * @param name the name of the function.
      * @param instruction the instruction to process when the function is called.
