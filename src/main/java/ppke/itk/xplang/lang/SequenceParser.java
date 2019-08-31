@@ -13,7 +13,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 /**
- * {@code Sequence = { Statement }}
+ * {@code Sequence = { Statement [ COMMA ] }}
  */
 
 final class SequenceParser {
@@ -29,6 +29,11 @@ final class SequenceParser {
         do {
             try {
                 statementList.add(StatementParser.parse(parser));
+
+                if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+                    parser.advance();
+                }
+
             } catch(ParseError error) {
                 log.error("Parse error: ", error);
                 parser.recordError(error.toErrorMessage());
