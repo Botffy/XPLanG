@@ -86,6 +86,12 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
 
     @Override
     public StringValue getSlice(IntegerValue from, IntegerValue to) throws InterpreterError {
+        if (from.getValue() < 0 || from.getValue() > this.chars.length) {
+            throw new InterpreterError("Illegal start index!");
+        }
+        if (to.getValue() < 0 || to.getValue() > this.chars.length) {
+            throw new InterpreterError("Illegal end index!");
+        }
         char[] n = Arrays.copyOfRange(this.chars, from.getValue(), to.getValue());
         return new StringValue(n);
     }
