@@ -30,6 +30,6 @@ public class CircumfixOperator implements Operator.Prefix {
 
     @Override
     public int getPrecedence() {
-        return Precedence.UNARY_PREFIX;
+        return Precedence.CONTAINING;
     }
 }

@@ -1,0 +1,8 @@
+**#There can be complex expressions inside an absolute value op
+**Memory:k=Integer(1)
+program p
+  változók:
+    k: egész
+
+  k := |1 - 2|
+program_vége
