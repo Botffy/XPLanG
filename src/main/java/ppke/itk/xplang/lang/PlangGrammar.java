@@ -12,6 +12,7 @@ import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 import static ppke.itk.xplang.lang.PlangName.name;
+import static ppke.itk.xplang.util.AccentUtils.calculateVariants;
 
 /**
  * The description of the PLanG programming language (PLanG-strict)
@@ -87,7 +88,10 @@ public class PlangGrammar extends Grammar {
                 intType,
                 Archetype.STRING_TYPE
             );
-            ctx.declareType(name(stringType.getLabel()), stringType);
+            for (String variant : calculateVariants(stringType.getLabel())) {
+                ctx.declareType(name(variant), stringType);
+            }
+
             ctx.setBooleanType(boolType);
             ctx.setIntegerType(intType);
 
@@ -219,7 +223,11 @@ public class PlangGrammar extends Grammar {
     private Scalar makeScalar(Context ctx, Type archetype) throws ParseError {
         String typeName = props.getTypeName(archetype);
         Scalar type = new Scalar(typeName, archetype, archetype.getInitialization());
-        ctx.declareType(name(typeName), type);
+
+        for (String variant : calculateVariants(typeName)) {
+            ctx.declareType(name(variant), type);
+        }
+
         return type;
     }
 
