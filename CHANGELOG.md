@@ -1,4 +1,24 @@
-# Change log
+í# Change log
+
+## MS5 - 2019-09-01
+
+We have ourselves a PLanG :)
+
+Tested against all the PLanG programming homeworks turned in in the past three years, we can now pretty safely say PLanG handles correct programs much like the reference implementation. A whole lot of errors turned up, these were mostly fixed. A couple of edge cases remain, cases where the reference implementation does not really conform the specification. Also, our error handling is not very good just yet.
+
+### Features
+
+- IO: read input from the standard input or files, write output to the standard output or files
+- Conditional connectives (short-circuiting OR and AND)
+- Command line options to specify source and output encoding
+- The AST is not always printed (can be turned on with a command line option)
+- The memory is not always dumped at the end of the execution (can be turned on with a command line option)
+- The interpreter now logs to a file instead of littering the stdOut
+- Numerous fixes after the The Great Big System Test.
+
+### Tooling
+
+- Downgraded back to Java 8.
 
 ## MS4 - 2019-08-18
 
@@ -6,7 +26,7 @@ Development was resumed after a brief hiatus of three years, and we're back with
 
 As for restarting the development: the CI has been repaired, and now we're using JDK11.
 
-## Features
+### Features
 
 - Pratt parser for exceptions
 - typechecker object
