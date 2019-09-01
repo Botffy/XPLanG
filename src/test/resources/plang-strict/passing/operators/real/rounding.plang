@@ -1,11 +1,14 @@
 **# Kerekítések
-**Memory:a1=Integer(3),a2=Integer(26),b1=Integer(3),b2=Integer(25)
+**Memory:a1=Integer(3),a2=Integer(26),b1=Integer(3),b2=Integer(25),c1=Integer(-1),c2=Integer(-2),c3=Integer(-1)
 program rounding
   változók:
-    a1, a2, b1, b2: Egész
+    a1, a2, b1, b2, c1, c2, c3: Egész
 
   a1 := kerek 3.14
   a2 := kerek 25.67
   b1 := egész 3.14
   b2 := egész 25.67
+  c1 := kerek -1.23
+  c2 := kerek -1.84
+  c3 := egész -1.84
 program_vége
