@@ -49,11 +49,17 @@ public class CorpusIT {
             .filter(Files::isRegularFile)
             .filter(x -> x.toString().endsWith(".plang"))
             .filter(CorpusIT::hasData)
+            .filter(CorpusIT::notIgnored)
             .map(CorpusIT::getData)
             .flatMap(Collection::stream)
             .forEach(data::add);
 
         return data;
+    }
+
+    private static boolean notIgnored(Path plang) {
+        String fileName = plang.getFileName().toString();
+        return !plang.resolveSibling(fileName + ".ignore").toFile().exists();
     }
 
     private static boolean hasData(Path plang) {
