@@ -3,7 +3,7 @@ package ppke.itk.xplang.interpreter;
 import java.text.DecimalFormat;
 
 class IntegerValue implements ComparableValue, WritableValue {
-    private static final DecimalFormat format = new DecimalFormat();
+    private static final DecimalFormat format = DecimalFormatFactory.integerDecimalFormat();
 
     private final int value;
 

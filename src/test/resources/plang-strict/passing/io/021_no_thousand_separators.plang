@@ -1,0 +1,6 @@
+**#No thousand separator should be used when outputting numbers
+**stdOut:1100.0360000000
+program out
+  ki: 1100.0
+  ki: 360000000
+program_vége
