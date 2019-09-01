@@ -30,6 +30,9 @@ public class CorpusTestStreamHandler implements StreamHandler {
 
     @Override
     public ProgramInput getFileInput(String name) throws FileNotFoundException {
+        if (name.equalsIgnoreCase("BEMENET")) {
+            return new ProgramInput(new InputStreamReader(stdIn), "stdIn");
+        }
         throw new FileNotFoundException("AC tests has no file inputs.");
     }
 
