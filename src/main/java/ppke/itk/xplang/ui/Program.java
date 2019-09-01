@@ -61,10 +61,14 @@ class Program {
         }
 
         if (run.getOutputEncoding() != null) {
-            System.setOut(new PrintStream(
-                new FileOutputStream(FileDescriptor.out), true,
-                run.getOutputEncoding().getCharset())
-            );
+            try {
+                System.setOut(new PrintStream(
+                    new FileOutputStream(FileDescriptor.out), true,
+                    run.getOutputEncoding().getCharset().toString())
+                );
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException(e);
+            }
         }
 
         Reader source = getSourceReader(run);

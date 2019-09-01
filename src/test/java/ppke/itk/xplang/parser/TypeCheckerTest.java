@@ -8,9 +8,7 @@ import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
@@ -55,10 +53,10 @@ public class TypeCheckerTest {
     public void resolvesFunctions() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -74,10 +72,10 @@ public class TypeCheckerTest {
     public void resolvesTrees() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -99,10 +97,10 @@ public class TypeCheckerTest {
     public void handleDifferentArityOverloads() throws Exception {
         Signature f1 = new Signature(name("f"), a, a);
         Signature f2 = new Signature(name("f"), a, a, a);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -122,10 +120,10 @@ public class TypeCheckerTest {
     public void noViableFunction() throws Exception {
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), b, b, b);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(b));
@@ -146,7 +144,8 @@ public class TypeCheckerTest {
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
         Signature f = new Signature(name("f"), a, a, a);
-        Set<FunctionDeclaration> candidates = Set.of(new MockFunctionDeclaration(f));
+        Set<FunctionDeclaration> candidates = new HashSet<>();
+        candidates.add(new MockFunctionDeclaration(f));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -167,7 +166,8 @@ public class TypeCheckerTest {
         context.registerFunction(new MockFunctionDeclaration(coercion));
 
         Signature f = new Signature(name("f"), a, a, a);
-        Set<FunctionDeclaration> candidates = Set.of(new MockFunctionDeclaration(f));
+        Set<FunctionDeclaration> candidates = new HashSet<>();
+        candidates.add(new MockFunctionDeclaration(f));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(b));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -205,10 +205,10 @@ public class TypeCheckerTest {
 
         Signature f1 = new Signature(name("f"), a, a, a);
         Signature f2 = new Signature(name("f"), a, a, b);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));
@@ -244,10 +244,10 @@ public class TypeCheckerTest {
 
         Signature f1 = new Signature(name("f"), a, a, b);
         Signature f2 = new Signature(name("f"), a, b, a);
-        Set<FunctionDeclaration> candidates = Set.of(
+        Set<FunctionDeclaration> candidates = new HashSet<>(asList(
             new MockFunctionDeclaration(f1),
             new MockFunctionDeclaration(f2)
-        );
+        ));
 
         ValueExpression op1 = new ValueExpression(new MockRValue(a));
         ValueExpression op2 = new ValueExpression(new MockRValue(a));

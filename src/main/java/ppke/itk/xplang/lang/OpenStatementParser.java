@@ -10,7 +10,7 @@ import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
-import java.util.List;
+import static java.util.Collections.singletonList;
 
 /** {@code OpenStatement = OPEN LValue COLON Expression */
 public class OpenStatementParser {
@@ -44,7 +44,7 @@ public class OpenStatementParser {
             openFunctionName,
             location,
             parser.context().findFunctionsFor(openFunctionName),
-            List.of(fileName)
+            singletonList(fileName)
         );
 
         RValue call = TypeChecker.in(parser.context()).checking(callExpression).build().resolve();

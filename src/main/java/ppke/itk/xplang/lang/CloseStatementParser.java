@@ -10,7 +10,7 @@ import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
-import java.util.List;
+import static java.util.Collections.singletonList;
 
 /** {@code CloseStatement = CLOSE LValue */
 public class CloseStatementParser {
@@ -44,7 +44,7 @@ public class CloseStatementParser {
             closeFunctionName,
             location,
             parser.context().findFunctionsFor(closeFunctionName),
-            List.of(new ValueExpression(var))
+            singletonList(new ValueExpression(var))
         );
 
         RValue call = TypeChecker.in(parser.context()).checking(callExpression).build().resolve();

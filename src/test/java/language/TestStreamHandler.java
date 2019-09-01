@@ -1,5 +1,6 @@
 package language;
 
+import ppke.itk.xplang.ast.Output;
 import ppke.itk.xplang.interpreter.ProgramInput;
 import ppke.itk.xplang.common.StreamHandler;
 
@@ -35,7 +36,7 @@ public class TestStreamHandler implements StreamHandler {
             throw new FileNotFoundException("Nothing written to file " + name);
         }
 
-        return outFiles.get(name).toString(StandardCharsets.UTF_8);
+        return new String(outFiles.get(name).toByteArray(), StandardCharsets.UTF_8);
     }
 
     @Override
@@ -64,6 +65,9 @@ public class TestStreamHandler implements StreamHandler {
             outFiles.put(name, new ByteArrayOutputStream());
         }
 
-        return new PrintWriter(outFiles.get(name), true, StandardCharsets.UTF_8);
+        return new PrintWriter(
+            new BufferedWriter(new OutputStreamWriter(outFiles.get(name), StandardCharsets.UTF_8)),
+            true
+        );
     }
 }

@@ -8,7 +8,7 @@ plugins {
 
 
 version = 'git describe --tags --always'.execute().text.trim()
-sourceCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_1_8
 mainClassName = "ppke.itk.xplang.ui.Main"
 
 tasks.withType(JavaCompile) {

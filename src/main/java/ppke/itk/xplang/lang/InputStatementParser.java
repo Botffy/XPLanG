@@ -72,6 +72,6 @@ public class InputStatementParser {
         ));
 
         RValue rValue = function.call(lValue.location(), singletonList(inputStream));
-        return List.of(new Assignment(lValue.location(), lValue, rValue));
+        return singletonList(new Assignment(lValue.location(), lValue, rValue));
     }
 }
