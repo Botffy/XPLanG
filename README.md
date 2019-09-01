@@ -37,6 +37,11 @@ Start XPLanG by running `bin/XPLanG` (Unix-like systems) or `bin/XPLanG.bat` (wi
 
 Valid options:
 
+- `--dry-run` Perform a dry run: parse and analyse the source, displaying any errors, but do not interpret it.
+- `--print-ast` Print the Abstract Syntax Tree after parsing the program
+- `--dump-memory` Dump the contents of the memory to the StdOut after running the program
+- `--source-encoding` the encoding of the source code (UTF8 or LATIN1)
+- `--output-encoding` The encoding of the standard output (UTF8 or LATIN1). When not set, the system default will be used.
 - `--help` display usage information and exit
 - `--version` display version information and exit
 
