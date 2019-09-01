@@ -1,5 +1,11 @@
 package ppke.itk.xplang.type;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
+
 /**
  *  A fixed length array.
  */
@@ -44,7 +50,17 @@ public final class FixArray extends Type {
     }
 
     @Override public String toString() {
-        return String.format("%d[%s]", length, elemType);
+        Type elem = elemType;
+        List<Integer> lengths = new ArrayList<>();
+        lengths.add(length);
+        while (elem instanceof FixArray) {
+            FixArray arrayElem = (FixArray) elem;
+            lengths.add(arrayElem.length);
+            elem = arrayElem.elemType;
+        }
+
+        String lenString = lengths.stream().map(x -> String.format("[%d]", x)).collect(joining());
+        return String.format("%s%s", elem, lenString);
     }
 
     public static FixArrayBuilder of(int length, Type elemType) {
