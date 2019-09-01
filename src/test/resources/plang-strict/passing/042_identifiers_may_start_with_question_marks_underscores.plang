@@ -1,0 +1,8 @@
+**#Identifiers may start with question marks and underscores.
+**Memory:?=Integer(10),_=Integer(4)
+program _Vardec
+  Változók:
+    ?,_: Egész
+  ? := 10
+  _ := 4
+program_vége
