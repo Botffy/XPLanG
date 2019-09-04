@@ -9,9 +9,7 @@ The PLanG programming language is an educational programming language used at th
 
 It's a small language: while it's Turing-complete (of course), it lacks subroutines, records, user-defined types, and it doesn't even have elsif.
 
-I hated that language with a passion.
-
-But I'm kinda weird, you know, and while everybody else just wanted to forget the language, I wanted to do something about it. Having taken a course in compilers at ELTE, I chose extending PLanG as the topic for my [self-directed laboratory project](https://github.com/Botffy/onlab), then I chose to continue the project for my thesis. This is that project. It's taking a while to do it, but oh well, what the hell.
+XPLanG (eXtended PLanG) is an extended version of that language. Having taken a course in compiler construction at ELTE, I chose extending PLanG as the topic for my [self-directed laboratory project](https://github.com/Botffy/onlab), then I chose to continue the project for my BSc thesis. The first release candidate is due to be released at the beginning of November 2019.
 
 The dream lives on.
 
@@ -23,7 +21,7 @@ You will need Java 8 Runtime Environment (or later). Just install the latest JRE
 
 ## Download
 
-Download the latest build from our [meager homepage](http://users.itk.ppke.hu/~sciar/XPLanG/downloads/).
+The latest release is available here on [Github](https://github.com/Botffy/XPLanG/releases), while the latest build can be downloaded from the [homepage](http://users.itk.ppke.hu/~sciar/XPLanG/downloads/).
 
 ## Command line
 
