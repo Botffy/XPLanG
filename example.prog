@@ -1,9 +1,32 @@
-Program testing
+Program találgatós_játék
   Változók:
-    f: kifájl
+    gondolt_szám, ötlet: egész,
+    folytassuk?: logikai
 
-  megnyit f: "hello.txt"
-  ki f: "hello world"
-  lezár f
+  folytassuk? := igaz
+
+  ciklus amíg folytassuk?
+    Ki: "Gondolok egy számot 0 és 10 között, találd ki.", SV
+    
+    gondolt_szám := rnd 10
+    Ki: "Gondoltam!", SV
+
+    ciklus 
+      be: ötlet
+      ha gondolt_szám > ötlet akkor
+        ki: "Nem, a gondolt szám nagyobb", SV
+      ha_vége
+
+      ha gondolt_szám < ötlet akkor
+        ki: "Nem, a gondolt szám kisebb", SV
+      ha_vége
+    amíg ötlet /= gondolt_szám
+
+    ki: "Kitaláltad! A gondolt szám ", gondolt_szám, " volt.", SV
+    ki: "Akarsz még egy játékot? (i / h)", SV
+    be: folytassuk?
+  ciklus_vége
+
+  ki: "Szia!"
 program_vége
 
