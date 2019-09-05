@@ -19,6 +19,7 @@ class Editor implements DocumentListener {
     private final static Logger log = LoggerFactory.getLogger("Root.Gui.Editor");
 
     private final RSyntaxTextArea textArea;
+    private final RTextScrollPane scrollPane;
     private final Consumer<Editor> onStateChange;
     private File file;
     private boolean isDirty;
@@ -30,10 +31,15 @@ class Editor implements DocumentListener {
         this.textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         this.textArea.setCodeFoldingEnabled(false);
         this.textArea.getDocument().addDocumentListener(this);
+        this.scrollPane = new RTextScrollPane(textArea);
     }
 
     Component getEditorPane() {
-        return new RTextScrollPane(textArea);
+        return scrollPane;
+    }
+
+    void focus() {
+        textArea.requestFocusInWindow();
     }
 
     Optional<File> getLoadedFile() {

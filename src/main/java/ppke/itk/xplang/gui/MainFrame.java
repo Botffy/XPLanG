@@ -1,7 +1,11 @@
 package ppke.itk.xplang.gui;
 
+import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
+import org.kordamp.ikonli.swing.FontIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.gui.toolkit.Button;
+import ppke.itk.xplang.gui.toolkit.MenuItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,11 +23,21 @@ public class MainFrame extends JFrame {
     private final Editor editor;
     private final JFileChooser fileChooser = new JFileChooser();
 
+    private final Action openAction;
+    private final Action saveAction;
+    private final Action saveAsAction;
+
     public MainFrame() {
         super();
-        JPanel cp = new JPanel(new BorderLayout());
         editor = new Editor(this::setTitleFrom);
-        cp.add(editor.getEditorPane());
+
+        openAction = new FileOpenAction(this);
+        saveAction = new FileSaveAction(this, editor);
+        saveAsAction = new FileSaveAsAction(this);
+
+        JPanel cp = new JPanel(new BorderLayout());
+        cp.add(createToolBar(), BorderLayout.PAGE_START);
+        cp.add(editor.getEditorPane(), BorderLayout.CENTER);
         setContentPane(cp);
         setJMenuBar(createMenuBar());
 
@@ -37,6 +51,7 @@ public class MainFrame extends JFrame {
             }
         });
         pack();
+        editor.focus();
         setLocationRelativeTo(null);
         setVisible(true);
     }
@@ -66,14 +81,14 @@ public class MainFrame extends JFrame {
         this.setTitle(String.format("PLanG [%s%s]", fileName, dirtMark));
     }
 
-    private Optional<File> selectFileToSaveTo() {
+    Optional<File> selectFileToSaveTo() {
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             return Optional.of(fileChooser.getSelectedFile());
         }
         return Optional.empty();
     }
 
-    private Optional<File> selectFileToLoad() {
+    Optional<File> selectFileToLoad() {
         if (loseChangesConfirm("Biztosan be akarsz tölteni egy új fájlt?", "Betöltés")) {
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 return Optional.of(fileChooser.getSelectedFile());
@@ -82,7 +97,7 @@ public class MainFrame extends JFrame {
         return Optional.empty();
     }
 
-    private void saveToFile(File file) {
+    void saveToFile(File file) {
         try {
             editor.saveTo(file);
         } catch (IOException e) {
@@ -108,34 +123,26 @@ public class MainFrame extends JFrame {
         JMenu fileMenu = new JMenu("Fájl");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        JMenuItem item = new JMenuItem("Fájl megnyitása", KeyEvent.VK_O);
-        item.addActionListener(e -> this.selectFileToLoad().ifPresent(this::loadFile));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK));
-        fileMenu.add(item);
-
-        item = new JMenuItem("Mentés");
-        item.addActionListener(e -> {
-            Optional<File> file = editor.getLoadedFile();
-            if (!file.isPresent()) {
-                file = this.selectFileToSaveTo();
-            }
-
-            file.ifPresent(this::saveToFile);
-        });
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
-        fileMenu.add(item);
-
-        item = new JMenuItem("Mentés másként...");
-        item.addActionListener(e -> this.selectFileToSaveTo().ifPresent(this::saveToFile));
-        item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK));
-        fileMenu.add(item);
+        fileMenu.add(new MenuItem(openAction));
+        fileMenu.add(new MenuItem(saveAction));
+        fileMenu.add(new MenuItem(saveAsAction));
 
         fileMenu.addSeparator();
-        item = new JMenuItem("Kilépés");
+        JMenuItem item = new JMenuItem("Kilépés");
         item.addActionListener(e -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         fileMenu.add(item);
         menuBar.add(fileMenu);
 
         return menuBar;
+    }
+
+    private JToolBar createToolBar() {
+        JToolBar toolBar = new JToolBar();
+        toolBar.setFloatable(false);
+
+        toolBar.add(new Button(this.openAction));
+        toolBar.add(new Button(this.saveAction));
+
+        return toolBar;
     }
 }
