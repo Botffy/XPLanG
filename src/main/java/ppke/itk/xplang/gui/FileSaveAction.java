@@ -1,7 +1,6 @@
 package ppke.itk.xplang.gui;
 
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import org.kordamp.ikonli.swing.FontIcon;
+import ppke.itk.xplang.gui.toolkit.PlangIcon;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -14,7 +13,7 @@ class FileSaveAction extends AbstractAction {
     private final Editor editor;
 
     FileSaveAction(MainFrame frame, Editor editor) {
-        super("Mentés", FontIcon.of(FontAwesomeSolid.SAVE));
+        super("Mentés", PlangIcon.SAVE.getIcon());
         this.frame = frame;
         this.editor = editor;
         putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK));
