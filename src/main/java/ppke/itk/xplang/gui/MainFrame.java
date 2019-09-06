@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.gui.toolkit.Button;
 import ppke.itk.xplang.gui.toolkit.MenuItem;
+import ppke.itk.xplang.gui.toolkit.PlangAction;
+import ppke.itk.xplang.gui.toolkit.PlangIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,9 +31,22 @@ public class MainFrame extends JFrame {
         super();
         editor = new Editor(this::setTitleFrom);
 
-        openAction = new FileOpenAction(this);
-        saveAction = new FileSaveAction(this, editor);
-        saveAsAction = new FileSaveAsAction(this);
+        openAction = PlangAction.doing(() -> this.selectFileToLoad().ifPresent(this::loadFile))
+            .labelled("Fájl megnyitása")
+            .withIcon(PlangIcon.OPEN)
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK))
+            .build();
+
+        saveAction = PlangAction.doing(() -> this.loadedFileOrSelectedFile().ifPresent(this::saveToFile))
+            .labelled("Mentés")
+            .withIcon(PlangIcon.SAVE)
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK))
+            .build();
+
+        saveAsAction = PlangAction.doing(() -> this.selectFileToSaveTo().ifPresent(this::saveToFile))
+            .labelled("Mentés másként")
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK))
+            .build();
 
         JPanel cp = new JPanel(new BorderLayout());
         cp.add(createToolBar(), BorderLayout.PAGE_START);
@@ -79,14 +94,22 @@ public class MainFrame extends JFrame {
         this.setTitle(String.format("PLanG [%s%s]", fileName, dirtMark));
     }
 
-    Optional<File> selectFileToSaveTo() {
+    private Optional<File> loadedFileOrSelectedFile() {
+        Optional<File> file = editor.getLoadedFile();
+        if (!file.isPresent()) {
+            file = this.selectFileToSaveTo();
+        }
+        return file;
+    }
+
+    private Optional<File> selectFileToSaveTo() {
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             return Optional.of(fileChooser.getSelectedFile());
         }
         return Optional.empty();
     }
 
-    Optional<File> selectFileToLoad() {
+    private Optional<File> selectFileToLoad() {
         if (loseChangesConfirm("Biztosan be akarsz tölteni egy új fájlt?", "Betöltés")) {
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 return Optional.of(fileChooser.getSelectedFile());
@@ -95,7 +118,7 @@ public class MainFrame extends JFrame {
         return Optional.empty();
     }
 
-    void saveToFile(File file) {
+    private void saveToFile(File file) {
         try {
             editor.saveTo(file);
         } catch (IOException e) {
