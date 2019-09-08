@@ -7,7 +7,11 @@ import javax.swing.*;
 
 public enum PlangIcon {
     SAVE(FontIcon.of(FontAwesomeSolid.SAVE)),
-    OPEN(FontIcon.of(FontAwesomeSolid.FOLDER_OPEN));
+    OPEN(FontIcon.of(FontAwesomeSolid.FOLDER_OPEN)),
+    COMPILE(FontIcon.of(FontAwesomeSolid.DESKTOP)),
+    EDIT(FontIcon.of(FontAwesomeSolid.EDIT)),
+    RUN(FontIcon.of(FontAwesomeSolid.PLAY)),
+    STOP(FontIcon.of(FontAwesomeSolid.STOP));
 
     private final Icon icon;
 

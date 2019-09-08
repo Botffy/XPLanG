@@ -15,44 +15,79 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class MainFrame extends JFrame {
     private static final Logger log = LoggerFactory.getLogger("Root.Gui");
 
+    private GuiState state;
+
     private final Editor editor;
     private final JFileChooser fileChooser = new JFileChooser();
 
-    private final Action openAction;
-    private final Action saveAction;
-    private final Action saveAsAction;
+    private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
 
     public MainFrame() {
         super();
         editor = new Editor(this::setTitleFrom);
 
-        openAction = PlangAction.doing(() -> this.selectFileToLoad().ifPresent(this::loadFile))
+        actions.put(GuiAction.OPEN, PlangAction.doing(() -> this.selectFileToLoad().ifPresent(this::loadFile))
             .labelled("Fájl megnyitása")
             .withIcon(PlangIcon.OPEN)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK))
-            .build();
+            .build()
+        );
 
-        saveAction = PlangAction.doing(() -> this.loadedFileOrSelectedFile().ifPresent(this::saveToFile))
+        actions.put(GuiAction.SAVE, PlangAction.doing(() -> this.loadedFileOrSelectedFile().ifPresent(this::saveToFile))
             .labelled("Mentés")
             .withIcon(PlangIcon.SAVE)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK))
-            .build();
+            .build()
+        );
 
-        saveAsAction = PlangAction.doing(() -> this.selectFileToSaveTo().ifPresent(this::saveToFile))
+        actions.put(GuiAction.SAVE_AS, PlangAction.doing(() -> this.selectFileToSaveTo().ifPresent(this::saveToFile))
             .labelled("Mentés másként")
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK))
-            .build();
+            .build()
+        );
+
+        actions.put(GuiAction.COMPILE, PlangAction.doing(() -> this.setState(GuiState.COMPILED))
+            .labelled("Programszöveg értelmezése")
+            .withIcon(PlangIcon.COMPILE)
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK))
+            .build()
+        );
+
+        actions.put(GuiAction.EDIT, PlangAction.doing(() -> this.setState(GuiState.EDITING))
+            .labelled("Értelmezett program szerkesztése")
+            .withIcon(PlangIcon.EDIT)
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK))
+            .build()
+        );
+
+        actions.put(GuiAction.RUN, PlangAction.doing(() -> this.setState(GuiState.RUNNING))
+            .labelled("Futtatás")
+            .withIcon(PlangIcon.RUN)
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK))
+            .build()
+        );
+
+        actions.put(GuiAction.STOP, PlangAction.doing(() -> this.setState(GuiState.COMPILED))
+            .labelled("Futtatás vége")
+            .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK))
+            .withIcon(PlangIcon.STOP)
+            .build()
+        );
 
         JPanel cp = new JPanel(new BorderLayout());
         cp.add(createToolBar(), BorderLayout.PAGE_START);
         cp.add(editor.getEditorPane(), BorderLayout.CENTER);
         setContentPane(cp);
         setJMenuBar(createMenuBar());
+
+        setState(GuiState.EDITING);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -67,6 +102,16 @@ public class MainFrame extends JFrame {
         editor.focus();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void setState(GuiState state) {
+        for (Map.Entry<GuiAction, Action> entry : actions.entrySet()) {
+            entry.getValue().setEnabled(
+                state.getActiveActions().contains(entry.getKey())
+            );
+        }
+
+        this.state = state;
     }
 
     private boolean loseChangesConfirm(String question, String title) {
@@ -144,9 +189,9 @@ public class MainFrame extends JFrame {
         JMenu fileMenu = new JMenu("Fájl");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        fileMenu.add(new MenuItem(openAction));
-        fileMenu.add(new MenuItem(saveAction));
-        fileMenu.add(new MenuItem(saveAsAction));
+        fileMenu.add(new MenuItem(actions.get(GuiAction.OPEN)));
+        fileMenu.add(new MenuItem(actions.get(GuiAction.SAVE)));
+        fileMenu.add(new MenuItem(actions.get(GuiAction.SAVE_AS)));
 
         fileMenu.addSeparator();
         JMenuItem item = new JMenuItem("Kilépés");
@@ -161,9 +206,14 @@ public class MainFrame extends JFrame {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
 
-        toolBar.add(new Button(this.openAction));
-        toolBar.add(new Button(this.saveAction));
-
+        toolBar.add(new Button(actions.get(GuiAction.OPEN)));
+        toolBar.add(new Button(actions.get(GuiAction.SAVE)));
+        toolBar.addSeparator();
+        toolBar.add(new Button(actions.get(GuiAction.COMPILE)));
+        toolBar.add(new Button(actions.get(GuiAction.EDIT)));
+        toolBar.addSeparator();
+        toolBar.add(new Button(actions.get(GuiAction.RUN)));
+        toolBar.add(new Button(actions.get(GuiAction.STOP)));
         return toolBar;
     }
 }
