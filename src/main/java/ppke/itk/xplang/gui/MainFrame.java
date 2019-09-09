@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
 
     private GuiState state;
 
+    private final StatusBar statusBar;
     private final Editor editor;
     private final JFileChooser fileChooser = new JFileChooser();
 
@@ -31,7 +32,9 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         super();
+        statusBar = new StatusBar();
         editor = new Editor(this::setTitleFrom);
+        editor.addCursorPositionChangeListener(statusBar);
 
         actions.put(GuiAction.OPEN, PlangAction.doing(() -> this.selectFileToLoad().ifPresent(this::loadFile))
             .labelled("Fájl megnyitása")
@@ -84,6 +87,7 @@ public class MainFrame extends JFrame {
         JPanel cp = new JPanel(new BorderLayout());
         cp.add(createToolBar(), BorderLayout.PAGE_START);
         cp.add(editor.getEditorPane(), BorderLayout.CENTER);
+        cp.add(statusBar.getComponent(), BorderLayout.SOUTH);
         setContentPane(cp);
         setJMenuBar(createMenuBar());
 

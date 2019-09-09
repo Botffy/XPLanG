@@ -6,16 +6,25 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.common.CursorPosition;
 
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-class Editor implements DocumentListener {
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+
+class Editor implements DocumentListener, CaretListener {
     private final static Logger log = LoggerFactory.getLogger("Root.Gui.Editor");
 
     private final RSyntaxTextArea textArea;
@@ -23,6 +32,7 @@ class Editor implements DocumentListener {
     private final Consumer<Editor> onStateChange;
     private File file;
     private boolean isDirty;
+    private List<CursorPositionChangeListener> cursorPositionChangeListeners = new ArrayList<>();
 
     Editor(Consumer<Editor> onStateChange) {
         this.onStateChange = onStateChange;
@@ -31,6 +41,7 @@ class Editor implements DocumentListener {
         this.textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         this.textArea.setCodeFoldingEnabled(false);
         this.textArea.getDocument().addDocumentListener(this);
+        this.textArea.addCaretListener(this);
         this.scrollPane = new RTextScrollPane(textArea);
     }
 
@@ -105,4 +116,44 @@ class Editor implements DocumentListener {
 
     @Override
     public void changedUpdate(DocumentEvent e) { /* noop */ }
+
+    public void addCursorPositionChangeListener(CursorPositionChangeListener listener) {
+        cursorPositionChangeListeners.add(listener);
+    }
+
+    public void removeCursorPositionChangeListener(CursorPositionChangeListener listener) {
+        cursorPositionChangeListeners.remove(listener);
+    }
+
+    @Override
+    public void caretUpdate(CaretEvent e) {
+        int dot = e.getDot();
+        int mark = e.getMark();
+
+        if (dot == mark) {
+            cursorPositionChangeListeners.forEach(x -> x.onCursorMovement(toCursorPosition(dot)));
+            return;
+        }
+
+        int start = min(dot, mark);
+        int end = max(dot, mark);
+
+        CursorPosition startPos = toCursorPosition(start);
+        CursorPosition endPos = toCursorPosition(end);
+
+        cursorPositionChangeListeners.forEach(x -> x.onSelectionChange(
+            startPos, endPos, endPos.line - startPos.line, end - start
+        ));
+    }
+
+    private CursorPosition toCursorPosition(int caret) {
+        try {
+            int line = textArea.getLineOfOffset(caret);
+            int col = caret - textArea.getLineStartOffset(line);
+            return new CursorPosition(line, col);
+        } catch (BadLocationException e) {
+            log.warn("Failed to convert cursor position", e);
+            throw new RuntimeException(e);
+        }
+    }
 }
