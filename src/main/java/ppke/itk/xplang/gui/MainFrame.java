@@ -27,8 +27,9 @@ public class MainFrame extends JFrame {
     private final StatusBar statusBar;
     private final Editor editor;
     private final JFileChooser fileChooser = new JFileChooser();
-
     private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
+
+    private Compiler.Result compilerResult;
 
     public MainFrame() {
         super();
@@ -56,28 +57,28 @@ public class MainFrame extends JFrame {
             .build()
         );
 
-        actions.put(GuiAction.COMPILE, PlangAction.doing(() -> this.setState(GuiState.COMPILED))
+        actions.put(GuiAction.COMPILE, PlangAction.doing(this::compile)
             .labelled("Programszöveg értelmezése")
             .withIcon(PlangIcon.COMPILE)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_I, KeyEvent.CTRL_DOWN_MASK))
             .build()
         );
 
-        actions.put(GuiAction.EDIT, PlangAction.doing(() -> this.setState(GuiState.EDITING))
+        actions.put(GuiAction.EDIT, PlangAction.doing(this::edit)
             .labelled("Értelmezett program szerkesztése")
             .withIcon(PlangIcon.EDIT)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_DOWN_MASK))
             .build()
         );
 
-        actions.put(GuiAction.RUN, PlangAction.doing(() -> this.setState(GuiState.RUNNING))
+        actions.put(GuiAction.RUN, PlangAction.doing(this::run)
             .labelled("Futtatás")
             .withIcon(PlangIcon.RUN)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK))
             .build()
         );
 
-        actions.put(GuiAction.STOP, PlangAction.doing(() -> this.setState(GuiState.COMPILED))
+        actions.put(GuiAction.STOP, PlangAction.doing(this::stopRunning)
             .labelled("Futtatás vége")
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_DOWN_MASK))
             .withIcon(PlangIcon.STOP)
@@ -91,7 +92,7 @@ public class MainFrame extends JFrame {
         setContentPane(cp);
         setJMenuBar(createMenuBar());
 
-        setState(GuiState.EDITING);
+        edit();
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -106,6 +107,44 @@ public class MainFrame extends JFrame {
         editor.focus();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    private void edit() {
+        editor.setEditable(true);
+        statusBar.setDisplayCursorInfo(true);
+        statusBar.setStatusMessage("Kész.");
+        setState(GuiState.EDITING);
+    }
+
+    private void compile() {
+        setState(GuiState.WORKING);
+        statusBar.setDisplayCursorInfo(false);
+        statusBar.setStatusMessage("Fordítás...");
+        editor.setEditable(false);
+        Compiler compiler = new Compiler();
+        compilerResult = compiler.compile(editor.getText());
+        if (compilerResult.isSuccess()) {
+            setState(GuiState.COMPILED);
+            statusBar.setStatusMessage("Futtatásra kész.");
+        } else {
+            setState(GuiState.COMPILED_WITH_ERRORS);
+            statusBar.setStatusMessage(
+                String.format("A fordítás kész: %d hiba", compilerResult.getErrorLog().getNumberOfErrors())
+            );
+        }
+    }
+
+    private void run() {
+        setState(GuiState.RUNNING);
+        statusBar.setStatusMessage("Futtatás...");
+        Executor executor = new Executor();
+        executor.execute(compilerResult.getAst());
+        statusBar.setStatusMessage("A program futása befejeződött.");
+    }
+
+    private void stopRunning() {
+        setState(GuiState.COMPILED);
+        statusBar.setStatusMessage("Futtatásra kész.");
     }
 
     private void setState(GuiState state) {

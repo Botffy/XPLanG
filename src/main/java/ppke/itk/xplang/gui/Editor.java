@@ -53,6 +53,10 @@ class Editor implements DocumentListener, CaretListener {
         textArea.requestFocusInWindow();
     }
 
+    void setEditable(boolean editable) {
+        this.textArea.setEditable(editable);
+    }
+
     Optional<File> getLoadedFile() {
         return Optional.ofNullable(file);
     }

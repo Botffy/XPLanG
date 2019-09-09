@@ -15,7 +15,22 @@ public class ErrorLog {
         return Collections.unmodifiableList(messages);
     }
 
+    public long getNumberOfErrors() {
+        return messages.stream()
+            .filter(x -> x.getSeverity() == CompilerMessage.Severity.ERROR)
+            .count();
+    }
+
+    public boolean hasNoErrors() {
+        return messages.stream().noneMatch(x -> x.getSeverity() == CompilerMessage.Severity.ERROR);
+    }
+
     public boolean isEmpty() {
         return messages.isEmpty();
+    }
+
+    @Override
+    public String toString() {
+        return messages.toString();
     }
 }

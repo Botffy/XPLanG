@@ -15,6 +15,8 @@ class StatusBar implements CursorPositionChangeListener {
     private final JPanel panel;
     private final JLabel message;
 
+    private boolean displayCursorInfo = false;
+
     StatusBar() {
         this.panel = new JPanel();
         panel.setBorder(new BevelBorder(BevelBorder.LOWERED));
@@ -34,13 +36,25 @@ class StatusBar implements CursorPositionChangeListener {
         this.message.setText(message);
     }
 
+    void setDisplayCursorInfo(boolean display) {
+        this.displayCursorInfo = display;
+    }
+
     @Override
     public void onCursorMovement(CursorPosition position) {
+        if (!displayCursorInfo) {
+            return;
+        }
+
         this.message.setText(format("%d:%d", position.line + 1, position.column + 1));
     }
 
     @Override
     public void onSelectionChange(CursorPosition start, CursorPosition end, int lines, int characters) {
+        if (!displayCursorInfo) {
+            return;
+        }
+
         if (lines == 0) {
             this.message.setText(format("%d karakter", characters));
         } else {
