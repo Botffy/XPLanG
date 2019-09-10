@@ -36,7 +36,7 @@ class Editor implements DocumentListener, CaretListener {
 
     Editor(Consumer<Editor> onStateChange) {
         this.onStateChange = onStateChange;
-        this.textArea = new RSyntaxTextArea(20, 60);
+        this.textArea = new RSyntaxTextArea(30, 80);
         this.textArea.setTabSize(2);
         this.textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_NONE);
         this.textArea.setCodeFoldingEnabled(false);
