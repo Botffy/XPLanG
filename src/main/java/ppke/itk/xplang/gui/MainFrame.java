@@ -13,11 +13,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class MainFrame extends JFrame {
     private static final Logger log = LoggerFactory.getLogger("Root.Gui");
@@ -26,7 +23,7 @@ public class MainFrame extends JFrame {
 
     private final StatusBar statusBar;
     private final Editor editor;
-    private final JFileChooser fileChooser = new JFileChooser();
+    private final IOHandler ioHandler;
     private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
 
     private Compiler.Result compilerResult;
@@ -35,23 +32,27 @@ public class MainFrame extends JFrame {
         super();
         statusBar = new StatusBar();
         editor = new Editor(this::setTitleFrom);
+        ioHandler = new IOHandler(this, () -> editor);
         editor.addCursorPositionChangeListener(statusBar);
 
-        actions.put(GuiAction.OPEN, PlangAction.doing(() -> this.selectFileToLoad().ifPresent(this::loadFile))
+        actions.put(GuiAction.OPEN, PlangAction
+            .doing(() -> ioHandler.selectFileToLoad().ifPresent(ioHandler::loadFile))
             .labelled("Fájl megnyitása")
             .withIcon(PlangIcon.OPEN)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_DOWN_MASK))
             .build()
         );
 
-        actions.put(GuiAction.SAVE, PlangAction.doing(() -> this.loadedFileOrSelectedFile().ifPresent(this::saveToFile))
+        actions.put(GuiAction.SAVE, PlangAction
+            .doing(() -> ioHandler.loadedFileOrSelectedFile().ifPresent(ioHandler::saveToFile))
             .labelled("Mentés")
             .withIcon(PlangIcon.SAVE)
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK))
             .build()
         );
 
-        actions.put(GuiAction.SAVE_AS, PlangAction.doing(() -> this.selectFileToSaveTo().ifPresent(this::saveToFile))
+        actions.put(GuiAction.SAVE_AS, PlangAction
+            .doing(() -> ioHandler.selectFileToSaveTo().ifPresent(ioHandler::saveToFile))
             .labelled("Mentés másként")
             .withHotKey(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK))
             .build()
@@ -98,7 +99,7 @@ public class MainFrame extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 setDefaultCloseOperation(EXIT_ON_CLOSE);
-                if (!MainFrame.this.loseChangesConfirm("Biztosan ki akarsz lépni?", "Kilépés")) {
+                if (!ioHandler.loseChangesConfirm("Biztosan ki akarsz lépni?", "Kilépés")) {
                     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                 }
             }
@@ -107,6 +108,11 @@ public class MainFrame extends JFrame {
         editor.focus();
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public MainFrame(File fileToOpen) {
+        this();
+        ioHandler.loadFile(fileToOpen);
     }
 
     private void edit() {
@@ -157,21 +163,6 @@ public class MainFrame extends JFrame {
         this.state = state;
     }
 
-    private boolean loseChangesConfirm(String question, String title) {
-        if (!editor.isDirty()) {
-            return true;
-        }
-
-        int confirm = JOptionPane.showConfirmDialog(
-            MainFrame.this,
-            "A programszöveg változásai nincsenek elmenetve. " + question,
-            title,
-            JOptionPane.YES_NO_OPTION
-        );
-
-        return confirm == JOptionPane.YES_OPTION;
-    }
-
     private void setTitleFrom(Editor editor) {
         String fileName = editor.getLoadedFile()
             .map(File::getName)
@@ -180,51 +171,6 @@ public class MainFrame extends JFrame {
         String dirtMark = editor.isDirty() ? " *" : "";
 
         this.setTitle(String.format("PLanG [%s%s]", fileName, dirtMark));
-    }
-
-    private Optional<File> loadedFileOrSelectedFile() {
-        Optional<File> file = editor.getLoadedFile();
-        if (!file.isPresent()) {
-            file = this.selectFileToSaveTo();
-        }
-        return file;
-    }
-
-    private Optional<File> selectFileToSaveTo() {
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            return Optional.of(fileChooser.getSelectedFile());
-        }
-        return Optional.empty();
-    }
-
-    private Optional<File> selectFileToLoad() {
-        if (loseChangesConfirm("Biztosan be akarsz tölteni egy új fájlt?", "Betöltés")) {
-            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                return Optional.of(fileChooser.getSelectedFile());
-            }
-        }
-        return Optional.empty();
-    }
-
-    private void saveToFile(File file) {
-        try {
-            editor.saveTo(file);
-        } catch (IOException e) {
-            log.error("Could not save to file {}", file, e);
-            JOptionPane.showMessageDialog(this, "Nem tudtuk elmenteni a fájlt!");
-        }
-    }
-
-    public void loadFile(File file) {
-        try {
-            editor.loadFile(file);
-        } catch (FileNotFoundException e) {
-            log.error("Could not load file {}", file, e);
-            JOptionPane.showMessageDialog(this, "A megadott file nem létezik");
-        } catch (IOException e) {
-            log.error("Error while trying to load file {}", file, e);
-            JOptionPane.showMessageDialog(this, "Nem sikerült a file betöltése: " + e.getMessage());
-        }
     }
 
     private JMenuBar createMenuBar() {

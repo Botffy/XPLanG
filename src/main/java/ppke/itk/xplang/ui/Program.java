@@ -66,7 +66,7 @@ class Program {
         }
 
         if (run.getAction() == Action.SHOW_GUI) {
-            SwingUtilities.invokeLater(() -> (new MainFrame()).loadFile(run.getSourceFile()));
+            SwingUtilities.invokeLater(() -> new MainFrame(run.getSourceFile()));
             return;
         }
 
