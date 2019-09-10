@@ -25,8 +25,8 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
     compile group: 'commons-io', name: 'commons-io', version: '2.6'
     compile group: 'com.fifesoft', name: 'rsyntaxtextarea', version: '3.0.3'
-    compile group: 'org.kordamp.ikonli', name: 'ikonli-swing', version: '11.3.4'
-    compile group: 'org.kordamp.ikonli', name: 'ikonli-fontawesome5-pack', version: '11.3.4'
+    compile group: 'com.github.jiconfont', name: 'jiconfont-swing', version: '1.0.1'
+    compile group: 'com.github.jiconfont', name: 'jiconfont-font_awesome', version: '4.7.0.1'
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.21'

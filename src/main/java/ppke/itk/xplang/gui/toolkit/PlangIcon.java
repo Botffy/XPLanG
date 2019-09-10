@@ -1,22 +1,23 @@
 package ppke.itk.xplang.gui.toolkit;
 
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import org.kordamp.ikonli.swing.FontIcon;
+import jiconfont.icons.font_awesome.FontAwesome;
+import jiconfont.swing.IconFontSwing;
 
 import javax.swing.*;
 
 public enum PlangIcon {
-    SAVE(FontIcon.of(FontAwesomeSolid.SAVE)),
-    OPEN(FontIcon.of(FontAwesomeSolid.FOLDER_OPEN)),
-    COMPILE(FontIcon.of(FontAwesomeSolid.DESKTOP)),
-    EDIT(FontIcon.of(FontAwesomeSolid.EDIT)),
-    RUN(FontIcon.of(FontAwesomeSolid.PLAY)),
-    STOP(FontIcon.of(FontAwesomeSolid.STOP));
+    SAVE(FontAwesome.FLOPPY_O),
+    OPEN(FontAwesome.FOLDER_OPEN),
+    COMPILE(FontAwesome.DESKTOP),
+    EDIT(FontAwesome.PENCIL_SQUARE_O),
+    RUN(FontAwesome.PLAY),
+    STOP(FontAwesome.STOP);
 
     private final Icon icon;
 
-    PlangIcon(Icon icon) {
-        this.icon = icon;
+    PlangIcon(FontAwesome iconName) {
+        IconFontSwing.register(FontAwesome.getIconFont());
+        this.icon = IconFontSwing.buildIcon(iconName, 18);
     }
 
     public Icon getIcon() {
