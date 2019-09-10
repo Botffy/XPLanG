@@ -12,7 +12,7 @@ import ppke.itk.xplang.type.Type;
 
 import static java.util.Collections.singletonList;
 
-/** {@code OpenStatement = OPEN LValue COLON Expression */
+/** {@code OpenStatement = OPEN LValue COLON Expression } */
 public class OpenStatementParser {
     private final static Translator translator = Translator.getInstance("Plang");
 

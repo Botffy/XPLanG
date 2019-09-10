@@ -12,7 +12,7 @@ import ppke.itk.xplang.type.Type;
 
 import static java.util.Collections.singletonList;
 
-/** {@code CloseStatement = CLOSE LValue */
+/** {@code CloseStatement = CLOSE LValue } */
 public class CloseStatementParser {
     private final static Translator translator = Translator.getInstance("Plang");
 
