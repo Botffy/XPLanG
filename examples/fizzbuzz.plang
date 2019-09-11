@@ -1,0 +1,22 @@
+Program fizzbuzz
+  változók:
+    i: Egész
+
+  i := 1
+  ciklus amíg i <= 100
+    ha i mod 3 = 0 akkor
+      ki: "Fizz"
+    ha_vége
+
+    ha i mod 5 = 0 akkor
+      ki: "Buzz"
+    ha_vége
+
+    ha i mod 3 /= 0 és i mod 5 /= 0 akkor
+      ki: i
+    ha_vége
+    ki: SV
+
+    i := i + 1
+  ciklus_vége
+program_vége

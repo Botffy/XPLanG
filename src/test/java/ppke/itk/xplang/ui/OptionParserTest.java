@@ -23,7 +23,7 @@ public class OptionParserTest {
             Program.Action.NONE, config.getAction()
         );
 
-        config = parser.parseOptions(new String[]{"--help", "example.plang"});
+        config = parser.parseOptions(new String[]{"--help", "examples/fizzbuzz.plang"});
         assertSame("The --help switch and a source file should result in NONE action",
             Program.Action.NONE, config.getAction()
         );
@@ -36,7 +36,7 @@ public class OptionParserTest {
             Program.Action.NONE, config.getAction()
         );
 
-        config = parser.parseOptions(new String[]{"--version", "example.prog"});
+        config = parser.parseOptions(new String[]{"--version", "examples/fizzbuzz.plang"});
         assertSame("The --version switch and a source file should result in NONE action",
             Program.Action.NONE, config.getAction()
         );
@@ -44,12 +44,12 @@ public class OptionParserTest {
 
     @Test
     public void specifyingSourceFiles() {
-        RunConfig config = parser.parseOptions(new String[]{"example.prog"});
+        RunConfig config = parser.parseOptions(new String[]{"examples/fizzbuzz.plang"});
         assertSame("Existing file as source input should be accepted, and should trigger the default action",
             Program.Action.INTERPRET, config.getAction()
         );
         assertEquals("Existing file as source input should be accepted.",
-            "example.prog", config.getSourceFile().getName()
+            "fizzbuzz.plang", config.getSourceFile().getName()
         );
     }
 

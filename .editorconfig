@@ -11,8 +11,5 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{json,xml}]
-indent_size = 2
-
-[*.{plang,prog}]
+[*.{json,xml,plang}]
 indent_size = 2
