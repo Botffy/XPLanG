@@ -1,6 +1,7 @@
 package ppke.itk.xplang.gui;
 
 import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.ErrorLog;
 
 import javax.swing.table.AbstractTableModel;
@@ -24,14 +25,16 @@ class ErrorLogTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return 3;
     }
 
     @Override
     public String getColumnName(int column) {
         if (column == 0) {
-            return "Hely";
+            return "Sor";
         } else if (column == 1) {
+            return "Oszlop";
+        } else if (column == 2) {
             return "Hibaüzenet";
         }
 
@@ -43,8 +46,10 @@ class ErrorLogTableModel extends AbstractTableModel {
         CompilerMessage compilerMessage = errorLog.getErrorMessages().get(rowIndex);
 
         if (columnIndex == 0) {
-            return compilerMessage.getCursorPosition();
+            return compilerMessage.getCursorPosition().line;
         } else if (columnIndex == 1) {
+            return compilerMessage.getCursorPosition().column;
+        } else if (columnIndex == 2) {
             return compilerMessage.getMessage();
         }
 
