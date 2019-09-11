@@ -39,6 +39,10 @@ public final class CompilerMessage {
         return location.start;
     }
 
+    public CursorPosition getEndPosition() {
+        return location.end;
+    }
+
     @Override public String toString() {
         return String.format("%s %s", location.start, message);
     }

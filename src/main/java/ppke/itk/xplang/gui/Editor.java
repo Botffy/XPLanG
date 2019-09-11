@@ -2,10 +2,13 @@ package ppke.itk.xplang.gui;
 
 import org.apache.commons.io.IOUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.SquiggleUnderlineHighlightPainter;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rtextarea.ChangeableHighlightPainter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.CursorPosition;
 
 import javax.swing.event.CaretEvent;
@@ -13,6 +16,7 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Highlighter;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -24,7 +28,7 @@ import java.util.function.Consumer;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-class Editor implements DocumentListener, CaretListener {
+class Editor implements CompilerResultListener, DocumentListener, CaretListener {
     private final static Logger log = LoggerFactory.getLogger("Root.Gui.Editor");
 
     private final RSyntaxTextArea textArea;
@@ -109,6 +113,24 @@ class Editor implements DocumentListener, CaretListener {
     }
 
     @Override
+    public void onCompilerResult(Compiler.Result result) {
+        List<CompilerMessage> errorMessages = result.getErrorLog().getErrorMessages();
+        ChangeableHighlightPainter painter = new SquiggleUnderlineHighlightPainter(Color.RED);
+        Highlighter highlighter = textArea.getHighlighter();
+        highlighter.removeAllHighlights();
+        for (CompilerMessage errorMessage : errorMessages) {
+            int p0 = toOffset(errorMessage.getCursorPosition());
+            int p1 = toOffset(errorMessage.getEndPosition());
+
+            try {
+                highlighter.addHighlight(p0, p1, painter);
+            } catch (BadLocationException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    @Override
     public void insertUpdate(DocumentEvent e) {
         setDirty(true);
     }
@@ -156,8 +178,18 @@ class Editor implements DocumentListener, CaretListener {
             int col = caret - textArea.getLineStartOffset(line);
             return new CursorPosition(line, col);
         } catch (BadLocationException e) {
-            log.warn("Failed to convert cursor position", e);
-            throw new RuntimeException(e);
+            log.warn("Failed to convert offset to cursor position", e);
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private int toOffset(CursorPosition position) {
+        try {
+            int lineStartOffset = textArea.getLineStartOffset(position.line - 1);
+            return lineStartOffset + position.column - 1;
+        } catch (BadLocationException e) {
+            log.warn("Failed to convert cursor position to offset", e);
+            throw new IllegalStateException(e);
         }
     }
 }

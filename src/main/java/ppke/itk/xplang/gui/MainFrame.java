@@ -144,6 +144,7 @@ public class MainFrame extends JFrame {
         Compiler compiler = new Compiler();
         compilerResult = compiler.compile(editor.getText());
         errorLogPanel.onCompilerResult(compilerResult);
+        editor.onCompilerResult(compilerResult);
         if (compilerResult.isSuccess()) {
             setState(GuiState.COMPILED);
             hideErrorPanel();
