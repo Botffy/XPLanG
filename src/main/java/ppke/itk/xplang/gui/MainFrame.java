@@ -154,7 +154,7 @@ public class MainFrame extends JFrame {
         setState(GuiState.RUNNING);
         statusBar.setStatusMessage("Futtatás...");
         Executor executor = new Executor();
-        executor.execute(compilerResult.getAst());
+        executor.execute(compilerResult.getAst(), console);
         statusBar.setStatusMessage("A program futása befejeződött.");
     }
 
