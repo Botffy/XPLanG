@@ -131,6 +131,7 @@ public class MainFrame extends JFrame {
 
     private void edit() {
         editor.setEditable(true);
+        editor.clearHighlights();
         statusBar.setDisplayCursorInfo(true);
         statusBar.setStatusMessage("Kész.");
         setState(GuiState.EDITING);

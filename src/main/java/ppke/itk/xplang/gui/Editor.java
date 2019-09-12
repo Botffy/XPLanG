@@ -122,13 +122,17 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         }
     }
 
+    public void clearHighlights() {
+        textArea.getHighlighter().removeAllHighlights();
+        toolTipSupplier.clear();
+    }
+
     @Override
     public void onCompilerResult(Compiler.Result result) {
         List<CompilerMessage> errorMessages = result.getErrorLog().getErrorMessages();
         ChangeableHighlightPainter painter = new SquiggleUnderlineHighlightPainter(Color.RED);
         Highlighter highlighter = textArea.getHighlighter();
-        highlighter.removeAllHighlights();
-        toolTipSupplier.clear();
+        clearHighlights();
         for (CompilerMessage errorMessage : errorMessages) {
             try {
                 int p0 = toOffset(textArea, errorMessage.getCursorPosition());
