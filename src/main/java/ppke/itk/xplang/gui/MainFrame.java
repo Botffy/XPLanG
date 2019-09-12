@@ -24,17 +24,18 @@ public class MainFrame extends JFrame {
     private final StatusBar statusBar;
     private final Editor editor;
     private final ErrorLogPanel errorLogPanel;
+    private final RightPane rightPane;
     private final IOHandler ioHandler;
     private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
 
     private Compiler.Result compilerResult;
-    private JSplitPane editorSplitPane;
 
     public MainFrame() {
         super();
         statusBar = new StatusBar();
         editor = new Editor(this::setTitleFrom);
         errorLogPanel = new ErrorLogPanel();
+        rightPane = new RightPane(editor, errorLogPanel);
         ioHandler = new IOHandler(this, () -> editor);
         editor.addCursorPositionChangeListener(statusBar);
 
@@ -89,18 +90,9 @@ public class MainFrame extends JFrame {
             .build()
         );
 
-        Component editorPane = editor.getEditorPane();
-        editorPane.setMinimumSize(new Dimension(0, 300));
-        JPanel errorLogPanel = this.errorLogPanel.getPanel();
-        errorLogPanel.setMinimumSize(new Dimension(0, 0));
-        editorSplitPane = new JSplitPane(
-            JSplitPane.VERTICAL_SPLIT, editorPane, errorLogPanel
-        );
-        editorSplitPane.setOneTouchExpandable(true);
-
         JPanel cp = new JPanel(new BorderLayout());
         cp.add(createToolBar(), BorderLayout.PAGE_START);
-        cp.add(editorSplitPane, BorderLayout.CENTER);
+        cp.add(rightPane.getPane(), BorderLayout.CENTER);
         cp.add(statusBar.getComponent(), BorderLayout.SOUTH);
         setContentPane(cp);
         setJMenuBar(createMenuBar());
@@ -118,7 +110,6 @@ public class MainFrame extends JFrame {
             }
         });
         pack();
-        hideErrorPanel();
         editor.focus();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -148,30 +139,15 @@ public class MainFrame extends JFrame {
         editor.onCompilerResult(compilerResult);
         if (compilerResult.isSuccess()) {
             setState(GuiState.COMPILED);
-            hideErrorPanel();
+            rightPane.hideErrorPanel();
             statusBar.setStatusMessage("Futtatásra kész.");
         } else {
             setState(GuiState.COMPILED_WITH_ERRORS);
-            showErrorPanel();
+            rightPane.showErrorPanel();
             statusBar.setStatusMessage(
                 String.format("A fordítás kész: %d hiba", compilerResult.getErrorLog().getNumberOfErrors())
             );
         }
-    }
-
-    private void hideErrorPanel() {
-        editorSplitPane.getRightComponent().setVisible(false);
-        editorSplitPane.setDividerSize(0);
-        editorSplitPane.setDividerLocation(1.0d);
-    }
-
-    private void showErrorPanel() {
-        if (editorSplitPane.getRightComponent().isVisible()) {
-            return;
-        }
-        editorSplitPane.getRightComponent().setVisible(true);
-        editorSplitPane.setDividerSize((Integer) UIManager.get("SplitPane.dividerSize"));
-        editorSplitPane.setDividerLocation(0.8d);
     }
 
     private void run() {
