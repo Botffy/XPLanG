@@ -33,7 +33,7 @@ class ErrorLogPanel implements CompilerResultListener {
         this.panel.add(scrollPane);
     }
 
-    JPanel getPanel() {
+    JComponent getComponent() {
         return panel;
     }
 

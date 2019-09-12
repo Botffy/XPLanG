@@ -59,7 +59,7 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         this.scrollPane = new RTextScrollPane(textArea);
     }
 
-    Component getEditorPane() {
+    JComponent getComponent() {
         return scrollPane;
     }
 

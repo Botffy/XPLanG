@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
     private final StatusBar statusBar;
     private final Editor editor;
     private final ErrorLogPanel errorLogPanel;
+    private final Console console;
     private final RightPane rightPane;
     private final IOHandler ioHandler;
     private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
@@ -35,7 +36,8 @@ public class MainFrame extends JFrame {
         statusBar = new StatusBar();
         editor = new Editor(this::setTitleFrom);
         errorLogPanel = new ErrorLogPanel();
-        rightPane = new RightPane(editor, errorLogPanel);
+        console = new Console();
+        rightPane = new RightPane(editor.getComponent(), errorLogPanel.getComponent(), console.getComponent());
         ioHandler = new IOHandler(this, () -> editor);
         editor.addCursorPositionChangeListener(statusBar);
 
@@ -139,11 +141,9 @@ public class MainFrame extends JFrame {
         editor.onCompilerResult(compilerResult);
         if (compilerResult.isSuccess()) {
             setState(GuiState.COMPILED);
-            rightPane.hideErrorPanel();
             statusBar.setStatusMessage("Futtatásra kész.");
         } else {
             setState(GuiState.COMPILED_WITH_ERRORS);
-            rightPane.showErrorPanel();
             statusBar.setStatusMessage(
                 String.format("A fordítás kész: %d hiba", compilerResult.getErrorLog().getNumberOfErrors())
             );
@@ -171,6 +171,7 @@ public class MainFrame extends JFrame {
         }
 
         this.state = state;
+        rightPane.onStateChange(state);
     }
 
     private void setTitleFrom(Editor editor) {
