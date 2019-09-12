@@ -27,6 +27,8 @@ import java.util.function.Consumer;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
+import static ppke.itk.xplang.gui.util.CursorPositionConverter.toCursorPosition;
+import static ppke.itk.xplang.gui.util.CursorPositionConverter.toOffset;
 
 class Editor implements CompilerResultListener, DocumentListener, CaretListener {
     private final static Logger log = LoggerFactory.getLogger("Root.Gui.Editor");
@@ -119,10 +121,9 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         Highlighter highlighter = textArea.getHighlighter();
         highlighter.removeAllHighlights();
         for (CompilerMessage errorMessage : errorMessages) {
-            int p0 = toOffset(errorMessage.getCursorPosition());
-            int p1 = toOffset(errorMessage.getEndPosition());
-
             try {
+                int p0 = toOffset(textArea, errorMessage.getCursorPosition());
+                int p1 = toOffset(textArea, errorMessage.getEndPosition());
                 highlighter.addHighlight(p0, p1, painter);
             } catch (BadLocationException e) {
                 throw new IllegalStateException(e);
@@ -152,43 +153,31 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
     }
 
     @Override
-    public void caretUpdate(CaretEvent e) {
-        int dot = e.getDot();
-        int mark = e.getMark();
+    public void caretUpdate(CaretEvent event) {
+        int dot = event.getDot();
+        int mark = event.getMark();
 
         if (dot == mark) {
-            cursorPositionChangeListeners.forEach(x -> x.onCursorMovement(toCursorPosition(dot)));
-            return;
+            try {
+                CursorPosition cursorPosition = toCursorPosition(textArea, dot);
+                cursorPositionChangeListeners.forEach(x -> x.onCursorMovement(cursorPosition));
+                return;
+            } catch (BadLocationException e) {
+                throw new IllegalStateException(e);
+            }
         }
 
         int start = min(dot, mark);
         int end = max(dot, mark);
 
-        CursorPosition startPos = toCursorPosition(start);
-        CursorPosition endPos = toCursorPosition(end);
-
-        cursorPositionChangeListeners.forEach(x -> x.onSelectionChange(
-            startPos, endPos, endPos.line - startPos.line, end - start
-        ));
-    }
-
-    private CursorPosition toCursorPosition(int caret) {
         try {
-            int line = textArea.getLineOfOffset(caret);
-            int col = caret - textArea.getLineStartOffset(line);
-            return new CursorPosition(line, col);
-        } catch (BadLocationException e) {
-            log.warn("Failed to convert offset to cursor position", e);
-            throw new IllegalStateException(e);
-        }
-    }
+            CursorPosition startPos = toCursorPosition(textArea, start);
+            CursorPosition endPos = toCursorPosition(textArea, end);
 
-    private int toOffset(CursorPosition position) {
-        try {
-            int lineStartOffset = textArea.getLineStartOffset(position.line - 1);
-            return lineStartOffset + position.column - 1;
+            cursorPositionChangeListeners.forEach(x -> x.onSelectionChange(
+                startPos, endPos, endPos.line - startPos.line, end - start
+            ));
         } catch (BadLocationException e) {
-            log.warn("Failed to convert cursor position to offset", e);
             throw new IllegalStateException(e);
         }
     }
