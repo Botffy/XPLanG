@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.CursorPosition;
 
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -34,6 +35,7 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
     private final static Logger log = LoggerFactory.getLogger("Root.Gui.Editor");
 
     private final RSyntaxTextArea textArea;
+    private final CompilerMessageToolTipSupplier toolTipSupplier;
     private final RTextScrollPane scrollPane;
     private final Consumer<Editor> onStateChange;
     private File file;
@@ -48,6 +50,12 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         this.textArea.setCodeFoldingEnabled(false);
         this.textArea.getDocument().addDocumentListener(this);
         this.textArea.addCaretListener(this);
+
+        this.toolTipSupplier = new CompilerMessageToolTipSupplier();
+        this.textArea.setUseFocusableTips(false);
+        this.textArea.setToolTipSupplier(toolTipSupplier);
+        ToolTipManager.sharedInstance().registerComponent(this.textArea);
+
         this.scrollPane = new RTextScrollPane(textArea);
     }
 
@@ -120,11 +128,13 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         ChangeableHighlightPainter painter = new SquiggleUnderlineHighlightPainter(Color.RED);
         Highlighter highlighter = textArea.getHighlighter();
         highlighter.removeAllHighlights();
+        toolTipSupplier.clear();
         for (CompilerMessage errorMessage : errorMessages) {
             try {
                 int p0 = toOffset(textArea, errorMessage.getCursorPosition());
                 int p1 = toOffset(textArea, errorMessage.getEndPosition());
                 highlighter.addHighlight(p0, p1, painter);
+                toolTipSupplier.add(errorMessage);
             } catch (BadLocationException e) {
                 throw new IllegalStateException(e);
             }

@@ -31,6 +31,10 @@ public final class CompilerMessage {
         return severity;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
     public String getMessage() {
         return message;
     }

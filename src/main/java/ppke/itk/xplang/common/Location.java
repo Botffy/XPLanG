@@ -25,6 +25,10 @@ public final class Location {
         this.end = end;
     }
 
+    public boolean contains(CursorPosition cursorPosition) {
+        return start.compareTo(cursorPosition) <= 0 && end.compareTo(cursorPosition) >= 0;
+    }
+
     @Override public String toString() {
         return String.format("[%s - %s]", start, end);
     }
