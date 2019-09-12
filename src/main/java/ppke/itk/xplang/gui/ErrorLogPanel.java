@@ -17,7 +17,8 @@ class ErrorLogPanel implements CompilerResultListener {
         JScrollPane scrollPane = new JScrollPane(table);
 
         table.setDragEnabled(false);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setRowSelectionAllowed(false);
+        table.getTableHeader().setReorderingAllowed(false);
 
         table.setShowGrid(false);
         table.setDefaultRenderer(Object.class, new ErrorTableRenderer());
