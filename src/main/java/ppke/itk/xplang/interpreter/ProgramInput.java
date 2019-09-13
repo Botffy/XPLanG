@@ -18,7 +18,7 @@ public class ProgramInput {
 
     public ProgramInput(Reader reader, String name) {
         if (!reader.markSupported()) {
-            reader = new BufferedReader(reader);
+            reader = new BufferedReader(reader, 1);
         }
 
         this.reader = reader;

@@ -8,14 +8,17 @@ import java.nio.charset.StandardCharsets;
 
 class GuiStreamHandler implements StreamHandler {
     private final PipedOutputStream stdOut;
+    private final PipedInputStream stdIn;
 
-    GuiStreamHandler(PipedOutputStream stdOut) {
+    GuiStreamHandler(PipedOutputStream stdOut, PipedInputStream stdIn) {
         this.stdOut = stdOut;
+        this.stdIn = stdIn;
     }
 
     public void close() {
         try {
             stdOut.close();
+            stdIn.close();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
@@ -23,7 +26,7 @@ class GuiStreamHandler implements StreamHandler {
 
     @Override
     public ProgramInput getStandardInput() {
-        return null;
+        return new ProgramInput(new InputStreamReader(stdIn, StandardCharsets.UTF_8), "StdIn");
     }
 
     @Override
