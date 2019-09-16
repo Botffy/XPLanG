@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 class Executor {
     private static final Logger log = LoggerFactory.getLogger("Root.Gui.Executor");
 
-    private final List<ExecutorListener> listeners = new ArrayList<>();
+    private final List<ResultListener> listeners = new ArrayList<>();
     private AtomicBoolean interpreterShouldStop = new AtomicBoolean();
     private Console console;
 
@@ -33,7 +33,7 @@ class Executor {
                 interpreter.visit(astRoot);
                 log.info("Finished execution");
                 log.debug(interpreter.memoryDump());
-                SwingUtilities.invokeLater(() -> listeners.forEach(ExecutorListener::onInterpreterFinished));
+                SwingUtilities.invokeLater(() -> listeners.forEach(ResultListener::onInterpreterFinished));
             } catch (InterpreterStoppedException e) {
                 log.info("Interpreter stopped", e);
             } catch (InterpreterError e) {
@@ -56,7 +56,7 @@ class Executor {
         this.console.closeOutputStream();
     }
 
-    void addExecutorListener(ExecutorListener listener) {
+    void addExecutorListener(ResultListener listener) {
         listeners.add(listener);
     }
 
@@ -76,7 +76,7 @@ class Executor {
         }
     }
 
-    public interface ExecutorListener {
+    public interface ResultListener {
         void onInterpreterFinished();
         void onInterpreterError(String errorMessage);
         void onInterpreterCrash(Throwable e);

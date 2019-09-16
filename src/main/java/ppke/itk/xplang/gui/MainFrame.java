@@ -155,7 +155,24 @@ public class MainFrame extends JFrame {
         setState(GuiState.RUNNING);
         statusBar.setStatusMessage("Futtatás...");
         executor = new Executor();
-        executor.addExecutorListener(new ExecutorListener());
+        executor.addExecutorListener(new Executor.ResultListener() {
+            @Override
+            public void onInterpreterFinished() {
+                statusBar.setStatusMessage("A program futása befejeződött.");
+            }
+
+            @Override
+            public void onInterpreterError(String errorMessage) {
+                statusBar.setStatusMessage("A program futása megszakadt: " + errorMessage);
+                JOptionPane.showMessageDialog(MainFrame.this, "A program futása megszakadt: " + errorMessage);
+            }
+
+            @Override
+            public void onInterpreterCrash(Throwable e) {
+                statusBar.setStatusMessage("Végzetes hiba történt.");
+                JOptionPane.showMessageDialog(MainFrame.this, "Végzetes hiba történt: " + e.getMessage());
+            }
+        });
         executor.execute(compilerResult.getAst(), console);
         statusBar.setStatusMessage("A program fut.");
     }
@@ -218,24 +235,5 @@ public class MainFrame extends JFrame {
         toolBar.add(new Button(actions.get(GuiAction.RUN)));
         toolBar.add(new Button(actions.get(GuiAction.STOP)));
         return toolBar;
-    }
-
-    private class ExecutorListener implements Executor.ExecutorListener {
-        @Override
-        public void onInterpreterFinished() {
-            statusBar.setStatusMessage("A program futása befejeződött.");
-        }
-
-        @Override
-        public void onInterpreterError(String errorMessage) {
-            statusBar.setStatusMessage("A program futása megszakadt: " + errorMessage);
-            JOptionPane.showMessageDialog(MainFrame.this, "A program futása megszakadt: " + errorMessage);
-        }
-
-        @Override
-        public void onInterpreterCrash(Throwable e) {
-            statusBar.setStatusMessage("Végzetes hiba történt.");
-            JOptionPane.showMessageDialog(MainFrame.this, "Végzetes hiba történt: " + e.getMessage());
-        }
     }
 }
