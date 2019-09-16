@@ -36,11 +36,15 @@ class GuiStreamHandler implements StreamHandler {
 
     @Override
     public ProgramInput getFileInput(String name) throws FileNotFoundException {
-        throw new UnsupportedOperationException();
+        File file = new File(name);
+        return new ProgramInput(
+            new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8),
+            file.getName()
+        );
     }
 
     @Override
     public Writer getFileOutput(String name) throws FileNotFoundException {
-        throw new UnsupportedOperationException();
+        return new OutputStreamWriter(new FileOutputStream(new File(name)), StandardCharsets.UTF_8);
     }
 }
