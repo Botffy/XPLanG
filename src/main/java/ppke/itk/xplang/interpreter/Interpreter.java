@@ -6,6 +6,8 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
+import java.util.function.Supplier;
+
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
 
 public class Interpreter implements ASTVisitor {
@@ -18,17 +20,19 @@ public class Interpreter implements ASTVisitor {
     private final OutputStreamValue stdOut;
     private final InputStreamValue stdIn;
     private int executionLimit;
+    private final Supplier<Boolean> stopConditionSupplier;
     private int steps = 0;
 
     public Interpreter(StreamHandler streamHandler) {
-        this(streamHandler, 10000);
+        this(streamHandler, 10000, () -> false);
     }
 
-    public Interpreter(StreamHandler streamHandler, int executionLimit) {
+    public Interpreter(StreamHandler streamHandler, int executionLimit, Supplier<Boolean> stopConditionSupplier) {
         this.instructionProcessor = new InstructionProcessor(streamHandler);
         this.stdOut = new OutputStreamValue(streamHandler.getStandardOutput());
         this.stdIn = new InputStreamValue(streamHandler.getStandardInput());
         this.executionLimit = executionLimit;
+        this.stopConditionSupplier = stopConditionSupplier;
     }
 
     @Override public void visit(Root root) {
@@ -71,6 +75,8 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(Assignment assignment) {
+        checkStopCondition();
+
         assignment.getRHS().accept(this);
         assignment.getLHS().accept(this);
 
@@ -82,6 +88,8 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(Conditional conditional) {
+        checkStopCondition();
+
         conditional.getCondition().accept(this);
         Value value = valueStack.pop();
         log.debug("Conditional condition evaulated to {}", value);
@@ -96,6 +104,8 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Loop loop) {
+        checkStopCondition();
+
         switch(loop.getType()) {
             case TEST_FIRST: {
                 loop.getCondition().accept(this);
@@ -125,6 +135,8 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Input input) {
+        checkStopCondition();
+
         for (Assignment assignment : input.getAssignments()) {
             assignment.accept(this);
         }
@@ -134,6 +146,8 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Output output) {
+        checkStopCondition();
+
         output.getOutputStream().accept(this);
         OutputStreamValue outputStream = valueStack.pop(OutputStreamValue.class);
         for (RValue val : output.getOutputs()) {
@@ -244,8 +258,15 @@ public class Interpreter implements ASTVisitor {
         return this.memory.dump();
     }
 
+    private void checkStopCondition() {
+        if (stopConditionSupplier.get()) {
+            throw new InterpreterStoppedException();
+        }
+    }
+
     private void step() {
         ++steps;
+
         if (steps >= executionLimit) {
             throw new ExecutionLimitReachedException(executionLimit);
         }

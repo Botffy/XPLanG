@@ -1,5 +1,8 @@
 package ppke.itk.xplang.gui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -8,11 +11,15 @@ import java.nio.charset.StandardCharsets;
 import static java.util.Arrays.stream;
 
 class Console {
+    private static final Logger log = LoggerFactory.getLogger("Root.Gui.Console");
+
     private final static Font MONOSPACED = new Font("monospaced", Font.PLAIN, 12);
 
     private final JPanel panel;
     private final JTextArea display;
     private final JTextField input;
+
+    private OutputStream outputStream;
 
     Console() {
         panel = new JPanel(new BorderLayout());
@@ -36,10 +43,8 @@ class Console {
     }
 
     void sendDataTo(OutputStream os) {
-        input.setEditable(true);
-
+        this.outputStream = os;
         stream(input.getActionListeners()).forEach(input::removeActionListener);
-
         input.addActionListener(ev -> {
             try {
                 os.write(input.getText().getBytes(StandardCharsets.UTF_8));
@@ -50,8 +55,21 @@ class Console {
                 throw new IllegalStateException(e);
             }
         });
+        input.setEditable(true);
+        log.debug("Console OutputStream open.");
     }
 
+    void closeOutputStream() {
+        stream(input.getActionListeners()).forEach(input::removeActionListener);
+        input.setEditable(false);
+        try {
+            this.outputStream.close();
+            log.debug("Console OutputStream closed.");
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+        this.outputStream = null;
+    }
 
     private JTextArea createDisplay() {
         JTextArea result = new JTextArea(10, 80);
@@ -90,7 +108,9 @@ class Console {
                     display.append(line + '\n');
                     display.setCaretPosition(display.getDocument().getLength());
                 }
+                log.info("DisplayUpdater finished: source is closed.");
             } catch (IOException e) {
+                log.error("DisplayUpdater crashed", e);
                 throw new IllegalStateException(e);
             }
         }

@@ -15,10 +15,6 @@ class GuiStreamHandler implements StreamHandler {
         this.stdIn = stdIn;
     }
 
-    public PipedOutputStream getStdOut() {
-        return stdOut;
-    }
-
     public void close() {
         try {
             stdOut.close();

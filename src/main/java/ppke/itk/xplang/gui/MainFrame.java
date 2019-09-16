@@ -30,6 +30,7 @@ public class MainFrame extends JFrame {
     private final Map<GuiAction, Action> actions = new EnumMap<>(GuiAction.class);
 
     private Compiler.Result compilerResult;
+    private Executor executor;
 
     public MainFrame() {
         super();
@@ -153,13 +154,14 @@ public class MainFrame extends JFrame {
     private void run() {
         setState(GuiState.RUNNING);
         statusBar.setStatusMessage("Futtatás...");
-        Executor executor = new Executor();
+        executor = new Executor();
         executor.addExecutorListener(new ExecutorListener());
         executor.execute(compilerResult.getAst(), console);
         statusBar.setStatusMessage("A program fut.");
     }
 
     private void stopRunning() {
+        executor.stop();
         setState(GuiState.COMPILED);
         statusBar.setStatusMessage("Futtatásra kész.");
     }
