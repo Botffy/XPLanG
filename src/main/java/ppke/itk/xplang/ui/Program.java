@@ -34,9 +34,6 @@ class Program {
         /** The program should just call it a day and quit. */
         NONE,
 
-        /** The GUI should start. */
-        SHOW_GUI,
-
         /** The program should perform a dry-run: analyse the source, but do nothing afterwards. */
         PARSE_ONLY,
 
@@ -62,11 +59,6 @@ class Program {
 
         if(run.getAction() == Action.NONE) {
             log.info("Exiting");
-            return;
-        }
-
-        if (run.getAction() == Action.SHOW_GUI) {
-            SwingUtilities.invokeLater(() -> new MainFrame(run.getSourceFile()));
             return;
         }
 

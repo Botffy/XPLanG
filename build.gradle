@@ -35,6 +35,24 @@ dependencies {
     testCompile group: 'com.github.npathai', name: 'hamcrest-optional', version: '1.0'
 }
 
+task createGuiStartupScript(type: CreateStartScripts) {
+    mainClassName = 'ppke.itk.xplang.gui.Main'
+    classpath = startScripts.classpath
+    outputDir = startScripts.outputDir
+    applicationName = 'XPLanG-editor'
+    doLast {
+        windowsScript.text = windowsScript.text.replaceAll('java.exe', 'javaw.exe');
+        windowsScript.text = windowsScript.text.replaceFirst('("%JAVA_EXE%" %)', 'start "" /b $1')
+        unixScript.text = unixScript.text.replaceAll('java.exe', 'javaw.exe');
+    }
+}
+
+applicationDistribution.into("bin") {
+    duplicatesStrategy= DuplicatesStrategy.EXCLUDE
+    from(createGuiStartupScript)
+    fileMode = 0755
+}
+
 test {
     testLogging {
         events "passed", "skipped", "failed"
@@ -119,4 +137,12 @@ run {
     main = "ppke.itk.xplang.ui.Main"
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
+}
+
+task(runGui, dependsOn: 'classes', type: JavaExec) {
+    if(project.hasProperty("appArgs")) {
+        args Eval.me(appArgs)
+    }
+    main = 'ppke.itk.xplang.gui.Main'
+    classpath = sourceSets.main.runtimeClasspath
 }

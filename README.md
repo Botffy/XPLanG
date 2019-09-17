@@ -25,9 +25,9 @@ The latest release is available here on [Github](https://github.com/Botffy/XPLan
 
 ## Command line
 
-Start XPLanG by running `bin/XPLanG` (Unix-like systems) or `bin/XPLanG.bat` (windows).
+Start the XPLanG interpreter by running `bin/XPLanG` (Unix-like systems) or `bin/XPLanG.bat` (Windows).
 
-## Usage
+### Usage
 
 `XPLanG [options] SOURCE_FILE`
 
@@ -43,6 +43,9 @@ Valid options:
 - `--help` display usage information and exit
 - `--version` display version information and exit
 
+## Editor
+
+XPLanG comes with its own small editor/IDE. Start the XPLanG Editor by running `bin/XPLanG-editor` (Unix-like systems) or `bin/XPLanG-editor.bat` (Windows). When starting from the command line, you can specify a single file as an argument, that file will be opened in the editor.
 
 # Building
 
@@ -68,6 +71,7 @@ To get the source code, type `git clone https://github.com/Botffy/XPLanG.git` in
 - `gradle javadoc` generates the Javadoc documentation, putting it in `docs/javadoc`.
 - `gradle check` invokes [Checkstyle](./config/checkstyle/README.md) in addition to running the tests.
 - `gradle jacoco` invokes the [JaCoCo](http://www.eclemma.org/jacoco/) code coverage tool.
-- `gradle run` runs the interpreter. Pass arguements to XPLanG via Gradle through the `-Pappargs` command line argument as a list of strings. Try `gradle run -PappArgs="['example.prog']"`.
+- `gradle run` runs the interpreter. Pass arguements to XPLanG via Gradle through the `-PappArgs` command line argument as a list of strings. Try `gradle run -PappArgs="['examples/guessing_game.plang']"`.
+- `gradle runGui` starts the editor GUI. Specify the file to be opened on startup by using the `-PappArgs` argument.
 
 You can find the build reports in `build/reports`.
