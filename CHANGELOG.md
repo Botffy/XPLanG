@@ -1,4 +1,9 @@
-í# Change log
+# Change log
+
+## MS6 - 2019-09-17
+
+The birth of the XPLanG IDE. The small IDE comes with an editor, the edited files can be compiled. If there were no errors, the program can be run. Unlike in the original PLanG, the programs may be interactive: input can be submitted through the built-in console window. The IDE can be started with a separate startup script called 'XPLanG-editor'.
+
 
 ## MS5 - 2019-09-01
 
