@@ -90,12 +90,19 @@ public class Interpreter implements ASTVisitor {
     @Override public void visit(Conditional conditional) {
         checkStopCondition();
 
-        conditional.getCondition().accept(this);
-        Value value = valueStack.pop();
-        log.debug("Conditional condition evaulated to {}", value);
-        if(value.equals(BooleanValue.TRUE)) {
-            conditional.getTrueSequence().accept(this);
-        } else {
+        boolean resolved = false;
+        for (Conditional.Branch branch : conditional.getBranches()) {
+            branch.getCondition().accept(this);
+            BooleanValue value = valueStack.pop(BooleanValue.class);
+            log.debug("Conditional condition evaulated to {}", value);
+            if (value.equals(BooleanValue.TRUE)) {
+                resolved = true;
+                branch.getSequence().accept(this);
+                break;
+            }
+        }
+
+        if (!resolved) {
             conditional.getElseSequence().accept(this);
         }
 

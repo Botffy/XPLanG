@@ -1,0 +1,18 @@
+**#Elsif
+**Memory:a=Integer(3),x=Integer(5)
+Program testing
+  Változók:
+    a, x: Egész
+
+  a := 3
+
+  ha a = 1 akkor
+    x := 3
+  vagy_ha a = 2 akkor
+    x := 4
+  vagy_ha a = 3 akkor
+    x := 5
+  különben
+    x := 6
+  ha_vége
+program_vége

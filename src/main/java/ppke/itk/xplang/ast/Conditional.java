@@ -2,30 +2,75 @@ package ppke.itk.xplang.ast;
 
 import ppke.itk.xplang.common.Location;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.concat;
+
 /**
  * A conditional statement.
  */
 public final class Conditional extends Statement {
-    public Conditional(Location location, RValue condition, Sequence trueBranch, Sequence falseBranch) {
+    private final int numberOfBranches;
+
+    public Conditional(Location location, Branch branch, List<Branch> branches, Sequence elseSequence) {
         super(location);
-        this.children.add(0, condition);
-        this.children.add(1, trueBranch);
-        this.children.add(2, falseBranch);
+        numberOfBranches = 1 + branches.size();
+        concat(Stream.of(branch), branches.stream()).forEach(this::addBranch);
+
+        if (elseSequence != null) {
+            this.children.add(elseSequence);
+        }
     }
 
-    public RValue getCondition() {
-        return (RValue) children.get(0);
-    }
-
-    public Sequence getTrueSequence() {
-        return (Sequence) children.get(1);
+    public List<Branch> getBranches() {
+        List<Branch> result = new ArrayList<>();
+        for (int i = 0; i < numberOfBranches; ++i) {
+            result.add(new Branch(
+                (RValue) this.children.get(2 * i),
+                (Sequence) this.children.get(2 * i + 1)
+            ));
+        }
+        return result;
     }
 
     public Sequence getElseSequence() {
-        return (Sequence) children.get(2);
+        return (Sequence) children.get(numberOfBranches * 2);
     }
 
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
+    }
+
+    private void addBranch(Branch branch) {
+        this.children.add(branch.getCondition());
+        this.children.add(branch.getSequence());
+    }
+
+    /**
+     * A condition / sequence pair.
+     */
+    public static class Branch {
+        private final RValue condition;
+        private final Sequence sequence;
+
+        public Branch(RValue condition, Sequence sequence) {
+            this.condition = condition;
+            this.sequence = sequence;
+        }
+
+        public RValue getCondition() {
+            return condition;
+        }
+
+        public Sequence getSequence() {
+            return sequence;
+        }
+
+        @Override
+        public String toString() {
+            return "";
+        }
     }
 }

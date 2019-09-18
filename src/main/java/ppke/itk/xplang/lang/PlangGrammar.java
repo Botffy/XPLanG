@@ -12,7 +12,6 @@ import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Type;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 import static ppke.itk.xplang.lang.PlangName.name;
@@ -35,6 +34,7 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.DECLARE).register(ctx);
             makeSymbol(PlangSymbol.IF).register(ctx);
             makeSymbol(PlangSymbol.THEN).register(ctx);
+            makeSymbol(PlangSymbol.ELSIF).register(ctx);
             makeSymbol(PlangSymbol.ELSE).register(ctx);
             makeSymbol(PlangSymbol.ENDIF).register(ctx);
             makeSymbol(PlangSymbol.LOOP).register(ctx);

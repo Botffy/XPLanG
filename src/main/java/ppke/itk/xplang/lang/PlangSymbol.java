@@ -9,6 +9,7 @@ enum PlangSymbol {
     DECLARE,
     IF,
     THEN,
+    ELSIF,
     ELSE,
     ENDIF,
     LOOP,

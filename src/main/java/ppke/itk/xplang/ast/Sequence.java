@@ -4,6 +4,7 @@ import ppke.itk.xplang.common.Location;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -27,5 +28,9 @@ public class Sequence extends Node {
 
     @Override public String toString() {
         return String.format("%s[%s]", super.toString(), statements().size());
+    }
+
+    public static Sequence emptySequence() {
+        return new Sequence(Location.NONE, emptyList());
     }
 }
