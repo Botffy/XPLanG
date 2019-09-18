@@ -6,13 +6,9 @@ Program fizzbuzz
   ciklus amíg i <= 100
     ha i mod 3 = 0 akkor
       ki: "Fizz"
-    ha_vége
-
-    ha i mod 5 = 0 akkor
+    vagy_ha i mod 5 = 0 akkor
       ki: "Buzz"
-    ha_vége
-
-    ha i mod 3 /= 0 és i mod 5 /= 0 akkor
+    különben
       ki: i
     ha_vége
     ki: SV

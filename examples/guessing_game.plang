@@ -15,9 +15,7 @@ Program találgatós_játék
       be: ötlet
       ha gondolt_szám > ötlet akkor
         ki: "Nem, a gondolt szám nagyobb", SV
-      ha_vége
-
-      ha gondolt_szám < ötlet akkor
+      vagy_ha gondolt_szám < ötlet akkor
         ki: "Nem, a gondolt szám kisebb", SV
       ha_vége
     amíg ötlet /= gondolt_szám
