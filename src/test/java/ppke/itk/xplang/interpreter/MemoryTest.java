@@ -26,16 +26,16 @@ public class MemoryTest {
     public void putTwice() {
         memory.allocate("key", "label1", nullValue());
         Throwable exception = exceptionThrownBy(() -> memory.allocate("key", "label2", nullValue()));
-        assertEquals("Allocating to the same key twice should throw an InterpreterError",
-            InterpreterError.class, exception.getClass()
+        assertEquals("Allocating to the same key twice should throw an IllegalStateException",
+            IllegalStateException.class, exception.getClass()
         );
     }
 
     @Test
     public void putUnallocated() {
         Throwable exception = exceptionThrownBy(() -> memory.setComponent("unallocated", new IntegerValue(5)));
-        assertEquals("Trying to set to an unallocated address should throw an InterpreterError",
-            InterpreterError.class, exception.getClass()
+        assertEquals("Trying to set to an unallocated address should throw an IllegalStateException",
+            IllegalStateException.class, exception.getClass()
         );
     }
 

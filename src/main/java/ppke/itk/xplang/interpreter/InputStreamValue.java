@@ -55,7 +55,7 @@ class InputStreamValue implements Value {
      */
     boolean isExhausted() {
         if (isClosed()) {
-            throw new UnopenedStreamException();
+            throw new InterpreterError(ErrorCode.STREAM_NOT_OPEN);
         }
         return input.isExhausted();
     }
@@ -65,7 +65,7 @@ class InputStreamValue implements Value {
      */
     boolean hasBeenExhausted() {
         if (isClosed()) {
-            throw new UnopenedStreamException();
+            throw new InterpreterError(ErrorCode.STREAM_NOT_OPEN);
         }
         return lastReadFailed;
     }

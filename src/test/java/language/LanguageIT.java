@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.ErrorLog;
+import ppke.itk.xplang.interpreter.ErrorCode;
 import ppke.itk.xplang.interpreter.Interpreter;
+import ppke.itk.xplang.interpreter.InterpreterError;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.Parser;
@@ -52,6 +54,7 @@ public class LanguageIT {
             String stdIn = "";
             Map<String, String> inputFiles = new HashMap<>();
             Map<String, String> expectedOutputFiles = new HashMap<>();
+            ErrorCode expectedInterpreterError = null;
 
             String line = reader.readLine();
             do {
@@ -76,6 +79,8 @@ public class LanguageIT {
                     line = line.substring(8);
                     int split = line.indexOf(':');
                     expectedOutputFiles.put(line.substring(0, split), line.substring(split + 1));
+                } else if (line.startsWith("InterpreterError")) {
+                    expectedInterpreterError = ErrorCode.valueOf(line.substring(17));
                 }
 
                 line = reader.readLine();
@@ -97,30 +102,39 @@ public class LanguageIT {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
 
-                TestStreamHandler streamHandler = new TestStreamHandler(stdIn, inputFiles);
-                Interpreter interpreter = new Interpreter(streamHandler);
-                interpreter.visit(root);
+                try {
+                    TestStreamHandler streamHandler = new TestStreamHandler(stdIn, inputFiles);
+                    Interpreter interpreter = new Interpreter(streamHandler);
+                    interpreter.visit(root);
 
-                if(expectedMemory != null) {
-                    assertEquals("Memory dump should match the expected one",
-                        expectedMemory, interpreter.memoryDump()
-                    );
-                }
+                    if (expectedInterpreterError != null) {
+                        fail("Expected interpreter to fail with error " + expectedInterpreterError);
+                    }
 
-                if (expectedStdOut != null) {
-                    String actual = streamHandler.getStdOut();
-                    assertTrue(actual.endsWith("\n"));
-                    assertEquals(expectedStdOut + "\n", actual);
-                }
+                    if(expectedMemory != null) {
+                        assertEquals("Memory dump should match the expected one",
+                            expectedMemory, interpreter.memoryDump()
+                        );
+                    }
 
-                for (Map.Entry<String, String> expect : expectedOutputFiles.entrySet()) {
-                    String fileName = expect.getKey();
-                    String expectedContent = expect.getValue();
-                    String actualContent = streamHandler.getOutFile(fileName);
-                    assertEquals(
-                        String.format("File %s should contain the expected data", fileName),
-                        expectedContent, actualContent
-                    );
+                    if (expectedStdOut != null) {
+                        String actual = streamHandler.getStdOut();
+                        assertTrue(actual.endsWith("\n"));
+                        assertEquals(expectedStdOut + "\n", actual);
+                    }
+
+                    for (Map.Entry<String, String> expect : expectedOutputFiles.entrySet()) {
+                        String fileName = expect.getKey();
+                        String expectedContent = expect.getValue();
+                        String actualContent = streamHandler.getOutFile(fileName);
+                        assertEquals(
+                            String.format("File %s should contain the expected data", fileName),
+                            expectedContent, actualContent
+                        );
+                    }
+                } catch (InterpreterError interpreterError) {
+                    interpreterError.printStackTrace();
+                    assertEquals(expectedInterpreterError, interpreterError.getErrorCode());
                 }
             }
         }
@@ -130,6 +144,7 @@ public class LanguageIT {
     static {
         directories.put("parse-error", false);
         directories.put("passing", true);
+        directories.put("interpreter-error", true);
     }
 
     @Parameterized.Parameters(name = "{0}")

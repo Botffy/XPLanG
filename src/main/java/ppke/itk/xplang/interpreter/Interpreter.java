@@ -35,7 +35,7 @@ public class Interpreter implements ASTVisitor {
         this.stopConditionSupplier = stopConditionSupplier;
     }
 
-    @Override public void visit(Root root) {
+    @Override public void visit(Root root) throws InterpreterError {
         root.entryPoint().accept(this);
         this.stdOut.printLn();
     }
@@ -51,7 +51,7 @@ public class Interpreter implements ASTVisitor {
         }
     }
 
-    @Override public void visit(VariableDeclaration variable) {
+    @Override public void visit(VariableDeclaration variable) throws InterpreterError {
         memory.allocate(
             variable,
             variable.getName(),
@@ -74,7 +74,7 @@ public class Interpreter implements ASTVisitor {
         block.sequence().accept(this);
     }
 
-    @Override public void visit(Assignment assignment) {
+    @Override public void visit(Assignment assignment) throws InterpreterError {
         checkStopCondition();
 
         assignment.getRHS().accept(this);
@@ -87,7 +87,7 @@ public class Interpreter implements ASTVisitor {
         step();
     }
 
-    @Override public void visit(Conditional conditional) {
+    @Override public void visit(Conditional conditional) throws InterpreterError {
         checkStopCondition();
 
         boolean resolved = false;
@@ -110,7 +110,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(Loop loop) {
+    public void visit(Loop loop) throws InterpreterError {
         checkStopCondition();
 
         switch(loop.getType()) {
@@ -141,7 +141,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(Input input) {
+    public void visit(Input input) throws InterpreterError {
         checkStopCondition();
 
         for (Assignment assignment : input.getAssignments()) {
@@ -152,7 +152,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(Output output) {
+    public void visit(Output output) throws InterpreterError {
         checkStopCondition();
 
         output.getOutputStream().accept(this);
@@ -167,10 +167,10 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(ErrorRaising errorRaising) {
+    public void visit(ErrorRaising errorRaising) throws InterpreterError {
         errorRaising.getErrorMessage().accept(this);
         StringValue message = valueStack.pop(StringValue.class);
-        throw new AssertionFailedException(message);
+        throw new InterpreterError(ErrorCode.ASSERTION_FAILURE, message.getValue());
     }
 
     @Override public void visit(FunctionCall call) {
@@ -199,11 +199,11 @@ public class Interpreter implements ASTVisitor {
         }
     }
 
-    @Override public void visit(VarRef varRef) {
+    @Override public void visit(VarRef varRef) throws InterpreterError {
         valueStack.push(memory.getReference(varRef.getVariable()));
     }
 
-    @Override public void visit(ElementRef elementRef) {
+    @Override public void visit(ElementRef elementRef) throws InterpreterError {
         elementRef.getAddress().accept(this);
         elementRef.getAddressable().accept(this);
 
@@ -213,11 +213,11 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(addressable.getReference(address));
     }
 
-    @Override public void visit(VarVal varVal) {
+    @Override public void visit(VarVal varVal) throws InterpreterError {
         valueStack.push(memory.getComponent(varVal.getVariable()));
     }
 
-    @Override public void visit(ElementVal elementVal) {
+    @Override public void visit(ElementVal elementVal) throws InterpreterError {
         elementVal.getAddress().accept(this);
         elementVal.getAddressable().accept(this);
 
@@ -227,7 +227,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(Slice slice) {
+    public void visit(Slice slice) throws InterpreterError {
         slice.getSlicable().accept(this);
         slice.getStartIndex().accept(this);
         slice.getEndIndex().accept(this);
@@ -272,17 +272,17 @@ public class Interpreter implements ASTVisitor {
         return this.memory.dump();
     }
 
-    private void checkStopCondition() {
+    private void checkStopCondition() throws InterpreterStoppedException {
         if (stopConditionSupplier.get()) {
             throw new InterpreterStoppedException();
         }
     }
 
-    private void step() {
+    private void step() throws InterpreterError {
         ++steps;
 
         if (steps >= executionLimit) {
-            throw new ExecutionLimitReachedException(executionLimit);
+            throw new InterpreterError(ErrorCode.EXECUTION_LIMIT_REACHED, executionLimit);
         }
     }
 }

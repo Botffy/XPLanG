@@ -5,6 +5,6 @@ package ppke.itk.xplang.interpreter;
  */
 public class InterpreterStoppedException extends InterpreterError {
     InterpreterStoppedException() {
-        super("The interpreter was stopped.");
+        super(ErrorCode.INTERPRETER_STOPPED, "The interpreter was stopped.");
     }
 }

@@ -42,13 +42,13 @@ class Memory implements Addressable {
      * @param address The memory address. Any object.
      * @param name A human-readable name for this memory slot.
      * @param value The initial value of the memory slot.
-     * @throws InterpreterError If the address is already occupied.
+     * @throws IllegalStateException If the address is already occupied.
      */
     void allocate(Object address, String name, Value value) throws InterpreterError {
         log.debug("Allocating space for '{}' @ '{}'", name, address);
         if(memory.containsKey(address)) {
-            log.error("Allocation failed, address '{}' already in use");
-            throw new InterpreterError("Address already in use");
+            log.error("Allocation failed, address '{}' already in use", address);
+            throw new IllegalStateException("Address already in use");
         }
         memory.put(address, new Entry(name, value));
     }
@@ -65,7 +65,7 @@ class Memory implements Addressable {
     @Override public void setComponent(Object address, Value value) throws InterpreterError {
         if(!memory.containsKey(address)) {
             log.error("Unknown address '{}'", address);
-            throw new InterpreterError("Unknown address");
+            throw new IllegalStateException("Unknown address");
         }
 
         Entry entry = memory.get(address);
@@ -90,7 +90,7 @@ class Memory implements Addressable {
     @Override public Value getComponent(Object address) throws InterpreterError {
         if(!memory.containsKey(address)) {
             log.error("Unknown address '{}'", address);
-            throw new InterpreterError("Unknown address");
+            throw new IllegalStateException("Unknown address");
         }
 
         return memory.get(address).value;

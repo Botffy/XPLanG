@@ -54,7 +54,7 @@ final class BooleanValue implements WritableValue, ComparableValue {
     @Override
     public int compareTo(Value other) {
         if (!(other instanceof BooleanValue)) {
-            throw new InterpreterError("Can only compare values of the same type.");
+            throw new IllegalStateException("Can only compare values of the same type.");
         }
 
         BooleanValue that = (BooleanValue) other;

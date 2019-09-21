@@ -4,7 +4,6 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toList;
 
 public class ValueUtils {
@@ -53,7 +52,7 @@ public class ValueUtils {
         try {
             return clazz.cast(value);
         } catch(ClassCastException cce) {
-            throw new InterpreterError(
+            throw new IllegalStateException(
                 String.format(
                     "Type error: could not convert %s to %s", value.getClass().getSimpleName(), clazz.getSimpleName()
                 ), cce

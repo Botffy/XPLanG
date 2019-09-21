@@ -27,7 +27,7 @@ public class OutputStreamValue implements Value {
             writer.write(writable.asOutputString());
             writer.flush();
         } catch (IOException e) {
-            throw new InterpreterError("Could not write to outputstream.");
+            throw new IllegalStateException("Could not write to outputstream.", e);
         }
     }
 
@@ -37,7 +37,7 @@ public class OutputStreamValue implements Value {
             writer.write("\n");
             writer.flush();
         } catch (IOException e) {
-            throw new InterpreterError("Could not write to outputstream.");
+            throw new IllegalStateException("Could not write to outputstream.", e);
         }
     }
 
@@ -51,7 +51,7 @@ public class OutputStreamValue implements Value {
             writer.close();
             this.writer = null;
         } catch (IOException e) {
-            throw new InterpreterError("Could not close stream", e);
+            throw new IllegalStateException("Could not close stream", e);
         }
     }
 
@@ -61,7 +61,7 @@ public class OutputStreamValue implements Value {
 
     private void throwIfClosed() {
         if (this.isClosed()) {
-            throw new UnopenedStreamException();
+            throw new InterpreterError(ErrorCode.STREAM_NOT_OPEN);
         }
     }
 

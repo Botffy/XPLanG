@@ -87,10 +87,10 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
     @Override
     public StringValue getSlice(IntegerValue from, IntegerValue to) throws InterpreterError {
         if (from.getValue() < 0 || from.getValue() > this.chars.length) {
-            throw new InterpreterError("Illegal start index!");
+            throw new InterpreterError(ErrorCode.ILLEGAL_START_INDEX, from.getValue());
         }
         if (to.getValue() < 0 || to.getValue() > this.chars.length) {
-            throw new InterpreterError("Illegal end index!");
+            throw new InterpreterError(ErrorCode.ILLEGAL_END_INDEX, to.getValue());
         }
         char[] n = Arrays.copyOfRange(this.chars, from.getValue(), to.getValue());
         return new StringValue(n);
@@ -111,7 +111,7 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
     @Override
     public int compareTo(Value other) {
         if (!(other instanceof StringValue) ) {
-            throw new InterpreterError("Can only compare values of the same type.");
+            throw new IllegalStateException("Can only compare values of the same type.");
         }
 
         StringValue that = (StringValue) other;

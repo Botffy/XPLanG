@@ -29,7 +29,7 @@ public class ProgramInput {
         return name;
     }
 
-    public Integer readInt() {
+    public Integer readInt() throws InterpreterError {
         throwIfNotOpen();
         skipWs();
         if (isExhausted()) {
@@ -38,7 +38,7 @@ public class ProgramInput {
         return Integer.parseInt(readNumber());
     }
 
-    public Double readReal() {
+    public Double readReal() throws InterpreterError {
         throwIfNotOpen();
         skipWs();
         if (isExhausted()) {
@@ -55,7 +55,7 @@ public class ProgramInput {
         return Double.parseDouble(builder.toString());
     }
 
-    public String readLine() {
+    public String readLine() throws InterpreterError {
         throwIfNotOpen();
         if (isExhausted()) {
             return null;
@@ -76,7 +76,7 @@ public class ProgramInput {
         return line.toString();
     }
 
-    public Character readCharacter() {
+    public Character readCharacter() throws InterpreterError {
         throwIfNotOpen();
         if (isExhausted()) {
             return null;
@@ -85,7 +85,7 @@ public class ProgramInput {
         return (char) get();
     }
 
-    public Boolean readBoolean() {
+    public Boolean readBoolean() throws InterpreterError {
         throwIfNotOpen();
         skipWs();
         if (isExhausted()) {
@@ -99,14 +99,14 @@ public class ProgramInput {
         if (c == 'i' || c == 'y') {
             return true;
         }
-        throw new BadInputException();
+        throw new InterpreterError(ErrorCode.FAILED_TO_READ_FROM_INPUT);
     }
 
     public void close() {
         try {
             reader.close();
         } catch (IOException e) {
-            throw new InterpreterError("Could not close stream");
+            throw new IllegalStateException("Could not close stream");
         }
     }
 
@@ -118,9 +118,9 @@ public class ProgramInput {
         return this.reader == null;
     }
 
-    private void throwIfNotOpen() {
+    private void throwIfNotOpen() throws InterpreterError {
         if (isClosed()) {
-            throw new UnopenedStreamException();
+            throw new InterpreterError(ErrorCode.STREAM_NOT_OPEN);
         }
     }
 
@@ -128,11 +128,11 @@ public class ProgramInput {
         try {
             return reader.read();
         } catch (IOException e) {
-            throw new BadInputException(e);
+            throw new IllegalStateException(e);
         }
     }
 
-    private String readNumber() {
+    private String readNumber() throws InterpreterError {
         StringBuilder builder = new StringBuilder();
         int c = peek();
         if (c == '-') {
@@ -170,11 +170,11 @@ public class ProgramInput {
         }
     }
 
-    private char readDigit() {
+    private char readDigit() throws InterpreterError {
         int c = get();
         if ((c < '0' || c > '9') && c != -1) {
             log.warn("Tried to read a digit, found '{}'", c);
-            throw new BadInputException();
+            throw new InterpreterError(ErrorCode.FAILED_TO_READ_FROM_INPUT);
         }
         return (char) c;
     }

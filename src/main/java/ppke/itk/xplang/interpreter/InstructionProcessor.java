@@ -79,7 +79,7 @@ class InstructionProcessor {
             try {
                 return new InputStreamValue(streamHandler.getFileInput(fileName));
             } catch (FileNotFoundException e) {
-                throw new InterpreterError(String.format("Could not open file '%s'", fileName) , e);
+                throw new InterpreterError(ErrorCode.FAILED_TO_OPEN_FILE, e, fileName);
             }
         }));
         executions.put(Instruction.IFILE_CLOSE, stack -> {
@@ -89,7 +89,7 @@ class InstructionProcessor {
         });
         executions.put(Instruction.IFILE_END, new UnaryInstruction<>(InputStreamValue.class, x -> {
             if (x.isClosed()) {
-                throw new InterpreterError("The file is not open!");
+                throw new InterpreterError(ErrorCode.STREAM_NOT_OPEN);
             }
             return BooleanValue.valueOf(x.hasBeenExhausted());
         }));
@@ -98,7 +98,7 @@ class InstructionProcessor {
             try {
                 return new OutputStreamValue(streamHandler.getFileOutput(fileName));
             } catch (FileNotFoundException e) {
-                throw new InterpreterError(String.format("Could not open file '%s'", fileName) , e);
+                throw new InterpreterError(ErrorCode.FAILED_TO_OPEN_FILE, e, fileName);
             }
         }));
         executions.put(Instruction.OFILE_CLOSE, stack -> {

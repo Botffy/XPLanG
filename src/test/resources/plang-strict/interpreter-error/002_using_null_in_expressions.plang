@@ -1,0 +1,7 @@
+**#Using a null value should give a NULL_ERROR
+**InterpreterError:NULL_ERROR
+program test
+  Változók:
+    a, b: Egész
+  b := 5 + a
+program_vége

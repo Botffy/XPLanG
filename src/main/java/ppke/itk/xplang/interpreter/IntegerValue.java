@@ -39,7 +39,7 @@ class IntegerValue implements ComparableValue, WritableValue {
     @Override
     public int compareTo(Value other) {
         if (!(other instanceof IntegerValue)) {
-            throw new InterpreterError("Can only compare values of the same type.");
+            throw new IllegalStateException("Can only compare values of the same type.");
         }
 
         IntegerValue that = (IntegerValue) other;
