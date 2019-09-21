@@ -9,6 +9,7 @@ import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.gui.MainFrame;
 import ppke.itk.xplang.interpreter.Interpreter;
+import ppke.itk.xplang.interpreter.InterpreterError;
 import ppke.itk.xplang.lang.PlangGrammar;
 import ppke.itk.xplang.parser.Grammar;
 import ppke.itk.xplang.parser.Parser;
@@ -93,10 +94,16 @@ class Program {
         if (run.getAction() == Action.INTERPRET) {
             StreamHandler streamHandler = new FileStreamHandler();
             Interpreter interpreter = new Interpreter(streamHandler);
-            interpreter.visit(root);
 
-            if (run.shouldDumpMemory()) {
-                System.out.println(interpreter.memoryDump());
+            try {
+                interpreter.visit(root);
+
+                if (run.shouldDumpMemory()) {
+                    System.out.println(interpreter.memoryDump());
+                }
+            } catch (InterpreterError e) {
+                log.info("Interpreter stopped with error", e);
+                System.out.println("Error: " + e.getErrorCode());
             }
         }
     }
