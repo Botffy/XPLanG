@@ -40,6 +40,7 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.LOOP).register(ctx);
             makeSymbol(PlangSymbol.WHILE).register(ctx);
             makeSymbol(PlangSymbol.END_LOOP).register(ctx);
+            makeSymbol(PlangSymbol.ERROR).register(ctx);
             makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
             makeSymbol(PlangSymbol.IN).register(ctx);
             makeSymbol(PlangSymbol.OUT).register(ctx);

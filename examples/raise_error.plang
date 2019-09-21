@@ -1,0 +1,11 @@
+program hibás_bemenet
+  változók:
+    x: egész
+
+  ki: "Írj be egy természetes számot!", SV
+  be: x
+
+  ha x < 0 akkor
+    hiba: "nem természetes szám"
+  ha_vége
+program_vége

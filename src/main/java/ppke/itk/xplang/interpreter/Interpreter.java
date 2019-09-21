@@ -166,6 +166,13 @@ public class Interpreter implements ASTVisitor {
         step();
     }
 
+    @Override
+    public void visit(ErrorRaising errorRaising) {
+        errorRaising.getErrorMessage().accept(this);
+        StringValue message = valueStack.pop(StringValue.class);
+        throw new AssertionFailedException(message);
+    }
+
     @Override public void visit(FunctionCall call) {
         for(RValue argument : call.arguments()) {
             argument.accept(this);
