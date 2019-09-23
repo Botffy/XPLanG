@@ -85,15 +85,22 @@ class Memory implements Addressable {
     /**
      * Get the value stored in a memory slot.
      * @param address The memory slot to be queried.
-     * @return The value in the given memory slot. May be NullValue.
+     * @return The value in the given memory slot.
+     * @throws IllegalStateException if the given address does not exist.
+     * @throws InterpreterError with errorCode NULL_ERROR if the value would be null.
      */
-    @Override public Value getComponent(Object address) throws InterpreterError {
+    @Override public Value getComponent(Object address) throws InterpreterError, IllegalStateException {
         if(!memory.containsKey(address)) {
             log.error("Unknown address '{}'", address);
             throw new IllegalStateException("Unknown address");
         }
 
-        return memory.get(address).value;
+        Value value = memory.get(address).value;
+        if (ValueUtils.nullValue() == value) {
+            throw new InterpreterError(ErrorCode.NULL_ERROR);
+        }
+
+        return value;
     }
 
     String dump() {

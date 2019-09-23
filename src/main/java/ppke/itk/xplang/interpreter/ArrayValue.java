@@ -30,8 +30,26 @@ class ArrayValue implements SlicableValue, AddressableValue, WritableValue {
         values.set(convert(index, IntegerValue.class).getValue(), value);
     }
 
-    @Override public Value getComponent(Object index) throws InterpreterError {
-        return values.get(convert(index, IntegerValue.class).getValue());
+    /**
+     * Get the value stored at a specific slot of the array.
+     * @param indexValue The index to be queried.
+     * @return The value stored at the given index in the array.
+     * @throws InterpreterError with errorCode NULL_ERROR if the returned value would be null.
+     */
+    @Override public Value getComponent(Object indexValue) throws InterpreterError {
+        int index;
+        try {
+            index = convert(indexValue, IntegerValue.class).getValue();
+        } catch (ClassCastException e) {
+            throw new IllegalStateException(e);
+        }
+
+        Value value = values.get(index);
+        if (value == ValueUtils.nullValue()) {
+            throw new InterpreterError(ErrorCode.NULL_ERROR);
+        }
+
+        return value;
     }
 
     @Override

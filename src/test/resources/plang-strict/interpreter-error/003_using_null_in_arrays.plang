@@ -1,0 +1,11 @@
+**#Using uninitialized array elements
+**InterpreterError:NULL_ERROR
+Program testing
+  Változók:
+    a: Egész[4],
+    b: Egész
+
+  a[0] := 0
+  a[2] := 2
+  b := a[1]
+program_vége
