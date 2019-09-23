@@ -26,12 +26,7 @@ class ArrayValue extends IntegerAddressable implements SlicableValue, WritableVa
 
     @Override
     public Value get(int index) throws InterpreterError {
-        Value value = values.get(index);
-        if (value == ValueUtils.nullValue()) {
-            throw new InterpreterError(ErrorCode.NULL_ERROR);
-        }
-
-        return value;
+        return values.get(index);
     }
 
     @Override

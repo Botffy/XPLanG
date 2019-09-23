@@ -214,7 +214,11 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(VarVal varVal) throws InterpreterError {
-        valueStack.push(memory.getComponent(varVal.getVariable()));
+        Value value = memory.getComponent(varVal.getVariable());
+        if (value == ValueUtils.nullValue()) {
+            throw new InterpreterError(ErrorCode.NULL_ERROR);
+        }
+        valueStack.push(value);
     }
 
     @Override public void visit(ElementVal elementVal) throws InterpreterError {
@@ -223,7 +227,12 @@ public class Interpreter implements ASTVisitor {
 
         Addressable addressable = valueStack.pop(AddressableValue.class);
         Value address = valueStack.pop();
-        valueStack.push(addressable.getComponent(address));
+
+        Value value = addressable.getComponent(address);
+        if (value == ValueUtils.nullValue()) {
+            throw new InterpreterError(ErrorCode.NULL_ERROR);
+        }
+        valueStack.push(value);
     }
 
     @Override

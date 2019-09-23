@@ -95,12 +95,7 @@ class Memory {
             throw new IllegalStateException("Unknown address");
         }
 
-        Value value = memory.get(address).value;
-        if (ValueUtils.nullValue() == value) {
-            throw new InterpreterError(ErrorCode.NULL_ERROR);
-        }
-
-        return value;
+        return memory.get(address).value;
     }
 
     String dump() {
