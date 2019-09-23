@@ -19,6 +19,9 @@ public enum ErrorCode {
     /** The program tried to open a file for reading or writing, but failed. */
     FAILED_TO_OPEN_FILE,
 
+    /** Array index was out of bounds. */
+    ILLEGAL_INDEX,
+
     /** When performing a SLICE operation, the start index was out of bounds. */
     ILLEGAL_START_INDEX,
 

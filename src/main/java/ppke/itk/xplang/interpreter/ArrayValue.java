@@ -3,16 +3,13 @@ package ppke.itk.xplang.interpreter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class ArrayValue implements SlicableValue, AddressableValue, WritableValue {
+class ArrayValue extends IntegerAddressable implements SlicableValue, WritableValue {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter");
 
     private final List<Value> values;
@@ -22,28 +19,13 @@ class ArrayValue implements SlicableValue, AddressableValue, WritableValue {
         values.addAll(initValues);
     }
 
-    @Override public ReferenceValue getReference(Object address) throws InterpreterError {
-        return new ComponentReference(this, address);
+    @Override
+    public void set(int index, Value value) throws InterpreterError {
+        values.set(index, value);
     }
 
-    @Override public void setComponent(Object index, Value value) throws InterpreterError {
-        values.set(convert(index, IntegerValue.class).getValue(), value);
-    }
-
-    /**
-     * Get the value stored at a specific slot of the array.
-     * @param indexValue The index to be queried.
-     * @return The value stored at the given index in the array.
-     * @throws InterpreterError with errorCode NULL_ERROR if the returned value would be null.
-     */
-    @Override public Value getComponent(Object indexValue) throws InterpreterError {
-        int index;
-        try {
-            index = convert(indexValue, IntegerValue.class).getValue();
-        } catch (ClassCastException e) {
-            throw new IllegalStateException(e);
-        }
-
+    @Override
+    public Value get(int index) throws InterpreterError {
         Value value = values.get(index);
         if (value == ValueUtils.nullValue()) {
             throw new InterpreterError(ErrorCode.NULL_ERROR);
@@ -85,3 +67,4 @@ class ArrayValue implements SlicableValue, AddressableValue, WritableValue {
         return this == that;
     }
 }
+

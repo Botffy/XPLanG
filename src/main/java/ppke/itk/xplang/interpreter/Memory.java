@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * A set of {@link Value}s mapped to arbitrary Object type addresses. The memory stores "labels" as well (the original
  * variable names), but these are only used for debugging purposes.
  */
-class Memory implements Addressable {
+class Memory {
     private final static Logger log = LoggerFactory.getLogger("Root.Interpreter.Memory");
 
     private final static class Entry {
@@ -53,7 +53,7 @@ class Memory implements Addressable {
         memory.put(address, new Entry(name, value));
     }
 
-    @Override public ReferenceValue getReference(Object address) throws InterpreterError {
+    ReferenceValue getReference(Object address) throws InterpreterError {
         return new MemoryAddress(this, address);
     }
 
@@ -62,7 +62,7 @@ class Memory implements Addressable {
      * @param address The memory address.
      * @param value The value to put at this address.
      */
-    @Override public void setComponent(Object address, Value value) throws InterpreterError {
+    void setComponent(Object address, Value value) throws InterpreterError {
         if(!memory.containsKey(address)) {
             log.error("Unknown address '{}'", address);
             throw new IllegalStateException("Unknown address");
@@ -89,7 +89,7 @@ class Memory implements Addressable {
      * @throws IllegalStateException if the given address does not exist.
      * @throws InterpreterError with errorCode NULL_ERROR if the value would be null.
      */
-    @Override public Value getComponent(Object address) throws InterpreterError, IllegalStateException {
+    Value getComponent(Object address) throws InterpreterError, IllegalStateException {
         if(!memory.containsKey(address)) {
             log.error("Unknown address '{}'", address);
             throw new IllegalStateException("Unknown address");

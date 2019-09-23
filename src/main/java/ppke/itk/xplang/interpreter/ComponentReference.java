@@ -4,9 +4,9 @@ import java.util.Objects;
 
 public class ComponentReference implements ReferenceValue {
     private final Addressable composite;
-    private final Object address;
+    private final Value address;
 
-    ComponentReference(Addressable composite, Object address) {
+    ComponentReference(Addressable composite, Value address) {
         this.composite = composite;
         this.address = address;
     }

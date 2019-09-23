@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class StringValue implements AddressableValue, ComparableValue, SlicableValue, WritableValue {
+class StringValue extends IntegerAddressable implements ComparableValue, SlicableValue, WritableValue {
     private final char[] chars;
 
     StringValue(String value) {
@@ -15,19 +15,18 @@ class StringValue implements AddressableValue, ComparableValue, SlicableValue, W
         this.chars = value;
     }
 
-    @Override public ReferenceValue getReference(Object address) throws InterpreterError {
-        return new ComponentReference(this, address);
+    @Override
+    public void set(int index, Value value) throws InterpreterError {
+        chars[index] = convert(value, CharacterValue.class).getValue();
     }
 
-    @Override public void setComponent(Object index, Value value) throws InterpreterError {
-        chars[convert(index, IntegerValue.class).getValue()] = convert(value, CharacterValue.class).getValue();
+    @Override
+    public CharacterValue get(int index) throws InterpreterError {
+        return new CharacterValue(chars[index]);
     }
 
-    @Override public CharacterValue getComponent(Object index) throws InterpreterError {
-        return new CharacterValue(chars[convert(index, IntegerValue.class).getValue()]);
-    }
-
-    @Override public StringValue copy() {
+    @Override
+    public StringValue copy() {
         return new StringValue(Arrays.copyOf(chars, chars.length));
     }
 

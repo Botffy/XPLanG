@@ -1,10 +1,10 @@
 package ppke.itk.xplang.interpreter;
 
-interface AddressableValue extends Value, Addressable {
+abstract class AddressableValue implements Value, Addressable {
     @Override
-    public default Value copy() {
+    public Value copy() {
         return this;
     }
 
-    int size();
+    abstract int size();
 }
