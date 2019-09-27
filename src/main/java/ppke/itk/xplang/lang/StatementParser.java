@@ -38,9 +38,7 @@ final class StatementParser {
         if (!statementParsers.containsKey(symbol)) {
             throw new ParseError(parser.actual().location(),
                 ErrorCode.UNEXPECTED_SYMBOL_OF_ANY,
-                statementParsers.keySet().stream()
-                    .map(x -> parser.symbol(symbol))
-                    .collect(toSet()),
+                statementParsers.keySet().stream().map(parser::symbol).collect(toSet()),
                 act
             );
         }
