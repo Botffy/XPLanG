@@ -26,7 +26,7 @@ public class ParserErrorLoggingTest {
         @Override protected Root start(Parser parser) throws ParseError {
             int iteration = 0;
             while(!parser.actual().symbol().equals(Symbol.EOF)) {
-                parser.accept(iteration %2 == 0? SYMBOL_FSL : SYMBOL_FSR, "Expected %s, got %s");
+                parser.accept(iteration %2 == 0? SYMBOL_FSL : SYMBOL_FSR);
                 iteration++;
             }
             return null;

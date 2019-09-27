@@ -3,10 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Statement;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
-import ppke.itk.xplang.parser.SyntaxError;
+import ppke.itk.xplang.parser.*;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -39,11 +36,12 @@ final class StatementParser {
         PlangSymbol symbol = PlangSymbol.valueOf(act.getName());
 
         if (!statementParsers.containsKey(symbol)) {
-            throw new SyntaxError(
+            throw new ParseError(parser.actual().location(),
+                ErrorCode.UNEXPECTED_SYMBOL_OF_ANY,
                 statementParsers.keySet().stream()
                     .map(x -> parser.symbol(symbol))
                     .collect(toSet()),
-                act, parser.actual()
+                act
             );
         }
 

@@ -5,14 +5,12 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Assignment;
 import ppke.itk.xplang.ast.LValue;
 import ppke.itk.xplang.ast.RValue;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
 /**
  * {@code Assignment = LValue ASSIGNMENT RValue}
  */
 final class AssignmentParser {
-    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private AssignmentParser() { /* empty private ctor */ }
@@ -25,11 +23,8 @@ final class AssignmentParser {
         RValue rhs = TypeChecker.in(parser.context())
             .checking(rhsExpression)
             .expecting(lhs.getType())
-            .withCustomErrorMessage(
-                node -> new TypeError(
-                    translator.translate("plang.assignments_must_match", lhs.getType(), node.getType()),
-                    token.location()
-                )
+            .withCustomErrorMessage(node -> new ParseError(
+                token.location(), ErrorCode.TYPE_MISMATCH_ASSIGNMENT, lhs.getType(), node.getType())
             ).build()
             .resolve();
 

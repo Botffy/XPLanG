@@ -22,17 +22,17 @@ public class TypeChecker {
     private final Context context;
     private final Expression root;
     private final Type expected;
-    private final Function<RValue, TypeError> errorMessageProducer;
+    private final Function<RValue, ParseError> errorMessageProducer;
     private final Map<Expression, Type> provides = new HashMap<>();
 
-    private TypeChecker(Context context, Expression root, Type type, Function<RValue, TypeError> errorMessageProducer) {
+    private TypeChecker(Context context, Expression root, Type type, Function<RValue, ParseError> errorMessageProducer) {
         this.context = context;
         this.root = root;
         expected = type;
         this.errorMessageProducer = errorMessageProducer;
     }
 
-    public RValue resolve() throws FunctionResolutionError, TypeError {
+    public RValue resolve() throws ParseError {
         pullingTypes(root);
         log.info("Pulled types: {}", provides);
 
@@ -56,7 +56,7 @@ public class TypeChecker {
     /**
      * Pulling type information upwards from the leaf nodes.
      */
-    private void pullingTypes(Expression node) throws FunctionResolutionError {
+    private void pullingTypes(Expression node) throws ParseError {
         log.debug("Visiting {}", node);
 
         if (node instanceof FunctionExpression) {
@@ -73,7 +73,7 @@ public class TypeChecker {
         }
     }
 
-    private void resolveFunction(FunctionExpression parent) throws FunctionResolutionError {
+    private void resolveFunction(FunctionExpression parent) throws ParseError {
         log.debug("Resolving function {}", parent.getName());
 
         parent.removeFromCandidatesIf(x -> x.argumentCount() != parent.childNodes().size());
@@ -93,22 +93,22 @@ public class TypeChecker {
             .forEach(parent::removeFromCandidates);
 
         if (parent.hasNoCandidates()) {
-            throw new NoViableFunctionException(
+            throw new ParseError(parent.getLocation(), ErrorCode.NO_VIABLE_FUNCTIONS,
                 parent.getName(),
                 originalCandidates,
-                parent.childNodes().stream().map(provides::get).collect(toList()),
-                parent.getLocation());
+                parent.childNodes().stream().map(provides::get).collect(toList())
+            );
         }
 
         if (parent.isNotResolved()) {
             disambiguateCoercedCandidates(parent, matches);
 
             if (parent.isNotResolved()) {
-                throw new FunctionAmbiguousException(
+                throw new ParseError(parent.getLocation(), ErrorCode.FUNCTION_AMBIGUOUS,
                     parent.getName(),
                     parent.getCandidates(),
-                    parent.childNodes().stream().map(provides::get).collect(toList()),
-                    parent.getLocation());
+                    parent.childNodes().stream().map(provides::get).collect(toList())
+                );
             }
         }
 
@@ -203,7 +203,7 @@ public class TypeChecker {
         private final Context context;
         private Expression expression;
         private Type expectedType;
-        private Function<RValue, TypeError> errorMessageProducer;
+        private Function<RValue, ParseError> errorMessageProducer;
 
         Builder(Context context) {
             this.context = context;
@@ -219,7 +219,7 @@ public class TypeChecker {
             return this;
         }
 
-        public Builder withCustomErrorMessage(Function<RValue, TypeError> errorMessageProducer) {
+        public Builder withCustomErrorMessage(Function<RValue, ParseError> errorMessageProducer) {
             this.errorMessageProducer = errorMessageProducer;
             return this;
         }
@@ -232,7 +232,9 @@ public class TypeChecker {
             }
 
             if (errorMessageProducer == null) {
-                errorMessageProducer = (rValue) -> new TypeError(expectedType, rValue.getType(), rValue.location());
+                errorMessageProducer = (rValue) -> new ParseError(
+                    rValue.location(), ErrorCode.TYPE_MISMATCH, expectedType, rValue.getType()
+                );
             }
 
             return new TypeChecker(context, expression, expectedType, errorMessageProducer);

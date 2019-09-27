@@ -86,19 +86,15 @@ public class Parser {
     /**
      *  Checks whether the symbol under the tape head is the expected symbol, then advances the head.
      *  @param  symbol The expected symbol
-     *  @param  message The message the exception should contain if the actual symbol does not match the expected one.
+     *  @param  errorCode The error code to emit.
      *  @return The accepted token.
      *  @throws LexerError if an invalid token is under the head.
-     *  @throws SyntaxError if the actual symbol under tape head does not match the expected one.
+     *  @throws ParseError if the actual symbol under tape head does not match the expected one.
      */
-    public Token accept(Symbol symbol, String message) throws LexerError, SyntaxError {
+    public Token accept(Symbol symbol, ErrorCode errorCode) throws ParseError {
         if(!act.symbol().equals(symbol)) {
             log.error("Expected symbol {}, found {} ('{}')", symbol.getName(), act.symbol().getName(), act.lexeme());
-            if(message != null) {
-                throw new SyntaxError(message, symbol, act.symbol(), act);
-            } else {
-                throw new SyntaxError(symbol, act.symbol(), act);
-            }
+            throw new ParseError(act.location(), errorCode, symbol, act.symbol());
         }
 
         Token token = actual();
@@ -107,8 +103,15 @@ public class Parser {
         return token;
     }
 
-    public Token accept(Symbol symbol) throws LexerError, SyntaxError {
-        return accept(symbol, null);
+    /**
+     *  Checks whether the symbol under the tape head is the expected symbol, then advances the head.
+     *  @param  symbol The expected symbol
+     *  @return The accepted token.
+     *  @throws LexerError if an invalid token is under the head.
+     *  @throws ParseError if the actual symbol under tape head does not match the expected one.
+     */
+    public Token accept(Symbol symbol) throws ParseError {
+        return accept(symbol, ErrorCode.UNEXPECTED_SYMBOL);
     }
 
     public Expression parseExpression() throws ParseError {

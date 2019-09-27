@@ -18,7 +18,7 @@ public class CircumfixOperator implements Operator.Prefix {
     public Expression parsePrefix(ExpressionParser parser) throws ParseError {
         Location loc = parser.actual().location();
         Expression right = parser.parse(getPrecedence());
-        parser.accept(closingPair, null);
+        parser.accept(closingPair);
 
         return new FunctionExpression(
             functionName,

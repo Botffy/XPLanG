@@ -56,7 +56,7 @@ public class IdentifierOperator implements Operator.Prefix {
             );
         }
 
-        throw new NameError(token);
+        throw new ParseError(token.location(), ErrorCode.NAME_ERROR, token.lexeme());
     }
 
     @Override

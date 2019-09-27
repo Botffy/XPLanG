@@ -2,8 +2,7 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.common.Translator;
-import ppke.itk.xplang.parser.NameClashError;
+import ppke.itk.xplang.parser.ErrorCode;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Token;
@@ -16,7 +15,6 @@ import java.util.List;
  * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON Typename}
  */
 final class VariableDeclarationParser {
-    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private VariableDeclarationParser() { /* empty private ctor */ }
@@ -30,15 +28,13 @@ final class VariableDeclarationParser {
             parser.advance(); // consume the comma
             variables.add(parser.accept(parser.symbol(PlangSymbol.IDENTIFIER)));
         }
-        parser.accept(parser.symbol(PlangSymbol.COLON),
-            translator.translate("plang.missing_colon_after_variable_name")
-        );
+        parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
         Type type = TypenameParser.parse(parser);
 
         for(Token token : variables) {
             try {
                 parser.context().declareVariable(new PlangName(token.lexeme()), token, type);
-            } catch(NameClashError error) {
+            } catch(ParseError error) {
                 parser.recordError(error.toErrorMessage());
             }
         }

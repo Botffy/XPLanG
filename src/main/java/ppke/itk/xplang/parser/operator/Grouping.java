@@ -21,7 +21,7 @@ public class Grouping implements Operator.Prefix {
     public Expression parsePrefix(ExpressionParser parser) throws ParseError {
         Location loc = parser.actual().location();
         Expression exp = parser.parse(Precedence.CONTAINING);
-        parser.accept(closingPair, null);
+        parser.accept(closingPair);
         return exp;
     }
 }

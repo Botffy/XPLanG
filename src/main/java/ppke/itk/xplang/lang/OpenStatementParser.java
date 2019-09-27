@@ -5,7 +5,6 @@ import ppke.itk.xplang.ast.LValue;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
@@ -14,8 +13,6 @@ import static java.util.Collections.singletonList;
 
 /** {@code OpenStatement = OPEN LValue COLON Expression } */
 public class OpenStatementParser {
-    private final static Translator translator = Translator.getInstance("Plang");
-
     public static Statement parse(Parser parser) throws ParseError {
         // TODO: jobb hibakezelés
 
@@ -34,10 +31,7 @@ public class OpenStatementParser {
         } else if (Archetype.OUTSTREAM_TYPE.accepts(varType)) {
             openFunctionName = SpecialName.OPEN_OUTPUT_FILE;
         } else {
-            throw new TypeError(
-                translator.translate("plang.open_only_streams", Archetype.INSTREAM_TYPE, Archetype.OUTSTREAM_TYPE, varType),
-                location
-            );
+            throw new ParseError(var.location(), ErrorCode.TYPE_MISMATCH_OPEN_STREAM, var.getType());
         }
 
         Expression callExpression = new FunctionExpression(

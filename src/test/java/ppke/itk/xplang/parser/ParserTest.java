@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.util.regex.Pattern;
 
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 public class ParserTest {
@@ -75,7 +76,7 @@ public class ParserTest {
         parser.parse(source, grammar);
 
         try {
-            Token tok = parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), null);
+            Token tok = parser.accept(ctx.lookup("FUNNY_STARE_LEFT"));
             assertEquals("The accepted symbol should be equal to the expected symbol",
                 ctx.lookup("FUNNY_STARE_LEFT"), tok.symbol()
             );
@@ -93,8 +94,8 @@ public class ParserTest {
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("SHRUGGIE"), null));
-        assertEquals(error.getClass(), SyntaxError.class);
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("SHRUGGIE")));
+        assertThat(error, instanceOf(ParseError.class));
     }
 
 
@@ -104,21 +105,8 @@ public class ParserTest {
         Parser parser = new Parser(this.ctx);
         parser.parse(source, grammar);
 
-        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("FUNNY_STARE_RIGHT"), null));
-        assertEquals(error.getClass(), LexerError.class);
-    }
-
-    @Test
-    public void syntaxErrorCanBeCustomised() throws ParseError {
-        Reader source = new StringReader(">_>");
-        Parser parser = new Parser(this.ctx);
-        parser.parse(source, grammar);
-
-        ParseError error = (ParseError) exceptionThrownBy(() ->
-            parser.accept(ctx.lookup("FUNNY_STARE_LEFT"), "Hi")
-        );
-
-        assertEquals("Hi", error.getMessage());
+        Throwable error = exceptionThrownBy(() -> parser.accept(ctx.lookup("FUNNY_STARE_RIGHT")));
+        assertThat(error, instanceOf(LexerError.class));
     }
 
     @Test

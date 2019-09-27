@@ -5,7 +5,6 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.StandardOutput;
 import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
@@ -16,8 +15,6 @@ import java.util.List;
  * {@code OutputStatement = OUT COLON Expression { COMMA Expression} }
  */
 public class OutputStatementParser {
-    private final static Translator translator = Translator.getInstance("Plang");
-
     public static Statement parse(Parser parser) throws ParseError {
         Token in = parser.accept(parser.symbol(PlangSymbol.OUT));
         Location startLoc = in.location();
@@ -43,9 +40,9 @@ public class OutputStatementParser {
         }
 
         if (!Archetype.OUTSTREAM_TYPE.accepts(outputStream.getType())) {
-            throw new TypeError(
-                translator.translate("plang.write_only_to_outstreams", Archetype.OUTSTREAM_TYPE, outputStream.getType()),
-                outputStream.location()
+            throw new ParseError(
+                outputStream.location(),
+                ErrorCode.TYPE_MISMATCH_NOT_OUTPUTSTREAM, Archetype.OUTSTREAM_TYPE, outputStream.getType()
             );
         }
 

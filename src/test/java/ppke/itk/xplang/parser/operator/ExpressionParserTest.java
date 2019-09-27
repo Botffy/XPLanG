@@ -61,7 +61,7 @@ public class ExpressionParserTest {
                 ctx.createBuiltin(name("plus"), Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
                 ctx.createBuiltin(name("times"), Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
                 ctx.createBuiltin(name("id"), Instruction.ID, Archetype.ANY, Archetype.ANY);
-            } catch(NameClashError nameClashError) {
+            } catch(ParseError nameClashError) {
                 throw new IllegalStateException(nameClashError);
             }
 

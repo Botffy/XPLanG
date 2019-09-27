@@ -1,5 +1,6 @@
 package ppke.itk.xplang.parser;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Scope;
@@ -14,8 +15,8 @@ import java.util.HashSet;
 import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.junit.Assert.*;
 
 public class ContextTest {
     private final static Location LOCATION = new CursorPosition(1,1).toUnaryLocation();
@@ -32,7 +33,7 @@ public class ContextTest {
     }
 
     @Test
-    public void variableDeclarationsInScope() throws NameClashError {
+    public void variableDeclarationsInScope() throws ParseError {
         context.openScope();
         context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
         context.declareVariable(name("kettes"), new Token(dSymbol, "kettes", LOCATION), dType);
@@ -47,27 +48,25 @@ public class ContextTest {
     }
 
     @Test
-    public void variableNameClash() throws NameClashError {
+    public void variableNameClash() throws ParseError {
         context.openScope();
         context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
         Throwable throwable = exceptionThrownBy(() ->
             context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType)
         );
-        assertEquals("Registering two variables by the same name should cause a name clash",
-            NameClashError.class, throwable.getClass()
-        );
-    }
+        assertThat(throwable, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
+   }
 
     @Test
-    public void variableTypeNameClash() throws NameClashError {
+    public void variableTypeNameClash() throws ParseError {
         context.openScope();
         context.declareType(name("Egész"), new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
             context.declareVariable(name("Egész"), new Token(dSymbol, "Egész", LOCATION), dType)
         );
-        assertEquals("Registering a variable by a name taken by a type should cause a name clash",
-            NameClashError.class, throwable.getClass()
-        );
+        assertThat(throwable, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
     }
 
     @Test
@@ -86,7 +85,8 @@ public class ContextTest {
             () -> context.getVariableValue(name("nonexistent"), new Token(dSymbol, "nonexistent", LOCATION))
         );
 
-        assertTrue(throwable instanceof NoSuchVariableException);
+        assertThat(throwable, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.NO_SUCH_VARIABLE, ((ParseError) throwable).getErrorCode());
         throwable.printStackTrace();
     }
 
@@ -99,7 +99,8 @@ public class ContextTest {
             () -> context.getVariableValue(name("Egész"), new Token(dSymbol, "Egész", LOCATION))
         );
 
-        assertTrue(throwable instanceof NotVariableException);
+        assertThat(throwable, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.NOT_A_VARIABLE, ((ParseError) throwable).getErrorCode());
         throwable.printStackTrace();
     }
 

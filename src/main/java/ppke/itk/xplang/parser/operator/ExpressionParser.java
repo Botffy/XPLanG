@@ -2,7 +2,6 @@ package ppke.itk.xplang.parser.operator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 
 /**
@@ -12,7 +11,6 @@ import ppke.itk.xplang.parser.*;
  */
 public class ExpressionParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Expression");
-    private final static Translator translator = Translator.getInstance("parser");
 
     private final Parser parser;
     private Token op;
@@ -30,10 +28,7 @@ public class ExpressionParser {
         parser.advance();
 
         Operator.Prefix nud = parser.context().prefixOf(op.symbol())
-            .orElseThrow(() -> new SyntaxError(
-                translator.translate("expressionParser.noPrefixOperator.message", op.symbol()), op
-            )
-        );
+            .orElseThrow(() -> new ParseError(op.location(), ErrorCode.NO_SUCH_PREFIX_OP, op.symbol()));
         Expression left = nud.parsePrefix(this);
 
         while (parser.actual().symbol() != Symbol.EOF && rightBindingPower < calculateLeftBindingPower()) {
@@ -41,10 +36,7 @@ public class ExpressionParser {
             parser.advance();
 
             Operator.Infix led = parser.context().infixOf(op.symbol())
-                .orElseThrow(() -> new SyntaxError(
-                    translator.translate("expressionParser.noInfixOperator.message", op.symbol()), op
-                )
-            );
+                .orElseThrow(() -> new ParseError(op.location(), ErrorCode.NO_SUCH_INFIX_OP, op.symbol()));
 
             left = led.parseInfix(left, this);
         }
@@ -74,7 +66,7 @@ public class ExpressionParser {
         return parser.actual();
     }
 
-    public void accept(Symbol symbol, String message) throws LexerError, SyntaxError {
-        parser.accept(symbol, message);
+    public void accept(Symbol symbol) throws ParseError {
+        parser.accept(symbol);
     }
 }

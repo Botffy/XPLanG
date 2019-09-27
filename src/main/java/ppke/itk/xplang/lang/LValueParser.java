@@ -2,9 +2,10 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.ast.ElementRef;
+import ppke.itk.xplang.ast.LValue;
+import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
@@ -15,7 +16,6 @@ import static ppke.itk.xplang.lang.PlangName.name;
  */
 final class LValueParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
-    private final static Translator translator = Translator.getInstance("Plang");
 
     private LValueParser() { /* empty private ctor */ }
 
@@ -26,10 +26,7 @@ final class LValueParser {
         LValue Result = parser.context().getVariableReference(name(token.lexeme()), token);
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             if (Result.getType().indexType().equals(Archetype.NONE)) {
-                throw new TypeError(
-                    translator.translate("plang.assignment_element_access_for_scalar", Result.getType()),
-                    parser.actual().location()
-                );
+                throw new ParseError(Result.location(), ErrorCode.TYPE_MISMATCH_NOT_ADDRESSABLE, Result.getType());
             }
 
             Token startToken = parser.advance();
@@ -39,10 +36,7 @@ final class LValueParser {
                 .checking(indexExpression)
                 .expecting(Result.getType().indexType())
                 .withCustomErrorMessage(
-                    node -> new TypeError(
-                        translator.translate("plang.array_indextype_mismatch", node.getType()),
-                        node.location()
-                    )
+                    node -> new ParseError(node.location(), ErrorCode.TYPE_MISMATCH_ARRAY_INDEX, node.getType())
                 ).build()
                 .resolve();
 

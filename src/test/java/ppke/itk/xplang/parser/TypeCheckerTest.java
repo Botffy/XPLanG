@@ -46,7 +46,7 @@ public class TypeCheckerTest {
 
         TypeChecker typeChecker = TypeChecker.in(context).checking(expression).expecting(b).build();
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
-        assertThat(error, instanceOf(TypeError.class));
+        assertThat(error, instanceOf(ParseError.class));
     }
 
     @Test
@@ -133,7 +133,8 @@ public class TypeCheckerTest {
 
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
         error.printStackTrace();
-        assertThat(error, instanceOf(NoViableFunctionException.class));
+        assertThat(error, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.NO_VIABLE_FUNCTIONS, ((ParseError) error).getErrorCode());
         assertThat(error.getMessage(), containsString("f: [A, A] -> A"));
         assertThat(error.getMessage(), containsString("f: [B, B] -> B"));
     }
@@ -256,11 +257,11 @@ public class TypeCheckerTest {
 
         Throwable error = exceptionThrownBy(() -> typeChecker.resolve());
         error.printStackTrace();
-        assertThat(error, instanceOf(FunctionAmbiguousException.class));
+        assertThat(error, instanceOf(ParseError.class));
+        assertEquals(ErrorCode.FUNCTION_AMBIGUOUS, ((ParseError) error).getErrorCode());
         assertThat(error.getMessage(), containsString("[A, A]"));
         assertThat(error.getMessage(), containsString("[A, B] -> A"));
         assertThat(error.getMessage(), containsString("[B, A] -> A"));
-
     }
 
     private static class MockFunctionDeclaration extends FunctionDeclaration {

@@ -199,7 +199,7 @@ public class PlangGrammar extends Grammar {
         }
     }
 
-    private void createComparisons(Context ctx, Scalar booleanType, Type type) throws NameClashError {
+    private void createComparisons(Context ctx, Scalar booleanType, Type type) throws ParseError {
         ctx.createBuiltin(operator("eq"), Instruction.EQ, booleanType, type, type);
         ctx.createBuiltin(operator("neq"), Instruction.NEQ, booleanType, type, type);
         ctx.createBuiltin(operator("lt"), Instruction.LT, booleanType, type, type);

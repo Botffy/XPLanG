@@ -5,11 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.operator.Operator;
 import ppke.itk.xplang.type.Archetype;
-import ppke.itk.xplang.type.Scalar;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
@@ -22,7 +20,6 @@ import static java.util.stream.Collectors.toList;
  * Parsing context. The state of the parser, encapsulating the symbol table.
  */
 public class Context {
-    private final static Translator translator = Translator.getInstance("Parser");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
     private final SymbolTable symbolTable = new SymbolTable();
@@ -69,9 +66,9 @@ public class Context {
     /**
      * Declare a new variable.
 
-     * @throws NameClashError if the given name is already taken in the current scope.
+     * @throws ParseError if the given name is already taken in the current scope.
      */
-    public void declareVariable(Name name, Token token, Type type) throws NameClashError {
+    public void declareVariable(Name name, Token token, Type type) throws ParseError {
         if (nameTable.isFree(name)) {
             VariableDeclaration declaration = new VariableDeclaration(token.location(), name.toString(), type);
             nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.VARIABLE, declaration));
@@ -82,7 +79,7 @@ public class Context {
                 name,
                 nameTable.lookup(name)
             );
-            throw new NameClashError(token);
+            throw new ParseError(token.location(), ErrorCode.NAME_CLASH, name);
         }
     }
 
@@ -97,32 +94,32 @@ public class Context {
     /**
      * Get a reference to a declared variable.
      * @return The VarRef AST node pointing at the variable.
-     * @throws NameError if the name cannot be found, or does not denote a type.
+     * @throws ParseError if the name cannot be found, or does not denote a type.
      */
-    public VarRef getVariableReference(Name name, Token token) throws NameError {
+    public VarRef getVariableReference(Name name, Token token) throws ParseError {
         return new VarRef(token.location(), lookupVariable(name, token));
     }
 
     /**
      * Get the value of a variable.
      * @return The VarVal AST node pointing at the variable.
-     * @throws NameError if the name cannot be found, or does not denote a type.
+     * @throws ParseError if the name cannot be found, or does not denote a type.
      */
-    public VarVal getVariableValue(Name name, Token token) throws NameError {
+    public VarVal getVariableValue(Name name, Token token) throws ParseError {
         return new VarVal(token.location(), lookupVariable(name, token));
     }
 
-    private VariableDeclaration lookupVariable(Name name, Token token) throws NameError {
+    private VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {
         NameTableEntry entry = nameTable.lookup(name);
 
         if (entry == null) {
             log.info("Lookup of variable '{}' failed: no such declaration.", name);
-            throw new NoSuchVariableException(name, token);
+            throw new ParseError(token.location(), ErrorCode.NO_SUCH_VARIABLE, name);
         }
 
         if (entry.type != NameTableEntry.EntryType.VARIABLE) {
             log.info("Lookup of variable '{}' failed: found {}", name, entry.type);
-            throw new NotVariableException(name, entry.type.name(), token);
+            throw new ParseError(token.location(), ErrorCode.NOT_A_VARIABLE, name, entry.type.name());
         }
 
         VariableDeclaration var = entry.getValueAsVariable();
@@ -137,9 +134,9 @@ public class Context {
      * @param instruction the instruction to process when the function is called.
      * @param returnType the return type of the function.
      * @param operands the types of the operands of the function.
-     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws ParseError {
         createBuiltin(name, instruction, returnType, asList(operands));
     }
 
@@ -150,9 +147,9 @@ public class Context {
      * @param instruction the instruction to process when the function is called.
      * @param returnType the return type of the function.
      * @param operands the types of the operands of the function.
-     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Set<Name> aliases, Instruction instruction, Type returnType, Type... operands) throws NameClashError {
+    public void createBuiltin(Set<Name> aliases, Instruction instruction, Type returnType, Type... operands) throws ParseError {
         for (Name alias : aliases) {
             createBuiltin(alias, instruction, returnType, asList(operands));
         }
@@ -165,9 +162,9 @@ public class Context {
      * @param instruction the instruction to process when the function is called.
      * @param returnType the return type of the function.
      * @param operands the types of the operands of the function.
-     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> operands) throws NameClashError {
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> operands) throws ParseError {
         Signature signature = new Signature(name, returnType, operands);
         registerFunction(new BuiltinFunction(Location.NONE, signature, instruction));
     }
@@ -176,9 +173,9 @@ public class Context {
      * Register a new function in the current scope.
      *
      * @param function the function to be registered.
-     * @throws NameClashError when the name is already taken in this scope, or a function by the given signature already exists.
+     * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void registerFunction(FunctionDeclaration function) throws NameClashError {
+    public void registerFunction(FunctionDeclaration function) throws ParseError {
         Signature signature = function.signature();
         Name name = signature.getName();
 
@@ -194,12 +191,12 @@ public class Context {
                 "Could not register function '{}': name already taken in this scope by {}",
                 signature, nameTable.lookup(name)
             );
-            throw new NameClashError("Could not register function", Location.NONE);
+            throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
         }
         functionSet = entry.getValueAsFunctionSet();
         if(functionSet.contains(signature)) {
             log.error("Could not register function '{}': same signature already declared in this scope.", signature);
-            throw new NameClashError("Could not register function", Location.NONE);
+            throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
         }
 
         functionSet.add(function);
@@ -273,9 +270,9 @@ public class Context {
 
     /**
      * Declare a new type by the given name.
-     * @throws NameClashError if the name is already taken in this scope.
+     * @throws ParseError if the name is already taken in this scope.
      */
-    public void declareType(Name name, Type type) throws NameClashError {
+    public void declareType(Name name, Type type) throws ParseError {
         if (nameTable.isFree(name)) {
             nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.TYPE, type));
             log.debug("Declared type {} as '{}'", type, name);
@@ -285,10 +282,7 @@ public class Context {
                 "Could not register type by name '{}': name already taken in this scope by {}",
                 name, offending
             );
-            throw new NameClashError(
-                translator.translate("parser.TypeNameAlreadyTaken.message", name, offending),
-                Location.NONE
-            );
+            throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
         }
     }
 
@@ -299,23 +293,19 @@ public class Context {
 
     /**
      * Get a type by its name.
-     * @throws NameError if the name is unknown, or does not denote a type.
+     * @throws ParseError if the name is unknown, or does not denote a type.
      */
-    public Type lookupType(Name name, Token token) throws NameError {
+    public Type lookupType(Name name, Token token) throws ParseError {
         NameTableEntry entry = nameTable.lookup(name);
 
         if (entry == null) {
             log.error("Lookup of type '{}' failed.", name);
-            throw new NameError(translator.translate("parser.TypeError.no_such_type", name), token);
+            throw new ParseError(token.location(), ErrorCode.NO_SUCH_TYPE, name);
         }
 
         if (entry.type != NameTableEntry.EntryType.TYPE) {
             log.error("Lookup of type '{}' failed: is {}.", name, entry.type);
-            throw new NameError(translator.translate(
-                "parser.TypeError.is_not_typename",
-                name,
-                translator.translate("parser.context.NameTableEntry." + entry.type + ".name")
-            ), token);
+            throw new ParseError(token.location(), ErrorCode.NOT_A_TYPE, name, entry.type.name());
         }
 
         Type typ = entry.getValueAsType();

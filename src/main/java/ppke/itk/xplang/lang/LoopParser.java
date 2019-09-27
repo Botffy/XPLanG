@@ -7,7 +7,6 @@ import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
@@ -16,7 +15,6 @@ import ppke.itk.xplang.parser.Symbol;
  * {@code Loop = CIKLUS (AMÍG Condition Sequence CIKLUS_VÉGE) | (Sequence AMÍG Condition) }
  */
 public class LoopParser {
-    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private LoopParser() { /* empty private ctor */ }

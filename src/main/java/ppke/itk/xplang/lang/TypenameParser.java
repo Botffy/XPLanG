@@ -2,7 +2,6 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Type;
@@ -14,7 +13,6 @@ import java.util.Optional;
  *  {@code Typename = Identifier { BRACKET_OPEN LITERAL_INT BRACKET_CLOSE }}
  */
 final class TypenameParser {
-    private final static Translator translator = Translator.getInstance("Plang");
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private TypenameParser() { /* empty private ctor */ }
@@ -28,14 +26,16 @@ final class TypenameParser {
         return result;
     }
 
-    private static Optional<Type> parseArrayType(Parser parser, Type baseType) throws LexerError, SyntaxError {
+    private static Optional<Type> parseArrayType(Parser parser, Type baseType) throws ParseError {
         Stack<Integer> lengths = new Stack<>();
         while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
             parser.advance();
-            Token lengthToken = parser.accept(
-                parser.symbol(PlangSymbol.LITERAL_INT),
-                translator.translate("plang.vardecl.array_length_must_be_integer")
-            );
+            Token lengthToken = parser.advance();
+            if (!lengthToken.symbol().equals(parser.symbol(PlangSymbol.LITERAL_INT))) {
+                throw new ParseError(
+                    lengthToken.location(), ErrorCode.ARRAY_LENGTH_EXPECT_INTEGER_LITERAL, lengthToken.symbol()
+                );
+            }
             int length = Integer.parseInt(lengthToken.lexeme());
             lengths.push(length);
             parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));

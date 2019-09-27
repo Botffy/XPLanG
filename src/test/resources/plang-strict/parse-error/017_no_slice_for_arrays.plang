@@ -1,5 +1,5 @@
 **#arrays cannot be sliced
-**FirstErrorLoc:7,9
+**FirstErrorLoc:7,8
 program t
   Változók:
     x: egész[4],

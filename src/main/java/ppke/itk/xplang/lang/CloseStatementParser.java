@@ -5,7 +5,6 @@ import ppke.itk.xplang.ast.LValue;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.common.Translator;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
@@ -14,11 +13,7 @@ import static java.util.Collections.singletonList;
 
 /** {@code CloseStatement = CLOSE LValue } */
 public class CloseStatementParser {
-    private final static Translator translator = Translator.getInstance("Plang");
-
     public static Statement parse(Parser parser) throws ParseError {
-        // TODO jobb hibakezelés
-
         Token token = parser.accept(parser.symbol(PlangSymbol.CLOSE));
         Location startLocation = token.location();
 
@@ -34,10 +29,7 @@ public class CloseStatementParser {
         } else if (Archetype.OUTSTREAM_TYPE.accepts(varType)) {
             closeFunctionName = SpecialName.CLOSE_OUTPUTSTREAM;
         } else {
-            throw new TypeError(
-                translator.translate("plang.close_only_streams", Archetype.INSTREAM_TYPE, Archetype.OUTSTREAM_TYPE, varType),
-                location
-            );
+            throw new ParseError(location, ErrorCode.TYPE_MISMATCH_CLOSE_STREAM, varType);
         }
 
         Expression callExpression = new FunctionExpression(
