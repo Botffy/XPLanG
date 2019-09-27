@@ -1,5 +1,9 @@
 package ppke.itk.xplang.common;
 
+import ppke.itk.xplang.parser.ErrorCode;
+
+import java.util.List;
+
 /**
  * A compiler error we would like to display to the programmer.
  */
@@ -9,22 +13,24 @@ public final class CompilerMessage {
         ERROR;
     }
 
-    public static CompilerMessage error(String message, Location location) {
-        return new CompilerMessage(Severity.ERROR, message, location);
+    public static CompilerMessage error(Location location, ErrorCode errorCode, List<Object> params) {
+        return new CompilerMessage(Severity.ERROR, location, errorCode, params);
     }
 
-    public static CompilerMessage warning(String message, Location location) {
-        return new CompilerMessage(Severity.WARNING, message, location);
+    public static CompilerMessage warning(Location location, ErrorCode errorCode, List<Object> params) {
+        return new CompilerMessage(Severity.WARNING, location, errorCode, params);
     }
 
     private final Severity severity;
-    private final String message;
     private final Location location;
+    private final ErrorCode errorCode;
+    private final List<Object> params;
 
-    private CompilerMessage(Severity severity, String message, Location location) {
+    private CompilerMessage(Severity severity, Location location, ErrorCode errorCode, List<Object> params) {
         this.severity = severity;
-        this.message = message;
         this.location = location;
+        this.errorCode = errorCode;
+        this.params = params;
     }
 
     public Severity getSeverity() {
@@ -35,8 +41,17 @@ public final class CompilerMessage {
         return location;
     }
 
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
+    public List<Object> getParams() {
+        return params;
+    }
+
+    @Deprecated
     public String getMessage() {
-        return message;
+        return String.format("%s%s", errorCode, params);
     }
 
     public CursorPosition getCursorPosition() {
@@ -48,6 +63,6 @@ public final class CompilerMessage {
     }
 
     @Override public String toString() {
-        return String.format("%s %s", location.start, message);
+        return String.format("%s %s%s", location.start, getErrorCode(), getParams());
     }
 }

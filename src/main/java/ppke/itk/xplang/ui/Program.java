@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.ASTPrinter;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.CompilerMessageTranslator;
 import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.gui.MainFrame;
@@ -18,6 +19,7 @@ import javax.swing.*;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 
 class Program {
@@ -63,6 +65,8 @@ class Program {
             return;
         }
 
+        CompilerMessageTranslator translator = new CompilerMessageTranslator(Locale.ENGLISH);
+
         if (run.getOutputEncoding() != null) {
             try {
                 System.setOut(new PrintStream(
@@ -82,7 +86,7 @@ class Program {
 
         Root root = parser.parse(source, grammar);
         if(!errorLog.isEmpty()) {
-            printErrors(errorLog);
+            printErrors(errorLog, translator);
             return;
         }
 
@@ -127,9 +131,9 @@ class Program {
         return Result;
     }
 
-    private void printErrors(ErrorLog errorLog) {
+    private void printErrors(ErrorLog errorLog, CompilerMessageTranslator translator) {
         for(CompilerMessage message : errorLog.getErrorMessages()) {
-            System.out.println(message);
+            System.out.println(String.format("%s: %s", message.getCursorPosition(), translator.translate(message)));
         }
     }
 

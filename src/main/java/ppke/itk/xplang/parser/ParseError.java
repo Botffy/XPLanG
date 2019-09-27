@@ -43,6 +43,6 @@ public class ParseError extends Exception {
     }
 
     public CompilerMessage toErrorMessage() {
-        return CompilerMessage.error(this.getMessage(), this.getLocation());
+        return CompilerMessage.error(this.getLocation(), this.getErrorCode(), this.getParams());
     }
 }
