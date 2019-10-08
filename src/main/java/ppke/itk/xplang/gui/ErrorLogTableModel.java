@@ -1,15 +1,18 @@
 package ppke.itk.xplang.gui;
 
 import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.CompilerMessageTranslator;
 import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.ErrorLog;
 
 import javax.swing.table.AbstractTableModel;
 
 class ErrorLogTableModel extends AbstractTableModel {
+    private final CompilerMessageTranslator translator;
     private ErrorLog errorLog;
 
-    ErrorLogTableModel(ErrorLog errorLog) {
+    ErrorLogTableModel(CompilerMessageTranslator translator, ErrorLog errorLog) {
+        this.translator = translator;
         this.errorLog = errorLog;
     }
 
@@ -50,7 +53,7 @@ class ErrorLogTableModel extends AbstractTableModel {
         } else if (columnIndex == 1) {
             return compilerMessage.getCursorPosition().column;
         } else if (columnIndex == 2) {
-            return compilerMessage.getMessage();
+            return translator.translate(compilerMessage);
         }
 
         throw new IllegalStateException();

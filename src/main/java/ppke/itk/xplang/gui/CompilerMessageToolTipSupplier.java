@@ -3,6 +3,7 @@ package ppke.itk.xplang.gui;
 import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.ToolTipSupplier;
 import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.CompilerMessageTranslator;
 import ppke.itk.xplang.common.CursorPosition;
 
 import javax.swing.text.BadLocationException;
@@ -12,8 +13,13 @@ import java.util.List;
 
 import static ppke.itk.xplang.gui.util.CursorPositionConverter.toCursorPosition;
 
-public class CompilerMessageToolTipSupplier implements ToolTipSupplier {
+class CompilerMessageToolTipSupplier implements ToolTipSupplier {
     private final List<CompilerMessage> messages = new ArrayList<>();
+    private final CompilerMessageTranslator translator;
+
+    CompilerMessageToolTipSupplier(CompilerMessageTranslator translator) {
+        this.translator = translator;
+    }
 
     void clear() {
         messages.clear();
@@ -31,7 +37,7 @@ public class CompilerMessageToolTipSupplier implements ToolTipSupplier {
 
             for (CompilerMessage message : messages) {
                 if (message.getLocation().contains(cursorPosition)) {
-                    return message.getMessage();
+                    return translator.translate(message);
                 }
             }
 

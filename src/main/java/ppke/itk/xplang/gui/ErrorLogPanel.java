@@ -1,10 +1,12 @@
 package ppke.itk.xplang.gui;
 
+import ppke.itk.xplang.common.CompilerMessageTranslator;
 import ppke.itk.xplang.common.ErrorLog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.util.Locale;
 
 class ErrorLogPanel implements CompilerResultListener {
     private final JPanel panel;
@@ -12,7 +14,10 @@ class ErrorLogPanel implements CompilerResultListener {
 
     ErrorLogPanel() {
         this.panel = new JPanel(new BorderLayout());
-        this.data = new ErrorLogTableModel(new ErrorLog());
+        this.data = new ErrorLogTableModel(
+            new CompilerMessageTranslator(new Locale("hu")),
+            new ErrorLog()
+        );
         JTable table = new JTable(this.data);
         JScrollPane scrollPane = new JScrollPane(table);
 

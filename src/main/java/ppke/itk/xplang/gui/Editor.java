@@ -9,6 +9,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.common.CompilerMessage;
+import ppke.itk.xplang.common.CompilerMessageTranslator;
 import ppke.itk.xplang.common.CursorPosition;
 
 import javax.swing.*;
@@ -23,6 +24,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -51,7 +53,9 @@ class Editor implements CompilerResultListener, DocumentListener, CaretListener 
         this.textArea.getDocument().addDocumentListener(this);
         this.textArea.addCaretListener(this);
 
-        this.toolTipSupplier = new CompilerMessageToolTipSupplier();
+        this.toolTipSupplier = new CompilerMessageToolTipSupplier(
+            new CompilerMessageTranslator(new Locale("hu"))
+        );
         this.textArea.setUseFocusableTips(false);
         this.textArea.setToolTipSupplier(toolTipSupplier);
         ToolTipManager.sharedInstance().registerComponent(this.textArea);
