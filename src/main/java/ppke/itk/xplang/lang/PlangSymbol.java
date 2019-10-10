@@ -6,6 +6,8 @@ package ppke.itk.xplang.lang;
 enum PlangSymbol {
     PROGRAM,
     END_PROGRAM,
+    FUNCTION,
+    END_FUNCTION,
     DECLARE,
     IF,
     THEN,

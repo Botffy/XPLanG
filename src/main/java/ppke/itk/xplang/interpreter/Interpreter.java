@@ -63,6 +63,11 @@ public class Interpreter implements ASTVisitor {
         instructionProcessor.execute(function.getInstruction(), valueStack);
     }
 
+    @Override
+    public void visit(Function function) {
+
+    }
+
     @Override public void visit(Sequence sequence) {
         for(Statement statement : sequence.statements()) {
             statement.accept(this);

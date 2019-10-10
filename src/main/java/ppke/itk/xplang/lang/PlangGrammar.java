@@ -31,6 +31,8 @@ public class PlangGrammar extends Grammar {
         try {
             makeSymbol(PlangSymbol.PROGRAM).register(ctx);
             makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
+            makeSymbol(PlangSymbol.FUNCTION).register(ctx);
+            makeSymbol(PlangSymbol.END_FUNCTION).register(ctx);
             makeSymbol(PlangSymbol.DECLARE).register(ctx);
             makeSymbol(PlangSymbol.IF).register(ctx);
             makeSymbol(PlangSymbol.THEN).register(ctx);
@@ -212,9 +214,7 @@ public class PlangGrammar extends Grammar {
      * {@code start = Program}
      */
     @Override protected Root start(Parser parser) throws ParseError {
-        log.debug("start");
-        Program program = ProgramParser.parse(parser);
-        return new Root(program.location(), program);
+        return RootParser.parse(parser);
     }
 
     private Symbol.Builder makeSymbol(PlangSymbol symbol) {

@@ -10,9 +10,6 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toSet;
 
-/**
- * {@code Statement = Assignment | Conditional | Loop | InputStatement | OutputStatement | OpenStatement | CloseStatement }
- */
 final class StatementParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 

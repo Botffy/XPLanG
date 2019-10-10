@@ -1,0 +1,13 @@
+**#Declare and call a function
+**Memory:x=Integer(1)
+
+függvény f(x: Egész): Egész
+  Eredmény := x
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1)
+program_vége

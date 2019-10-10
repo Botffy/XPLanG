@@ -11,6 +11,7 @@ public interface ASTVisitor {
     void visit(Scope scope);
     void visit(VariableDeclaration variableDeclaration);
     void visit(BuiltinFunction function);
+    void visit(Function function);
     void visit(Sequence sequence);
     void visit(Block block);
     void visit(Assignment assignment);
