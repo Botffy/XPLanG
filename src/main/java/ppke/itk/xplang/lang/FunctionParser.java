@@ -27,34 +27,18 @@ class FunctionParser {
     static void parse(Parser parser) throws ParseError {
         log.debug("Function");
 
-        Token functionToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
-        Token functionNameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
-
-        List<VariableDeclaration> parameters = parseParameterList(parser);
-
-        parser.accept(parser.symbol(PlangSymbol.COLON));
-        Type type = TypenameParser.parse(parser);
-
-        Signature signature = new Signature(
-            new PlangName(functionNameToken.lexeme()),
-            type,
-            parameters.stream().map(VariableDeclaration::getType).collect(toList())
-        );
-
-        Function function = new Function(
-            Location.between(functionToken.location(), parser.actual().location()),
-            signature,
-            parameters,
-            null
-        );
-
+        Function function = parseSignature(parser);
         parser.context().registerFunction(function);
 
         parser.context().openScope();
         try {
             // Fixme the identifier should be localized. somehow.
-            VariableDeclaration retVal = parser.context().declareVariable(new PlangName("Eredmény"), functionNameToken, type);
-            for (VariableDeclaration parameter : parameters) {
+            VariableDeclaration retVal = new VariableDeclaration(
+                function.location(), "Eredmény", function.signature().getReturnType()
+            );
+            function.parameters().add(0, retVal);
+
+            for (VariableDeclaration parameter : function.parameters()) {
                 parser.context().declareVariable(new PlangName(parameter.getName()), parameter);
             }
 
@@ -69,12 +53,34 @@ class FunctionParser {
             Scope scope = parser.context().closeScope();
             Block block = new Block(scope, sequence);
 
-            parameters.add(0, retVal);
             function.setBlock(block);
         } catch (ParseError e) {
             parser.context().closeScope();
             throw e;
         }
+    }
+
+    static Function parseSignature(Parser parser) throws ParseError {
+        Token functionToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
+        Token functionNameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
+
+        List<VariableDeclaration> parameters = parseParameterList(parser);
+
+        parser.accept(parser.symbol(PlangSymbol.COLON));
+        Type type = TypenameParser.parse(parser);
+
+        Signature signature = new Signature(
+            new PlangName(functionNameToken.lexeme()),
+            type,
+            parameters.stream().map(VariableDeclaration::getType).collect(toList())
+        );
+
+        return new Function(
+            Location.between(functionToken.location(), parser.actual().location()),
+            signature,
+            parameters,
+            null
+        );
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
