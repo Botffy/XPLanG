@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
@@ -65,7 +66,23 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Function function) {
+        checkStopCondition();
 
+        Block block = function.block();
+        block.scope().accept(this);
+
+        for (int i = 1; i <= function.signature().argumentCount(); ++i) {
+            Value argument = valueStack.pop();
+            memory.getReference(function.parameters().get(i)).assign(argument);
+        }
+
+        block.sequence().accept(this);
+
+        VariableDeclaration returnVariable = function.parameters().get(0);
+        Value returnValue = memory.getComponent(returnVariable);
+        valueStack.push(returnValue);
+
+        step();
     }
 
     @Override public void visit(Sequence sequence) {

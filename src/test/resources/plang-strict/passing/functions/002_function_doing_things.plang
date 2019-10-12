@@ -1,0 +1,13 @@
+**#Execute a function correctly
+**Memory:x=Integer(2)
+
+függvény f(x: Egész): Egész
+  Eredmény := 2 * x
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1)
+program_vége

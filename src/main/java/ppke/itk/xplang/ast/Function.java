@@ -6,8 +6,20 @@ import ppke.itk.xplang.type.Signature;
 import java.util.List;
 
 public class Function extends FunctionDeclaration {
+    private final List<VariableDeclaration> parameters;
+
     public Function(Location location, Signature signature, List<VariableDeclaration> parameters, Block block) {
         super(location, signature);
+        this.parameters = parameters;
+        children.add(0, block);
+    }
+
+    public Block block() {
+        return (Block) children.get(0);
+    }
+
+    public List<VariableDeclaration> parameters() {
+        return parameters;
     }
 
     @Override

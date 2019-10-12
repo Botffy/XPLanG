@@ -11,6 +11,7 @@ import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -39,7 +40,7 @@ class FunctionParser {
             Type type = TypenameParser.parse(parser);
 
             // Fixme the identifier should be localized. somehow.
-            parser.context().declareVariable(new PlangName("Eredmény"), functionNameToken, type);
+            VariableDeclaration retVal = parser.context().declareVariable(new PlangName("Eredmény"), functionNameToken, type);
 
             if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
                 DeclarationsParser.parse(parser);
@@ -58,6 +59,7 @@ class FunctionParser {
             Scope scope = parser.context().closeScope();
             Block block = new Block(scope, sequence);
 
+            parameters.add(0, retVal);
             return new Function(
                 Location.between(startToken.location(), endToken.location()),
                 signature,
@@ -71,6 +73,7 @@ class FunctionParser {
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
+        List<VariableDeclaration> result = new ArrayList<>();
         parser.accept(parser.symbol(PlangSymbol.PAREN_OPEN));
 
         // fixme more than one parameter
@@ -78,9 +81,10 @@ class FunctionParser {
         parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
         Type type = TypenameParser.parse(parser);
         VariableDeclaration param = parser.context().declareVariable(new PlangName(token.lexeme()), token, type);
+        result.add(param);
 
         parser.accept(parser.symbol(PlangSymbol.PAREN_CLOSE));
 
-        return singletonList(param);
+        return result;
     }
 }
