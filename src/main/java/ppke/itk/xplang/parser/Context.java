@@ -85,6 +85,26 @@ public class Context {
     }
 
     /**
+     * Declare a new variable.
+
+     * @throws ParseError if the given name is already taken in the current scope.
+     */
+    public void declareVariable(Name name, VariableDeclaration declaration) throws ParseError {
+        if (nameTable.isFree(name)) {
+            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.VARIABLE, declaration));
+            log.debug("Declared variable '{}'", name);
+            return;
+        }
+
+        log.error(
+            "Could not register variable by name '{}': name already taken in this scope by {}",
+            name,
+            nameTable.lookup(name)
+        );
+        throw new ParseError(declaration.location(), ErrorCode.NAME_CLASH, name);
+    }
+
+    /**
      * Does the given name denote a variable in this scope?
      */
     public boolean isVariable(Name name) {

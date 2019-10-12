@@ -14,7 +14,6 @@ import ppke.itk.xplang.type.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -25,34 +24,45 @@ class FunctionParser {
 
     private FunctionParser() { /* empty private ctor */ }
 
-    static FunctionDeclaration parse(Parser parser) throws ParseError {
+    static void parse(Parser parser) throws ParseError {
         log.debug("Function");
 
-        Token startToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
+        Token functionToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
         Token functionNameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
 
+        List<VariableDeclaration> parameters = parseParameterList(parser);
+
+        parser.accept(parser.symbol(PlangSymbol.COLON));
+        Type type = TypenameParser.parse(parser);
+
+        Signature signature = new Signature(
+            new PlangName(functionNameToken.lexeme()),
+            type,
+            parameters.stream().map(VariableDeclaration::getType).collect(toList())
+        );
+
+        Function function = new Function(
+            Location.between(functionToken.location(), parser.actual().location()),
+            signature,
+            parameters,
+            null
+        );
+
+        parser.context().registerFunction(function);
+
         parser.context().openScope();
-
         try {
-            List<VariableDeclaration> parameters = parseParameterList(parser);
-
-            parser.accept(parser.symbol(PlangSymbol.COLON));
-            Type type = TypenameParser.parse(parser);
-
             // Fixme the identifier should be localized. somehow.
             VariableDeclaration retVal = parser.context().declareVariable(new PlangName("Eredmény"), functionNameToken, type);
+            for (VariableDeclaration parameter : parameters) {
+                parser.context().declareVariable(new PlangName(parameter.getName()), parameter);
+            }
 
             if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
                 DeclarationsParser.parse(parser);
             }
             Sequence sequence = SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_FUNCTION));
-            Token endToken = parser.accept(parser.symbol(PlangSymbol.END_FUNCTION));
-
-            Signature signature = new Signature(
-                new PlangName(functionNameToken.lexeme()),
-                type,
-                parameters.stream().map(VariableDeclaration::getType).collect(toList())
-            );
+            parser.accept(parser.symbol(PlangSymbol.END_FUNCTION));
 
             // todo this is a bit iffy. We SUPPOSE the statements below won't throw parseErrors, but it'd be more exact
             //      to close the scope outside the try block.
@@ -60,12 +70,7 @@ class FunctionParser {
             Block block = new Block(scope, sequence);
 
             parameters.add(0, retVal);
-            return new Function(
-                Location.between(startToken.location(), endToken.location()),
-                signature,
-                parameters,
-                block
-            );
+            function.setBlock(block);
         } catch (ParseError e) {
             parser.context().closeScope();
             throw e;
@@ -80,7 +85,7 @@ class FunctionParser {
         Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
         parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
         Type type = TypenameParser.parse(parser);
-        VariableDeclaration param = parser.context().declareVariable(new PlangName(token.lexeme()), token, type);
+        VariableDeclaration param = new VariableDeclaration(token.location(), token.lexeme().toLowerCase(), type);
         result.add(param);
 
         parser.accept(parser.symbol(PlangSymbol.PAREN_CLOSE));

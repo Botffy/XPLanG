@@ -1,6 +1,3 @@
-**#Support recursion
-**Memory:x=Integer(377)
-
 függvény fibonacci(x: Egész): Egész
   ha x = 0 akkor
     Eredmény := 0

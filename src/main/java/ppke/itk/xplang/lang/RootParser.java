@@ -25,8 +25,7 @@ class RootParser {
         Symbol act = parser.actual().symbol();
 
         if (act.equals(parser.symbol(PlangSymbol.FUNCTION))) {
-            FunctionDeclaration function = FunctionParser.parse(parser);
-            parser.context().registerFunction(function);
+            FunctionParser.parse(parser);
         }
 
         Program program = ProgramParser.parse(parser);

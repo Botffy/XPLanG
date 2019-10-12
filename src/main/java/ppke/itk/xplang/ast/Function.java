@@ -18,6 +18,10 @@ public class Function extends FunctionDeclaration {
         return (Block) children.get(0);
     }
 
+    public void setBlock(Block block) {
+        this.children.set(0, block);
+    }
+
     public List<VariableDeclaration> parameters() {
         return parameters;
     }
