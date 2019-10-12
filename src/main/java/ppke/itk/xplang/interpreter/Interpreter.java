@@ -6,7 +6,6 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
@@ -67,6 +66,7 @@ public class Interpreter implements ASTVisitor {
     @Override
     public void visit(Function function) {
         checkStopCondition();
+        memory.addFrame();
 
         Block block = function.block();
         block.scope().accept(this);
@@ -79,9 +79,10 @@ public class Interpreter implements ASTVisitor {
         block.sequence().accept(this);
 
         VariableDeclaration returnVariable = function.parameters().get(0);
-        Value returnValue = memory.getComponent(returnVariable);
+        Value returnValue = memory.getValue(returnVariable);
         valueStack.push(returnValue);
 
+        memory.closeFrame();
         step();
     }
 
@@ -236,7 +237,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(VarVal varVal) throws InterpreterError {
-        Value value = memory.getComponent(varVal.getVariable());
+        Value value = memory.getValue(varVal.getVariable());
         if (value == ValueUtils.nullValue()) {
             throw new InterpreterError(ErrorCode.NULL_ERROR);
         }
