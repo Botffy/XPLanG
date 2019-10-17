@@ -27,7 +27,13 @@ final class ProgramParser {
         Token nameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER), ErrorCode.EXPECTED_PROGRAM_NAME);
 
         if(parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
-            DeclarationsParser.parse(parser);
+            DeclarationsParser.parse(parser).forEach(variable -> {
+                try {
+                    parser.context().declareVariable(new PlangName(variable.getName()), variable);
+                } catch (ParseError error) {
+                    parser.recordError(error.toErrorMessage());
+                }
+            });
         }
 
         Sequence sequence = SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));

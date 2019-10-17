@@ -2,6 +2,7 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.VariableDeclaration;
 import ppke.itk.xplang.parser.ErrorCode;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
@@ -10,6 +11,9 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * {@code VariableDeclaration = IDENTIFIER [{COMMA IDENTIFIER}] COLON Typename}
@@ -19,7 +23,7 @@ final class VariableDeclarationParser {
 
     private VariableDeclarationParser() { /* empty private ctor */ }
 
-    static void parse(Parser parser) throws ParseError {
+    static Stream<VariableDeclaration> parse(Parser parser) throws ParseError {
         log.debug("VariableDeclaration");
         List<Token> variables = new ArrayList<>();
 
@@ -31,12 +35,7 @@ final class VariableDeclarationParser {
         parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
         Type type = TypenameParser.parse(parser);
 
-        for(Token token : variables) {
-            try {
-                parser.context().declareVariable(new PlangName(token.lexeme()), token, type);
-            } catch(ParseError error) {
-                parser.recordError(error.toErrorMessage());
-            }
-        }
+        return variables.stream()
+            .map(token -> new VariableDeclaration(token.location(), token.lexeme(), type));
     }
 }
