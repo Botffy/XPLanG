@@ -1,0 +1,13 @@
+**#call function with expressions as arguments
+**Memory:x=Integer(8)
+
+függvény f(x: Egész, y: Egész): Egész
+  Eredmény := x + y
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1 * 2, 2^2 + f(1, 1))
+program_vége

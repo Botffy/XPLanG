@@ -24,6 +24,9 @@ public class ExpressionParserTest {
     private final static Symbol PLUS = Symbol.create().named("Plus").matchingLiteral("+").build();
     private final static Symbol TIMES = Symbol.create().named("Times").matchingLiteral("*").build();
     private final static Symbol IDENTIFIER = Symbol.create().named("Identifier").matching("[a-zA-Z][a-zA-Z0-9]*").build();
+    private final static Symbol PAREN_OPEN = Symbol.create().named("ParenOpen").matching("\\(").build();
+    private final static Symbol PAREN_CLOSE = Symbol.create().named("ParenClose").matching("\\)").build();
+    private final static Symbol COMMA = Symbol.create().named("Comma").matching(",").build();
     private final static Symbol WHITESPACE = Symbol.create().named("Whitespace").matching("\\s+").notSignificant().build();
 
     private final static class TestName implements Name {
@@ -52,6 +55,9 @@ public class ExpressionParserTest {
             ctx.register(NUMBER);
             ctx.register(PLUS);
             ctx.register(TIMES);
+            ctx.register(PAREN_OPEN);
+            ctx.register(PAREN_CLOSE);
+            ctx.register(COMMA);
             ctx.register(IDENTIFIER);
             ctx.register(WHITESPACE);
 
@@ -61,6 +67,7 @@ public class ExpressionParserTest {
                 ctx.createBuiltin(name("plus"), Instruction.ISUM, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
                 ctx.createBuiltin(name("times"), Instruction.IMUL, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE, Archetype.INTEGER_TYPE);
                 ctx.createBuiltin(name("id"), Instruction.ID, Archetype.ANY, Archetype.ANY);
+                ctx.createBuiltin(name("f"), Instruction.ID, Archetype.ANY, Archetype.ANY, Archetype.ANY);
             } catch(ParseError nameClashError) {
                 throw new IllegalStateException(nameClashError);
             }
@@ -68,7 +75,9 @@ public class ExpressionParserTest {
             ctx.infix(PLUS, new InfixBinary(name("plus"), Operator.Precedence.SUM));
             ctx.infix(TIMES, new InfixBinary(name("times"), Operator.Precedence.PRODUCT));
             ctx.prefix(NUMBER, new LiteralOperator<>(IntegerLiteral::new, Archetype.INTEGER_TYPE, Integer::valueOf));
-            ctx.prefix(IDENTIFIER, new IdentifierOperator(ExpressionParserTest::name));
+            ctx.prefix(IDENTIFIER, new IdentifierOperator(ExpressionParserTest::name, new IdentifierOperator.FunctionSymbols(
+                PAREN_OPEN, COMMA, PAREN_CLOSE
+            )));
         }
 
         @Override protected Root start(Parser parser) throws ParseError {
@@ -158,6 +167,26 @@ public class ExpressionParserTest {
     @Test
     public void shouldHandleFunctions() throws ParseError {
         Reader reader = new StringReader("id 6");
+        parser.parse(reader, grammar);
+
+        ExpressionParser ep = new ExpressionParser(parser);
+        Expression res = ep.parse(Operator.Precedence.CONTAINING);
+        assertThat(res, instanceOf(FunctionExpression.class));
+    }
+
+    @Test
+    public void shouldHandleFunctionsWithParenthesis() throws ParseError {
+        Reader reader = new StringReader("f(5)");
+        parser.parse(reader, grammar);
+
+        ExpressionParser ep = new ExpressionParser(parser);
+        Expression res = ep.parse(Operator.Precedence.CONTAINING);
+        assertThat(res, instanceOf(FunctionExpression.class));
+    }
+
+    @Test
+    public void shouldHandleFunctionsWithMultipleParameters() throws ParseError {
+        Reader reader = new StringReader("f(5, 10 + 2)");
         parser.parse(reader, grammar);
 
         ExpressionParser ep = new ExpressionParser(parser);

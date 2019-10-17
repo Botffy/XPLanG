@@ -4,16 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.ErrorCode;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -104,18 +103,13 @@ class FunctionParser {
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
-        List<VariableDeclaration> result = new ArrayList<>();
         parser.accept(parser.symbol(PlangSymbol.PAREN_OPEN));
-
-        // fixme more than one parameter
-        Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
-        parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
-        Type type = TypenameParser.parse(parser);
-        VariableDeclaration param = new VariableDeclaration(token.location(), token.lexeme().toLowerCase(), type);
-        result.add(param);
-
+        Stream<VariableDeclaration> declarations = VariableDeclarationParser.parse(parser);
+        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+            parser.advance();
+            declarations = Stream.concat(declarations, VariableDeclarationParser.parse(parser));
+        }
         parser.accept(parser.symbol(PlangSymbol.PAREN_CLOSE));
-
-        return result;
+        return declarations.collect(toList());
     }
 }

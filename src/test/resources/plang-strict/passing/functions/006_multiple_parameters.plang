@@ -1,0 +1,13 @@
+**#Declare and call a function with multiple parameters
+**Memory:x=Integer(6)
+
+függvény f(x: Egész, y: Egész): Egész
+  Eredmény := 2 * (x + y)
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1, 2)
+program_vége

@@ -165,7 +165,9 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(aliases(props.getFunctionName("end")), Instruction.IFILE_END, boolType, inputStreamType);
 
             ctx.prefix(parenOpen, new Grouping(parenClose));
-            ctx.prefix(identifier, new IdentifierOperator(PlangName::new));
+            ctx.prefix(identifier, new IdentifierOperator(PlangName::new, new IdentifierOperator.FunctionSymbols(
+                parenOpen, comma, parenClose
+            )));
             ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, intType, Integer::valueOf));
             ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, realType, Double::valueOf));
             ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));

@@ -5,8 +5,6 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -17,9 +15,11 @@ import static java.util.Collections.singletonList;
  */
 public class IdentifierOperator implements Operator.Prefix {
     private final Function<String, Name> nameCreator;
+    private final FunctionSymbols functionSymbols;
 
-    public IdentifierOperator(Function<String, Name> nameCreator) {
+    public IdentifierOperator(Function<String, Name> nameCreator, FunctionSymbols functionSymbols) {
         this.nameCreator = nameCreator;
+        this.functionSymbols = functionSymbols;
     }
 
     @Override
@@ -45,8 +45,19 @@ public class IdentifierOperator implements Operator.Prefix {
 
         if (parser.context().isFunction(name)) {
             List<Expression> args = new ArrayList<>();
-            args.add(parser.parse(getPrecedence()));
-            // TODO more than one parameters :)
+
+            if (parser.peek().symbol().equals(functionSymbols.callStart)) {
+                parser.accept(functionSymbols.callStart);
+                args.add(parser.parse());
+                while (parser.peek().symbol().equals(functionSymbols.argumentSeparator)) {
+                    parser.accept(functionSymbols.argumentSeparator);
+                    args.add(parser.parse());
+                }
+                parser.accept(functionSymbols.callEnd);
+            } else {
+                args.add(parser.parse(getPrecedence()));
+            }
+
 
             return new FunctionExpression(
                 name,
@@ -62,5 +73,17 @@ public class IdentifierOperator implements Operator.Prefix {
     @Override
     public int getPrecedence() {
         return Precedence.UNARY_PREFIX;
+    }
+
+    public static final class FunctionSymbols {
+        private final Symbol callStart;
+        private final Symbol argumentSeparator;
+        private final Symbol callEnd;
+
+        public FunctionSymbols(Symbol callStart, Symbol argumentSeparator, Symbol callEnd) {
+            this.callStart = callStart;
+            this.argumentSeparator = argumentSeparator;
+            this.callEnd = callEnd;
+        }
     }
 }
