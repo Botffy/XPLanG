@@ -27,6 +27,11 @@ public class Function extends FunctionDeclaration {
     }
 
     @Override
+    public boolean isDefined() {
+        return this.children.get(0) != null;
+    }
+
+    @Override
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

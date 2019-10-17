@@ -13,6 +13,7 @@ import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -20,16 +21,14 @@ import static java.util.stream.Collectors.toList;
  * {@code Function = FUNCTION IDENTIFIER PAREN_OPEN ParameterList PAREN_CLOSE COLON Typename [Declarations] Sequence END_FUNCTION }
  */
 class FunctionParser {
-    private static final Logger log = LoggerFactory.getLogger(FunctionParser.class);
+    private static final Logger log = LoggerFactory.getLogger("Root.Parser");
 
     private FunctionParser() { /* empty private ctor */ }
 
     static void parse(Parser parser) throws ParseError {
         log.debug("Function");
 
-        Function function = parseSignature(parser);
-        parser.context().registerFunction(function);
-
+        Function function = register(parseSignature(parser), parser);
         parser.context().openScope();
         try {
             // Fixme the identifier should be localized. somehow.
@@ -60,6 +59,19 @@ class FunctionParser {
         }
     }
 
+    private static Function register(Function function, Parser parser) throws ParseError {
+        Optional<FunctionDeclaration> maybeDeclared = parser.context().lookupFunction(function.signature());
+        if (maybeDeclared.isPresent()) {
+            FunctionDeclaration declaration = maybeDeclared.get();
+            if (!declaration.isDefined() && declaration instanceof Function) {
+                return (Function) declaration;
+            }
+        }
+
+        parser.context().registerFunction(function);
+        return function;
+    }
+
     static Function parseSignature(Parser parser) throws ParseError {
         Token functionToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
         Token functionNameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
@@ -81,6 +93,14 @@ class FunctionParser {
             parameters,
             null
         );
+    }
+
+    static void parseForwardDeclaration(Parser parser) throws ParseError {
+        log.debug("Forward declaration");
+
+        parser.accept(parser.symbol(PlangSymbol.FORWARD_DECLARATION));
+        Function function = parseSignature(parser);
+        parser.context().registerFunction(function);
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {

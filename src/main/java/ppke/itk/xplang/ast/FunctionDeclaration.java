@@ -21,6 +21,8 @@ public abstract class FunctionDeclaration extends Node {
         return new FunctionCall(location, this, args);
     }
 
+    abstract public boolean isDefined();
+
     @Override public String toString() {
         return String.format("FUNCTION[%s]", signature);
     }

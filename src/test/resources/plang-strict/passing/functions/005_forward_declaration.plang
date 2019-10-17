@@ -1,0 +1,27 @@
+**#Support forward declaration
+**Memory:x=Integer(1)
+
+majd_lesz függvény f2(x: Egész): Egész
+
+függvény f1(x: Egész): Egész
+  ha x < 0 akkor
+    Eredmény := f2(x)
+  különben
+    Eredmény := -x
+  ha_vége
+függvény_vége
+
+függvény f2(x: Egész): Egész
+  ha x > 0 akkor
+    Eredmény := f1(x)
+  különben
+    Eredmény := -x
+  ha_vége
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f1(-1)
+program_vége

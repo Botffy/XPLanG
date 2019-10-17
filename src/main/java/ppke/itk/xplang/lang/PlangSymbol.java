@@ -8,6 +8,7 @@ enum PlangSymbol {
     END_PROGRAM,
     FUNCTION,
     END_FUNCTION,
+    FORWARD_DECLARATION,
     DECLARE,
     IF,
     THEN,

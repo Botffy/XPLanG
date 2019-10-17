@@ -33,6 +33,7 @@ public class PlangGrammar extends Grammar {
             makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
             makeSymbol(PlangSymbol.FUNCTION).register(ctx);
             makeSymbol(PlangSymbol.END_FUNCTION).register(ctx);
+            makeSymbol(PlangSymbol.FORWARD_DECLARATION).register(ctx);
             makeSymbol(PlangSymbol.DECLARE).register(ctx);
             makeSymbol(PlangSymbol.IF).register(ctx);
             makeSymbol(PlangSymbol.THEN).register(ctx);

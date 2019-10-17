@@ -271,6 +271,11 @@ public class TypeCheckerTest {
 
         @Override
         public void accept(ASTVisitor visitor) { }
+
+        @Override
+        public boolean isDefined() {
+            return true;
+        }
     }
 
     private static class MockRValue extends RValue {

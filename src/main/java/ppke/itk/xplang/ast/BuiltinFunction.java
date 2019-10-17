@@ -16,6 +16,11 @@ public class BuiltinFunction extends FunctionDeclaration {
         return instruction;
     }
 
+    @Override
+    public boolean isDefined() {
+        return true;
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }
