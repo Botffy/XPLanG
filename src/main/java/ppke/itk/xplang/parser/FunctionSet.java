@@ -37,6 +37,6 @@ final class FunctionSet {
     }
 
     void limitArgumentNumberTo(int argNumber) {
-        set.entrySet().removeIf(x -> x.getKey().argumentCount() != argNumber);
+        set.entrySet().removeIf(x -> x.getKey().parameterCount() != argNumber);
     }
 }

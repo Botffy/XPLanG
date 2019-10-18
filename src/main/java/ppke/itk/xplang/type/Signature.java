@@ -15,16 +15,16 @@ import static java.util.Collections.unmodifiableList;
 public class Signature {
     private final Name name;
     private final Type returnType;
-    private final List<Type> args;
+    private final List<Type> parameters;
 
-    public Signature(Name name, Type returnType, List<Type> args) {
+    public Signature(Name name, Type returnType, List<Type> parameters) {
         this.name = name;
         this.returnType = returnType;
-        this.args = unmodifiableList(new ArrayList<>(args));
+        this.parameters = unmodifiableList(new ArrayList<>(parameters));
     }
 
-    public Signature(Name name, Type returnType, Type... args) {
-        this(name, returnType, asList(args));
+    public Signature(Name name, Type returnType, Type... parameters) {
+        this(name, returnType, asList(parameters));
     }
 
     public Name getName() {
@@ -35,20 +35,20 @@ public class Signature {
         return returnType;
     }
 
-    public List<Type> getArgs() {
-        return args;
+    public List<Type> getParameters() {
+        return parameters;
     }
 
-    public Type getArg(int i) {
-        return args.get(i);
+    public Type getParameter(int i) {
+        return parameters.get(i);
     }
 
-    public Type argType(int position) {
-        return args.get(position);
+    public Type parameterType(int position) {
+        return parameters.get(position);
     }
 
-    public int argumentCount() {
-        return args.size();
+    public int parameterCount() {
+        return parameters.size();
     }
 
     @Override public boolean equals(Object object) {
@@ -56,14 +56,14 @@ public class Signature {
         Signature that = (Signature) object;
         return this.name.equals(that.name)
             && this.returnType.equals(that.returnType)
-            && this.args.equals(that.args);
+            && this.parameters.equals(that.parameters);
     }
 
     @Override public int hashCode() {
-        return Objects.hash(name, returnType, args);
+        return Objects.hash(name, returnType, parameters);
     }
 
     @Override public String toString() {
-        return String.format("%s: %s -> %s", name, args, returnType);
+        return String.format("%s: %s -> %s", name, parameters, returnType);
     }
 }

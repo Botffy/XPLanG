@@ -182,11 +182,11 @@ public class Context {
      * @param name the name of the function.
      * @param instruction the instruction to process when the function is called.
      * @param returnType the return type of the function.
-     * @param operands the types of the operands of the function.
+     * @param parameters the types of the operands of the function.
      * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> operands) throws ParseError {
-        Signature signature = new Signature(name, returnType, operands);
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> parameters) throws ParseError {
+        Signature signature = new Signature(name, returnType, parameters);
         registerFunction(new BuiltinFunction(Location.NONE, signature, instruction));
     }
 

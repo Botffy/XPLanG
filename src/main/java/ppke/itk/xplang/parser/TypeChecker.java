@@ -76,7 +76,7 @@ public class TypeChecker {
     private void resolveFunction(FunctionExpression parent) throws ParseError {
         log.debug("Resolving function {}", parent.getName());
 
-        parent.removeFromCandidatesIf(x -> x.argumentCount() != parent.childNodes().size());
+        parent.removeFromCandidatesIf(x -> x.parameterCount() != parent.childNodes().size());
 
         Map<Signature, List<MatchType>> matches = new HashMap<>();
         for (Signature signature : parent.getCandidates()) {
@@ -120,9 +120,9 @@ public class TypeChecker {
     }
 
     private List<MatchType> calculateMatch(Signature signature, List<Expression> children) {
-        List<MatchType> match = new ArrayList<>(nCopies(signature.argumentCount(), MatchType.NONE));
-        for (int i = 0; i < signature.argumentCount(); ++i) {
-            Type expected = signature.getArg(i);
+        List<MatchType> match = new ArrayList<>(nCopies(signature.parameterCount(), MatchType.NONE));
+        for (int i = 0; i < signature.parameterCount(); ++i) {
+            Type expected = signature.getParameter(i);
             Type actual = provides.get(children.get(i));
 
             if (expected.accepts(actual)) {
@@ -174,7 +174,7 @@ public class TypeChecker {
             if (match.get(i) == MatchType.COERCED) {
                 Expression original = parent.childNodes().get(i);
 
-                Signature coercionSignature = new Signature(SpecialName.IMPLICIT_COERCION, signature.getArg(i), provides.get(original));
+                Signature coercionSignature = new Signature(SpecialName.IMPLICIT_COERCION, signature.getParameter(i), provides.get(original));
                 FunctionDeclaration coercionFunction = context.lookupFunction(coercionSignature).orElseThrow(IllegalStateException::new);
 
                 Expression coercion = new FunctionExpression(
