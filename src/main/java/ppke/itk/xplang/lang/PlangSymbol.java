@@ -18,7 +18,7 @@ enum PlangSymbol {
     LOOP,
     WHILE,
     END_LOOP,
-    ERROR,
+    ASSERT,
     ASSIGNMENT,
     IN,
     OUT,

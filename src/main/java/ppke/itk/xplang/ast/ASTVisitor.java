@@ -19,7 +19,7 @@ public interface ASTVisitor {
     void visit(Loop loop);
     void visit(Input input);
     void visit(Output output);
-    void visit(ErrorRaising errorRaising);
+    void visit(Assertion assertion);
     void visit(FunctionCall functionCall);
     void visit(ConditionalConnective conditionalConnective);
     void visit(VarRef varRef);

@@ -22,7 +22,7 @@ final class StatementParser {
         statementParsers.put(PlangSymbol.OUT, OutputStatementParser::parse);
         statementParsers.put(PlangSymbol.OPEN, OpenStatementParser::parse);
         statementParsers.put(PlangSymbol.CLOSE, CloseStatementParser::parse);
-        statementParsers.put(PlangSymbol.ERROR, ErrorStatementParser::parse);
+        statementParsers.put(PlangSymbol.ASSERT, AssertStatementParser::parse);
     }
 
     private StatementParser() { /* empty private ctor */ }

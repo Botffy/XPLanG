@@ -190,10 +190,12 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override
-    public void visit(ErrorRaising errorRaising) throws InterpreterError {
-        errorRaising.getErrorMessage().accept(this);
-        StringValue message = valueStack.pop(StringValue.class);
-        throw new InterpreterError(ErrorCode.ASSERTION_FAILURE, message.getValue());
+    public void visit(Assertion assertion) throws InterpreterError {
+        assertion.getCondition().accept(this);
+        BooleanValue evaulated = valueStack.pop(BooleanValue.class);
+        if (evaulated.equals(BooleanValue.FALSE)) {
+            throw new InterpreterError(ErrorCode.ASSERTION_FAILURE, assertion.getCondition().location());
+        }
     }
 
     @Override public void visit(FunctionCall call) {
