@@ -21,10 +21,10 @@ final class LValueParser {
 
     static LValue parse(Parser parser) throws ParseError {
         log.debug("LValue");
-        Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
+        Token token = parser.accept(Symbol.IDENTIFIER);
 
         LValue Result = parser.context().getVariableReference(name(token.lexeme()), token);
-        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
+        while(parser.actual().symbol().equals(Symbol.BRACKET_OPEN)) {
             if (Result.getType().indexType().equals(Archetype.NONE)) {
                 throw new ParseError(Result.location(), ErrorCode.TYPE_MISMATCH_NOT_ADDRESSABLE, Result.getType());
             }
@@ -40,7 +40,7 @@ final class LValueParser {
                 ).build()
                 .resolve();
 
-            Token endToken = parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
+            Token endToken = parser.accept(Symbol.BRACKET_CLOSE);
             Result = new ElementRef(
                 new Location(startToken.location().start, endToken.location().end),
                 Result.toRValue(), index

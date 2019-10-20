@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.VariableDeclaration;
 import ppke.itk.xplang.parser.ErrorCode;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.Symbol;
 
 import java.util.stream.Stream;
 
@@ -19,14 +20,14 @@ final class DeclarationsParser {
 
     static Stream<VariableDeclaration> parse(Parser parser) throws ParseError {
         log.debug("Declarations");
-        parser.accept(parser.symbol(PlangSymbol.DECLARE), ErrorCode.EXPECTED_DECLARE);
+        parser.accept(Symbol.DECLARE, ErrorCode.EXPECTED_DECLARE);
 
-        if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COLON))) {
+        if (parser.actual().symbol().equals(Symbol.COLON)) {
             parser.advance();
         }
 
         Stream<VariableDeclaration> declarations = VariableDeclarationParser.parse(parser);
-        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+        while(parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance();
             declarations = Stream.concat(declarations, VariableDeclarationParser.parse(parser));
         }

@@ -8,7 +8,7 @@ import ppke.itk.xplang.type.Archetype;
 
 class AssertStatementParser {
     static Assertion parse(Parser parser) throws ParseError {
-        Location startLoc = parser.accept(parser.symbol(PlangSymbol.ASSERT)).location();
+        Location startLoc = parser.accept(Symbol.ASSERT).location();
 
         Expression assertion = parser.parseExpression();
         Location endLoc = assertion.getLocation();

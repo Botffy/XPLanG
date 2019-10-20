@@ -22,7 +22,6 @@ import static java.util.stream.Collectors.toList;
 public class Context {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
-    private final SymbolTable symbolTable = new SymbolTable();
     private final ScopedMap<Name, NameTableEntry> nameTable = new ScopedMap<>();
     private final Map<Symbol, Operator.Prefix> prefixOperators = new HashMap<>();
     private final Map<Symbol, Operator.Infix> infixOperators = new HashMap<>();
@@ -39,7 +38,6 @@ public class Context {
      * Open a new lexical scope.
      */
     public void openScope() {
-        symbolTable.openScope();
         nameTable.openScope();
     }
 
@@ -58,7 +56,6 @@ public class Context {
             )
         );
 
-        symbolTable.closeScope();
         nameTable.closeScope();
         return scope;
     }
@@ -356,29 +353,6 @@ public class Context {
 
     public void setIntegerType(Type integerType) {
         this.integerType = integerType;
-    }
-
-    /**
-     * Register a new terminal symbol in the language.
-     */
-    public void register(Symbol symbol) {
-        symbolTable.register(symbol);
-        log.debug("Registered symbol {}", symbol);
-    }
-
-    /**
-     * Get the Symbols of the language.
-     * @return The ordered list of terminal symbols.
-     */
-    public Iterable<Symbol> getSymbols() {
-        return symbolTable.getSymbolList();
-    }
-
-    /**
-     * Get the Symbol associated with this name (in this scope).
-     */
-    public Symbol lookup(String symbolName) {
-        return symbolTable.lookup(symbolName);
     }
 
     private static final class NameTableEntry {

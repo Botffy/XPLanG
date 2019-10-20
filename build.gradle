@@ -4,6 +4,7 @@ plugins {
     id 'pmd'
     id 'jacoco'
     id 'org.unbroken-dome.test-sets' version '2.1.1'
+    id "org.xbib.gradle.plugin.jflex" version "1.2.1"
 }
 
 

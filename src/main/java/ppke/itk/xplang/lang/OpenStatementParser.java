@@ -16,10 +16,10 @@ public class OpenStatementParser {
     public static Statement parse(Parser parser) throws ParseError {
         // TODO: jobb hibakezelés
 
-        Token token = parser.accept(parser.symbol(PlangSymbol.OPEN));
+        Token token = parser.accept(Symbol.OPEN);
         Location startLocation = token.location();
         LValue var = LValueParser.parse(parser);
-        parser.accept(parser.symbol(PlangSymbol.COLON));
+        parser.accept(Symbol.COLON);
         Expression fileName = parser.parseExpression();
         Location endLocation = fileName.getLocation();
         Location location = Location.between(startLocation, endLocation);

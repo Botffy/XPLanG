@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
+import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.parser.*;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ final class SequenceParser {
             try {
                 statementList.add(StatementParser.parse(parser));
 
-                if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+                if (parser.actual().symbol().equals(Symbol.COMMA)) {
                     parser.advance();
                 }
 

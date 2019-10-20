@@ -3,10 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.VariableDeclaration;
-import ppke.itk.xplang.parser.ErrorCode;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
@@ -27,12 +24,12 @@ final class VariableDeclarationParser {
         log.debug("VariableDeclaration");
         List<Token> variables = new ArrayList<>();
 
-        variables.add(parser.accept(parser.symbol(PlangSymbol.IDENTIFIER)));
-        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+        variables.add(parser.accept(Symbol.IDENTIFIER));
+        while(parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance(); // consume the comma
-            variables.add(parser.accept(parser.symbol(PlangSymbol.IDENTIFIER)));
+            variables.add(parser.accept(Symbol.IDENTIFIER));
         }
-        parser.accept(parser.symbol(PlangSymbol.COLON), ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
+        parser.accept(Symbol.COLON, ErrorCode.EXPECTED_COLON_AFTER_VARIABLE);
         Type type = TypenameParser.parse(parser);
 
         return variables.stream()

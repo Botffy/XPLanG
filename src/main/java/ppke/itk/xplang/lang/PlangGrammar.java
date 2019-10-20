@@ -3,6 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.*;
@@ -29,61 +30,6 @@ public class PlangGrammar extends Grammar {
     public void setup(Context ctx) {
         log.debug("Setting up context");
         try {
-            makeSymbol(PlangSymbol.PROGRAM).register(ctx);
-            makeSymbol(PlangSymbol.END_PROGRAM).register(ctx);
-            makeSymbol(PlangSymbol.FUNCTION).register(ctx);
-            makeSymbol(PlangSymbol.END_FUNCTION).register(ctx);
-            makeSymbol(PlangSymbol.FORWARD_DECLARATION).register(ctx);
-            makeSymbol(PlangSymbol.DECLARE).register(ctx);
-            makeSymbol(PlangSymbol.IF).register(ctx);
-            makeSymbol(PlangSymbol.THEN).register(ctx);
-            makeSymbol(PlangSymbol.ELSIF).register(ctx);
-            makeSymbol(PlangSymbol.ELSE).register(ctx);
-            makeSymbol(PlangSymbol.ENDIF).register(ctx);
-            makeSymbol(PlangSymbol.LOOP).register(ctx);
-            makeSymbol(PlangSymbol.WHILE).register(ctx);
-            makeSymbol(PlangSymbol.END_LOOP).register(ctx);
-            makeSymbol(PlangSymbol.ASSERT).register(ctx);
-            makeSymbol(PlangSymbol.ASSIGNMENT).register(ctx);
-            makeSymbol(PlangSymbol.IN).register(ctx);
-            makeSymbol(PlangSymbol.OUT).register(ctx);
-            makeSymbol(PlangSymbol.OPEN).register(ctx);
-            makeSymbol(PlangSymbol.CLOSE).register(ctx);
-            Symbol colon = makeSymbol(PlangSymbol.COLON).register(ctx);
-            Symbol comma = makeSymbol(PlangSymbol.COMMA).register(ctx);
-            Symbol parenOpen = makeSymbol(PlangSymbol.PAREN_OPEN).register(ctx);
-            Symbol parenClose = makeSymbol(PlangSymbol.PAREN_CLOSE).register(ctx);
-            Symbol bracketOpen = makeSymbol(PlangSymbol.BRACKET_OPEN).register(ctx);
-            Symbol bracketClose = makeSymbol(PlangSymbol.BRACKET_CLOSE).register(ctx);
-            Symbol not = makeSymbol(PlangSymbol.OPERATOR_NOT).register(ctx);
-            Symbol or = makeSymbol(PlangSymbol.OPERATOR_OR).register(ctx);
-            Symbol and = makeSymbol(PlangSymbol.OPERATOR_AND).register(ctx);
-            Symbol minus = makeSymbol(PlangSymbol.OPERATOR_MINUS).register(ctx);
-            Symbol plus = makeSymbol(PlangSymbol.OPERATOR_PLUS).register(ctx);
-            Symbol times = makeSymbol(PlangSymbol.OPERATOR_TIMES).register(ctx);
-            Symbol idiv = makeSymbol(PlangSymbol.OPERATOR_IDIV).register(ctx);
-            Symbol div = makeSymbol(PlangSymbol.OPERATOR_DIV).register(ctx);
-            Symbol mod = makeSymbol(PlangSymbol.OPERATOR_IMOD).register(ctx);
-            Symbol exp = makeSymbol(PlangSymbol.OPERATOR_EXP).register(ctx);
-            Symbol pipe = makeSymbol(PlangSymbol.OPERATOR_PIPE).register(ctx);
-            Symbol eq = makeSymbol(PlangSymbol.OPERATOR_EQ).register(ctx);
-            Symbol neq = makeSymbol(PlangSymbol.OPERATOR_NEQ).register(ctx);
-            Symbol lt = makeSymbol(PlangSymbol.OPERATOR_LT).register(ctx);
-            Symbol lte = makeSymbol(PlangSymbol.OPERATOR_LTE).register(ctx);
-            Symbol gt = makeSymbol(PlangSymbol.OPERATOR_GT).register(ctx);
-            Symbol gte = makeSymbol(PlangSymbol.OPERATOR_GTE).register(ctx);
-            Symbol find = makeSymbol(PlangSymbol.OPERATOR_FIND).register(ctx);
-            Symbol sv = makeSymbol(PlangSymbol.OPERATOR_SV).register(ctx);
-            Symbol identifier = makeSymbol(PlangSymbol.IDENTIFIER).withPrecedence(Symbol.Precedence.IDENTIFIER).register(ctx);
-            Symbol literalInt = makeSymbol(PlangSymbol.LITERAL_INT).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalReal = makeSymbol(PlangSymbol.LITERAL_REAL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalBool = makeSymbol(PlangSymbol.LITERAL_BOOL).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalChar = makeSymbol(PlangSymbol.LITERAL_CHAR).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            Symbol literalText = makeSymbol(PlangSymbol.LITERAL_STRING).withPrecedence(Symbol.Precedence.LITERAL).register(ctx);
-            makeSymbol(PlangSymbol.EOL).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.WHITESPACE).notSignificant().register(ctx);
-            makeSymbol(PlangSymbol.COMMENT).notSignificant().register(ctx);
-
             Scalar boolType = makeScalar(ctx, Archetype.BOOLEAN_TYPE);
             Scalar intType = makeScalar(ctx, Archetype.INTEGER_TYPE);
             Scalar realType = makeScalar(ctx, Archetype.REAL_TYPE);
@@ -164,41 +110,41 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(aliases(props.getFunctionName("is_digit")), Instruction.IS_DIGIT, boolType, charType);
             ctx.createBuiltin(aliases(props.getFunctionName("end")), Instruction.IFILE_END, boolType, inputStreamType);
 
-            ctx.prefix(parenOpen, new Grouping(parenClose));
-            ctx.prefix(identifier, new IdentifierOperator(PlangName::new, new IdentifierOperator.FunctionSymbols(
-                parenOpen, comma, parenClose
+            ctx.prefix(Symbol.PAREN_OPEN, new Grouping(Symbol.PAREN_CLOSE));
+            ctx.prefix(Symbol.IDENTIFIER, new IdentifierOperator(PlangName::new, new IdentifierOperator.FunctionSymbols(
+                Symbol.PAREN_OPEN, Symbol.COMMA, Symbol.PAREN_CLOSE
             )));
-            ctx.prefix(literalInt, new LiteralOperator<>(IntegerLiteral::new, intType, Integer::valueOf));
-            ctx.prefix(literalReal, new LiteralOperator<>(RealLiteral::new, realType, Double::valueOf));
-            ctx.prefix(literalBool, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
-            ctx.prefix(literalChar, new LiteralOperator<>(CharacterLiteral::new, charType, x -> x.charAt(1)));
-            ctx.prefix(literalText, new LiteralOperator<>(StringLiteral::new, stringType, x -> x.substring(1, x.length() - 1)));
-            ctx.infix(bracketOpen, new ElementValueOperator(bracketClose, colon));
+            ctx.prefix(Symbol.LITERAL_INT, new LiteralOperator<>(IntegerLiteral::new, intType, Integer::valueOf));
+            ctx.prefix(Symbol.LITERAL_REAL, new LiteralOperator<>(RealLiteral::new, realType, Double::valueOf));
+            ctx.prefix(Symbol.LITERAL_BOOL, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
+            ctx.prefix(Symbol.LITERAL_CHAR, new LiteralOperator<>(CharacterLiteral::new, charType, x -> x.charAt(1)));
+            ctx.prefix(Symbol.LITERAL_STRING, new LiteralOperator<>(StringLiteral::new, stringType, x -> x.substring(1, x.length() - 1)));
+            ctx.infix(Symbol.BRACKET_OPEN, new ElementValueOperator(Symbol.BRACKET_CLOSE, Symbol.COLON));
 
-            ctx.infix(eq, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));
-            ctx.infix(neq, new InfixBinary(operator("neq"), Operator.Precedence.RELATIONAL));
-            ctx.infix(lt, new InfixBinary(operator("lt"), Operator.Precedence.RELATIONAL));
-            ctx.infix(lte, new InfixBinary(operator("lte"), Operator.Precedence.RELATIONAL));
-            ctx.infix(gt, new InfixBinary(operator("gt"), Operator.Precedence.RELATIONAL));
-            ctx.infix(gte, new InfixBinary(operator("gte"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_EQ, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_NEQ, new InfixBinary(operator("neq"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_LT, new InfixBinary(operator("lt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_LTE, new InfixBinary(operator("lte"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_GT, new InfixBinary(operator("gt"), Operator.Precedence.RELATIONAL));
+            ctx.infix(Symbol.OPERATOR_GTE, new InfixBinary(operator("gte"), Operator.Precedence.RELATIONAL));
 
-            ctx.prefix(not, new PrefixUnary(operator("not")));
-            ctx.infix(or, new ConditionalConnectiveOperator(ConditionalConnective.Op.OR, boolType));
-            ctx.infix(and, new ConditionalConnectiveOperator(ConditionalConnective.Op.AND, boolType));
+            ctx.prefix(Symbol.OPERATOR_NOT, new PrefixUnary(operator("not")));
+            ctx.infix(Symbol.OPERATOR_OR, new ConditionalConnectiveOperator(ConditionalConnective.Op.OR, boolType));
+            ctx.infix(Symbol.OPERATOR_AND, new ConditionalConnectiveOperator(ConditionalConnective.Op.AND, boolType));
 
-            ctx.prefix(minus, new PrefixUnary(operator("negate")));
-            ctx.prefix(pipe, new CircumfixOperator(pipe, operator("length")));
-            ctx.infix(minus, new InfixBinary(operator("minus"), Operator.Precedence.SUM));
-            ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
-            ctx.infix(plus, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
-            ctx.infix(times, new InfixBinary(operator("times"), Operator.Precedence.PRODUCT));
-            ctx.infix(idiv, new InfixBinary(operator("idiv"), Operator.Precedence.PRODUCT));
-            ctx.infix(div, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
-            ctx.infix(mod, new InfixBinary(operator("mod"), Operator.Precedence.PRODUCT));
-            ctx.infix(exp, new InfixBinary(operator("pow"), Operator.Precedence.EXPONENT));
+            ctx.prefix(Symbol.OPERATOR_MINUS, new PrefixUnary(operator("negate")));
+            ctx.prefix(Symbol.OPERATOR_PIPE, new CircumfixOperator(Symbol.OPERATOR_PIPE, operator("length")));
+            ctx.infix(Symbol.OPERATOR_MINUS, new InfixBinary(operator("minus"), Operator.Precedence.SUM));
+            ctx.infix(Symbol.OPERATOR_PLUS, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
+            ctx.infix(Symbol.OPERATOR_PLUS, new InfixBinary(operator("plus"), Operator.Precedence.SUM));
+            ctx.infix(Symbol.OPERATOR_TIMES, new InfixBinary(operator("times"), Operator.Precedence.PRODUCT));
+            ctx.infix(Symbol.OPERATOR_IDIV, new InfixBinary(operator("idiv"), Operator.Precedence.PRODUCT));
+            ctx.infix(Symbol.OPERATOR_DIV, new InfixBinary(operator("div"), Operator.Precedence.PRODUCT));
+            ctx.infix(Symbol.OPERATOR_IMOD, new InfixBinary(operator("mod"), Operator.Precedence.PRODUCT));
+            ctx.infix(Symbol.OPERATOR_EXP, new InfixBinary(operator("pow"), Operator.Precedence.EXPONENT));
 
-            ctx.infix(find, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
-            ctx.prefix(sv, new NullaryOperator(operator("sv")));
+            ctx.infix(Symbol.OPERATOR_FIND, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
+            ctx.prefix(Symbol.OPERATOR_SV, new NullaryOperator(operator("sv")));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }
@@ -218,13 +164,6 @@ public class PlangGrammar extends Grammar {
      */
     @Override protected Root start(Parser parser) throws ParseError {
         return RootParser.parse(parser);
-    }
-
-    private Symbol.Builder makeSymbol(PlangSymbol symbol) {
-        return Symbol.create()
-            .named(symbol.name())
-            .matching(props.getSymbolPattern(symbol))
-            .caseInsensitive();
     }
 
     private Scalar makeScalar(Context ctx, Type archetype) throws ParseError {

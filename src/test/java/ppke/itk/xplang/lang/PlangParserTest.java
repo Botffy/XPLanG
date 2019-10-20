@@ -4,10 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.Root;
-import ppke.itk.xplang.parser.Grammar;
-import ppke.itk.xplang.parser.LexerError;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
 
 import java.io.Reader;
@@ -42,7 +39,7 @@ public class PlangParserTest {
     @Test public void skipToNextLineAfterError() throws LexerError {
         Reader source = new StringReader("c:=5\nprogram_vége");
         parser.parse(source, grammar);
-        SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));
+        SequenceParser.parse(parser, Symbol.END_PROGRAM);
         assertEquals(1, parser.getErrorLog().getErrorMessages().size());
     }
 

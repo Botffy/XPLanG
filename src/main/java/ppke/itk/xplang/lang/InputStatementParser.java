@@ -17,22 +17,22 @@ import static java.util.Collections.singletonList;
  */
 public class InputStatementParser {
     public static Input parse(Parser parser) throws ParseError {
-        Token in = parser.accept(parser.symbol(PlangSymbol.IN));
+        Token in = parser.accept(Symbol.IN);
         Location startLoc = in.location();
 
         RValue inputStream = new StandardInput();
-        if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
+        if (parser.actual().symbol().equals(Symbol.IDENTIFIER)) {
             inputStream = LValueParser.parse(parser).toRValue();
         }
 
-        parser.accept(parser.symbol(PlangSymbol.COLON));
+        parser.accept(Symbol.COLON);
 
         List<Assignment> assignments = new ArrayList<>();
         LValue lValue = LValueParser.parse(parser);
         Location endLoc = lValue.location();
         assignments.addAll(getAssignments(parser, lValue, inputStream));
 
-        while (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+        while (parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance();
             lValue = LValueParser.parse(parser);
             endLoc = lValue.location();

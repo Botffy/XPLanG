@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
@@ -40,11 +41,11 @@ class FunctionParser {
                 parser.context().declareVariable(new PlangName(parameter.getName()), parameter);
             }
 
-            if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
+            if (parser.actual().symbol().equals(Symbol.DECLARE)) {
                 DeclarationsParser.parse(parser);
             }
-            Sequence sequence = SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_FUNCTION));
-            parser.accept(parser.symbol(PlangSymbol.END_FUNCTION));
+            Sequence sequence = SequenceParser.parse(parser, Symbol.END_FUNCTION);
+            parser.accept(Symbol.END_FUNCTION);
 
             // todo this is a bit iffy. We SUPPOSE the statements below won't throw parseErrors, but it'd be more exact
             //      to close the scope outside the try block.
@@ -72,12 +73,12 @@ class FunctionParser {
     }
 
     static Function parseSignature(Parser parser) throws ParseError {
-        Token functionToken = parser.accept(parser.symbol(PlangSymbol.FUNCTION));
-        Token functionNameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
+        Token functionToken = parser.accept(Symbol.FUNCTION);
+        Token functionNameToken = parser.accept(Symbol.IDENTIFIER);
 
         List<VariableDeclaration> parameters = parseParameterList(parser);
 
-        parser.accept(parser.symbol(PlangSymbol.COLON));
+        parser.accept(Symbol.COLON);
         Type type = TypenameParser.parse(parser);
 
         Signature signature = new Signature(
@@ -97,19 +98,19 @@ class FunctionParser {
     static void parseForwardDeclaration(Parser parser) throws ParseError {
         log.debug("Forward declaration");
 
-        parser.accept(parser.symbol(PlangSymbol.FORWARD_DECLARATION));
+        parser.accept(Symbol.FORWARD_DECLARATION);
         Function function = parseSignature(parser);
         parser.context().registerFunction(function);
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
-        parser.accept(parser.symbol(PlangSymbol.PAREN_OPEN));
+        parser.accept(Symbol.PAREN_OPEN);
         Stream<VariableDeclaration> declarations = VariableDeclarationParser.parse(parser);
-        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+        while(parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance();
             declarations = Stream.concat(declarations, VariableDeclarationParser.parse(parser));
         }
-        parser.accept(parser.symbol(PlangSymbol.PAREN_CLOSE));
+        parser.accept(Symbol.PAREN_CLOSE);
         return declarations.collect(toList());
     }
 }

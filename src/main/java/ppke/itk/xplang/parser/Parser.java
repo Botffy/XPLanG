@@ -7,6 +7,7 @@ import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.parser.operator.ExpressionParser;
 
+import java.io.IOException;
 import java.io.Reader;
 
 public class Parser {
@@ -43,7 +44,7 @@ public class Parser {
     public Root parse(Reader source, Grammar grammar) {
         try {
             grammar.setup(context);
-            this.lexer = new Lexer(source, context.getSymbols());
+            this.lexer = new ppke.itk.xplang.parser.PlangHuLexer(source);
             advance();
             return grammar.start(this);
         } catch(ParseError e) {
@@ -72,15 +73,22 @@ public class Parser {
      *  @throws  LexerError if meets an unrecognized token.
      */
     public Token advance() throws LexerError {
-        log.trace("Advance");
-        Token token = actual();
-        act = lexer.next();
+        try {
+            log.trace("Advance");
+            Token token = actual();
 
-        if(act.symbol().equals(Symbol.LEXER_ERROR)) {
-            log.error("Lexer error: invalid token {}", actual());
-            throw new LexerError(actual());
+            do {
+                act = lexer.next();
+            } while (act.symbol() == Symbol.COMMENT || act.symbol() == Symbol.WHITESPACE || act.symbol() == Symbol.EOL);
+
+            if (act.symbol() == Symbol.LEXER_ERROR) {
+                log.error("Lexer error: invalid token {}", actual());
+                throw new LexerError(actual());
+            }
+            return token;
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
         }
-        return token;
     }
 
     /**
@@ -120,12 +128,12 @@ public class Parser {
     }
 
     public void skipToNextLine() throws LexerError {
-        lexer.skipToNextLine();
-        advance();
-    }
-
-    public Symbol symbol(Enum name) {
-        return context.lookup(name.name());
+        try {
+            lexer.skipToNextLine();
+            advance();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public void recordError(CompilerMessage errorMessage) {

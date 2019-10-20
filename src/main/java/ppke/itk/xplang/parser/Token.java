@@ -1,11 +1,9 @@
 package ppke.itk.xplang.parser;
 
-
-import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.Location;
 
 /**
- * The Token is handed up to the Parser by the {@link Lexer}. It's a simple record holding information about both the
+ * The Token is handed up to the Parser by the Lexer. It's a simple record holding information about both the
  * matched {@link Symbol}and its realization in the source text.
  */
 public class Token {

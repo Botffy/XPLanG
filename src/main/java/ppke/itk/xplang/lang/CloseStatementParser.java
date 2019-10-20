@@ -14,7 +14,7 @@ import static java.util.Collections.singletonList;
 /** {@code CloseStatement = CLOSE LValue } */
 public class CloseStatementParser {
     public static Statement parse(Parser parser) throws ParseError {
-        Token token = parser.accept(parser.symbol(PlangSymbol.CLOSE));
+        Token token = parser.accept(Symbol.CLOSE);
         Location startLocation = token.location();
 
         LValue ref = LValueParser.parse(parser);

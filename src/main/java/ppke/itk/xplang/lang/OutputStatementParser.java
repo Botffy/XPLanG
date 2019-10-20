@@ -16,15 +16,15 @@ import java.util.List;
  */
 public class OutputStatementParser {
     public static Statement parse(Parser parser) throws ParseError {
-        Token in = parser.accept(parser.symbol(PlangSymbol.OUT));
+        Token in = parser.accept(Symbol.OUT);
         Location startLoc = in.location();
 
         RValue outputStream = new StandardOutput();
-        if (parser.actual().symbol().equals(parser.symbol(PlangSymbol.IDENTIFIER))) {
+        if (parser.actual().symbol().equals(Symbol.IDENTIFIER)) {
             outputStream = LValueParser.parse(parser).toRValue();
         }
 
-        parser.accept(parser.symbol(PlangSymbol.COLON));
+        parser.accept(Symbol.COLON);
 
         List<RValue> values = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class OutputStatementParser {
         values.add(value);
         Location endLoc = value.location();
 
-        while (parser.actual().symbol().equals(parser.symbol(PlangSymbol.COMMA))) {
+        while (parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance();
             value = parseOutputValue(parser);
             values.add(value);

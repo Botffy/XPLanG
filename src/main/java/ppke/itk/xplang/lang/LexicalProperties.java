@@ -36,13 +36,6 @@ final class LexicalProperties {
         return props.getProperty(key);
     }
 
-    /**
-     * Get the regular expression matching the symbol.
-     */
-    String getSymbolPattern(PlangSymbol symbol) {
-        return get(String.format("symbol.pattern.%s", symbol.name()));
-    }
-
     String getTypeName(Type type) {
         return get(String.format("type.name.%s", type.getLabel()));
     }

@@ -18,7 +18,7 @@ final class AssignmentParser {
     static Assignment parse(Parser parser) throws ParseError {
         log.debug("Assignment");
         LValue lhs = LValueParser.parse(parser);
-        Token token = parser.accept(parser.symbol(PlangSymbol.ASSIGNMENT));
+        Token token = parser.accept(Symbol.ASSIGNMENT);
         Expression rhsExpression = parser.parseExpression();
         RValue rhs = TypeChecker.in(parser.context())
             .checking(rhsExpression)

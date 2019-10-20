@@ -19,7 +19,7 @@ final class TypenameParser {
 
     static Type parse(Parser parser) throws ParseError {
         log.debug("Typename");
-        Token token = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER));
+        Token token = parser.accept(Symbol.IDENTIFIER);
         Type baseType = parser.context().lookupType(new PlangName(token.lexeme()), token);
         Type result = parseArrayType(parser, baseType).orElse(baseType);
         log.debug("Resolved type: {}", result);
@@ -28,17 +28,17 @@ final class TypenameParser {
 
     private static Optional<Type> parseArrayType(Parser parser, Type baseType) throws ParseError {
         Stack<Integer> lengths = new Stack<>();
-        while(parser.actual().symbol().equals(parser.symbol(PlangSymbol.BRACKET_OPEN))) {
+        while(parser.actual().symbol().equals(Symbol.BRACKET_OPEN)) {
             parser.advance();
             Token lengthToken = parser.advance();
-            if (!lengthToken.symbol().equals(parser.symbol(PlangSymbol.LITERAL_INT))) {
+            if (!lengthToken.symbol().equals(Symbol.LITERAL_INT)) {
                 throw new ParseError(
                     lengthToken.location(), ErrorCode.ARRAY_LENGTH_EXPECT_INTEGER_LITERAL, lengthToken.symbol()
                 );
             }
             int length = Integer.parseInt(lengthToken.lexeme());
             lengths.push(length);
-            parser.accept(parser.symbol(PlangSymbol.BRACKET_CLOSE));
+            parser.accept(Symbol.BRACKET_CLOSE);
         }
 
         if (lengths.isEmpty()) {

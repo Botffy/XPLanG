@@ -1,6 +1,5 @@
 package ppke.itk.xplang.parser;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.Scope;
@@ -16,28 +15,26 @@ import static com.github.stefanbirkner.fishbowl.Fishbowl.exceptionThrownBy;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public class ContextTest {
     private final static Location LOCATION = new CursorPosition(1,1).toUnaryLocation();
 
     private Context context;
-    private Symbol dSymbol;
     private Type dType = new Scalar("Dummy");
 
     @Before
     public void setUp() {
         this.context = new Context();
-        this.dSymbol = Symbol.create().named("VAR").matchingLiteral("dummy").build();
-        context.register(dSymbol);
     }
 
     @Test
     public void variableDeclarationsInScope() throws ParseError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
-        context.declareVariable(name("kettes"), new Token(dSymbol, "kettes", LOCATION), dType);
-        context.declareVariable(name("hármas"), new Token(dSymbol, "hármas", LOCATION), dType);
+        context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
+        context.declareVariable(name("kettes"), new Token(Symbol.IDENTIFIER, "kettes", LOCATION), dType);
+        context.declareVariable(name("hármas"), new Token(Symbol.IDENTIFIER, "hármas", LOCATION), dType);
 
         Scope scope = context.closeScope();
 
@@ -50,9 +47,9 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws ParseError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType);
+        context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("egyes"), new Token(dSymbol, "egyes", LOCATION), dType)
+            context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType)
         );
         assertThat(throwable, instanceOf(ParseError.class));
         assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
@@ -63,7 +60,7 @@ public class ContextTest {
         context.openScope();
         context.declareType(name("Egész"), new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("Egész"), new Token(dSymbol, "Egész", LOCATION), dType)
+            context.declareVariable(name("Egész"), new Token(Symbol.IDENTIFIER, "Egész", LOCATION), dType)
         );
         assertThat(throwable, instanceOf(ParseError.class));
         assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
@@ -73,7 +70,7 @@ public class ContextTest {
     public void variableDeclarationsShouldHoldCanonicalName() throws ParseError {
         context.openScope();
         String lexeme = "HeLLoEs";
-        Token token = new Token(dSymbol, lexeme, LOCATION);
+        Token token = new Token(Symbol.IDENTIFIER, lexeme, LOCATION);
         context.declareVariable(lowerCaseName(lexeme), token, dType);
         VariableDeclaration decl = context.getVariableReference(lowerCaseName(lexeme), token).getVariable();
         assertEquals(decl.getName(), lowerCaseName(lexeme).toString());
@@ -82,7 +79,7 @@ public class ContextTest {
     @Test
     public void lookupFailureNoSuchVariable() throws Exception {
         Throwable throwable = exceptionThrownBy(
-            () -> context.getVariableValue(name("nonexistent"), new Token(dSymbol, "nonexistent", LOCATION))
+            () -> context.getVariableValue(name("nonexistent"), new Token(Symbol.IDENTIFIER, "nonexistent", LOCATION))
         );
 
         assertThat(throwable, instanceOf(ParseError.class));
@@ -96,7 +93,7 @@ public class ContextTest {
         context.declareType(name("Egész"), new Scalar("ExampleType"));
 
         Throwable throwable = exceptionThrownBy(
-            () -> context.getVariableValue(name("Egész"), new Token(dSymbol, "Egész", LOCATION))
+            () -> context.getVariableValue(name("Egész"), new Token(Symbol.IDENTIFIER, "Egész", LOCATION))
         );
 
         assertThat(throwable, instanceOf(ParseError.class));

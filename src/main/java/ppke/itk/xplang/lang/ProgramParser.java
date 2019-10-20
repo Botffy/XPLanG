@@ -7,10 +7,7 @@ import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.ast.Sequence;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.ErrorCode;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.*;
 
 /**
  * {@code Program = PROGRAM IDENTIFIER [Declarations] Sequence END_PROGRAM}
@@ -23,10 +20,10 @@ final class ProgramParser {
     static Program parse(Parser parser) throws ParseError {
         log.debug("Program");
 
-        Token startToken = parser.accept(parser.symbol(PlangSymbol.PROGRAM), ErrorCode.EXPECTED_PROGRAM);
-        Token nameToken = parser.accept(parser.symbol(PlangSymbol.IDENTIFIER), ErrorCode.EXPECTED_PROGRAM_NAME);
+        Token startToken = parser.accept(Symbol.PROGRAM, ErrorCode.EXPECTED_PROGRAM);
+        Token nameToken = parser.accept(Symbol.IDENTIFIER, ErrorCode.EXPECTED_PROGRAM_NAME);
 
-        if(parser.actual().symbol().equals(parser.symbol(PlangSymbol.DECLARE))) {
+        if(parser.actual().symbol().equals(Symbol.DECLARE)) {
             DeclarationsParser.parse(parser).forEach(variable -> {
                 try {
                     parser.context().declareVariable(new PlangName(variable.getName()), variable);
@@ -36,9 +33,9 @@ final class ProgramParser {
             });
         }
 
-        Sequence sequence = SequenceParser.parse(parser, parser.symbol(PlangSymbol.END_PROGRAM));
+        Sequence sequence = SequenceParser.parse(parser, Symbol.END_PROGRAM);
 
-        Token endToken = parser.accept(parser.symbol(PlangSymbol.END_PROGRAM), ErrorCode.EXPECTED_END_PROGRAM);
+        Token endToken = parser.accept(Symbol.END_PROGRAM, ErrorCode.EXPECTED_END_PROGRAM);
         Scope scope = parser.context().closeScope();
 
         return new Program(
