@@ -108,7 +108,8 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
 
     \d+                             { return token(Symbol.LITERAL_INT, yytext(), yyline, yycolumn); }
     \d+\.\d+                        { return token(Symbol.LITERAL_REAL, yytext(), yyline, yycolumn); }
-    (igaz)|(hamis)                  { return token(Symbol.LITERAL_BOOL, yytext(), yyline, yycolumn); }
+    "igaz"                          { return token(Symbol.LITERAL_TRUE, yytext(), yyline, yycolumn); }
+    "hamis"                         { return token(Symbol.LITERAL_FALSE, yytext(), yyline, yycolumn); }
     '.'                             { return token(Symbol.LITERAL_CHAR, yytext(), yyline, yycolumn); }
     \"[^\"]*\"                      { return token(Symbol.LITERAL_STRING, yytext(), yyline, yycolumn); }
 

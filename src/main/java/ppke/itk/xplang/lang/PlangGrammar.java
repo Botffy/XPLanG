@@ -116,7 +116,8 @@ public class PlangGrammar extends Grammar {
             )));
             ctx.prefix(Symbol.LITERAL_INT, new LiteralOperator<>(IntegerLiteral::new, intType, Integer::valueOf));
             ctx.prefix(Symbol.LITERAL_REAL, new LiteralOperator<>(RealLiteral::new, realType, Double::valueOf));
-            ctx.prefix(Symbol.LITERAL_BOOL, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> x.equalsIgnoreCase(props.get("value.boolean.true"))));
+            ctx.prefix(Symbol.LITERAL_TRUE, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> true) );
+            ctx.prefix(Symbol.LITERAL_FALSE, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> false) );
             ctx.prefix(Symbol.LITERAL_CHAR, new LiteralOperator<>(CharacterLiteral::new, charType, x -> x.charAt(1)));
             ctx.prefix(Symbol.LITERAL_STRING, new LiteralOperator<>(StringLiteral::new, stringType, x -> x.substring(1, x.length() - 1)));
             ctx.infix(Symbol.BRACKET_OPEN, new ElementValueOperator(Symbol.BRACKET_CLOSE, Symbol.COLON));
