@@ -5,7 +5,6 @@ import ppke.itk.xplang.common.Location;
 /**
  * The root node of the AST. Essentially the global scope.
  */
-// FIXME should include a Scope
 public class Root extends Node {
     @Override public void accept(ASTVisitor visitor) { visitor.visit(this); }
 
