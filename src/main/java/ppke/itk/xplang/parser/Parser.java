@@ -18,20 +18,8 @@ public class Parser {
     private Lexer lexer;
     private Token act;
 
-    public Parser() {
-        this(new Context(), new ErrorLog());
-    }
-
     public Parser(ErrorLog errorLog) {
-        this(new Context(), errorLog);
-    }
-
-    public Parser(Context context) {
-        this(context, new ErrorLog());
-    }
-
-    public Parser(Context context, ErrorLog errorLog) {
-        this.context = context;
+        this.context = new Context();
         this.errorLog = errorLog;
     }
 

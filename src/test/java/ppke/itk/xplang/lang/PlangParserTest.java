@@ -5,6 +5,7 @@ import org.junit.Test;
 import ppke.itk.xplang.ast.Conditional;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.ast.VariableDeclaration;
+import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
@@ -30,7 +31,7 @@ public class PlangParserTest {
 
     @Before
     public void setUp() {
-        parser = new Parser();
+        parser = new Parser(new ErrorLog());
     }
 
     /**

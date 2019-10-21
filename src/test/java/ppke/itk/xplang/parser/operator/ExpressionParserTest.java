@@ -4,6 +4,7 @@ import com.github.stefanbirkner.fishbowl.Fishbowl;
 import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
@@ -68,7 +69,7 @@ public class ExpressionParserTest {
     private Parser parser;
 
     @Before public void setUp() {
-        parser = new Parser();
+        parser = new Parser(new ErrorLog());
 
     }
 
