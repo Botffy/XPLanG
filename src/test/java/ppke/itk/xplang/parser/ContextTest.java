@@ -32,9 +32,9 @@ public class ContextTest {
     @Test
     public void variableDeclarationsInScope() throws ParseError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
-        context.declareVariable(name("kettes"), new Token(Symbol.IDENTIFIER, "kettes", LOCATION), dType);
-        context.declareVariable(name("hármas"), new Token(Symbol.IDENTIFIER, "hármas", LOCATION), dType);
+        declare(context, name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
+        declare(context, name("kettes"), new Token(Symbol.IDENTIFIER, "kettes", LOCATION), dType);
+        declare(context, name("hármas"), new Token(Symbol.IDENTIFIER, "hármas", LOCATION), dType);
 
         Scope scope = context.closeScope();
 
@@ -47,9 +47,9 @@ public class ContextTest {
     @Test
     public void variableNameClash() throws ParseError {
         context.openScope();
-        context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
+        declare(context, name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType);
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType)
+            declare(context, name("egyes"), new Token(Symbol.IDENTIFIER, "egyes", LOCATION), dType)
         );
         assertThat(throwable, instanceOf(ParseError.class));
         assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
@@ -60,7 +60,7 @@ public class ContextTest {
         context.openScope();
         context.declareType(name("Egész"), new Scalar("ExampleType"));
         Throwable throwable = exceptionThrownBy(() ->
-            context.declareVariable(name("Egész"), new Token(Symbol.IDENTIFIER, "Egész", LOCATION), dType)
+            declare(context, name("Egész"), new Token(Symbol.IDENTIFIER, "Egész", LOCATION), dType)
         );
         assertThat(throwable, instanceOf(ParseError.class));
         assertEquals(ErrorCode.NAME_CLASH, ((ParseError) throwable).getErrorCode());
@@ -71,7 +71,7 @@ public class ContextTest {
         context.openScope();
         String lexeme = "HeLLoEs";
         Token token = new Token(Symbol.IDENTIFIER, lexeme, LOCATION);
-        context.declareVariable(lowerCaseName(lexeme), token, dType);
+        declare(context, lowerCaseName(lexeme), token, dType);
         VariableDeclaration decl = context.getVariableReference(lowerCaseName(lexeme), token).getVariable();
         assertEquals(decl.getName(), lowerCaseName(lexeme).toString());
     }
@@ -133,5 +133,10 @@ public class ContextTest {
 
     private static LowerCaseName lowerCaseName(String str) {
         return new LowerCaseName(str);
+    }
+
+    private void declare(Context context, Name name, Token token, Type type) throws ParseError {
+        VariableDeclaration var = new VariableDeclaration(token.location(), name.toString(), type);
+        context.declareVariable(name, var);
     }
 }

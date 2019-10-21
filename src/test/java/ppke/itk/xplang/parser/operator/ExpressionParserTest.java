@@ -3,10 +3,8 @@ package ppke.itk.xplang.parser.operator;
 import com.github.stefanbirkner.fishbowl.Fishbowl;
 import org.junit.Before;
 import org.junit.Test;
-import ppke.itk.xplang.ast.FunctionCall;
-import ppke.itk.xplang.ast.IntegerLiteral;
-import ppke.itk.xplang.ast.RValue;
-import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
@@ -136,7 +134,8 @@ public class ExpressionParserTest {
 
     @Test
     public void shouldHandleVariables() throws ParseError {
-        parser.context().declareVariable(name("a"), token(Symbol.IDENTIFIER, "a"), Archetype.INTEGER_TYPE);
+        VariableDeclaration var = new VariableDeclaration(Location.NONE, "a", Archetype.INTEGER_TYPE);
+        parser.context().declareVariable(name("a"), var);
 
         Reader reader = new StringReader("a");
         parser.parse(reader, grammar);
