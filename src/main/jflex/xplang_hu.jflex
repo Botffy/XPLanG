@@ -37,11 +37,11 @@ import java.io.IOException;
     }
 
     @Override
-    public void skipToNextLine() throws IOException {
+    public void skipToNext(Symbol symbol) throws IOException {
         Token act = null;
         do {
             act = next();
-        } while (act.symbol() != Symbol.EOL && act.symbol() != Symbol.EOF && act.symbol() != Symbol.LEXER_ERROR);
+        } while (act.symbol() != symbol && act.symbol() != Symbol.EOF);
     }
 %}
 

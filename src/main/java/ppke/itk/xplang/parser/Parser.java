@@ -115,9 +115,13 @@ public class Parser {
         return expressionParser.parse();
     }
 
-    public void skipToNextLine() throws LexerError {
+    /**
+     * Skip all symbols until encountering the specified symbol.
+     * @param symbol
+     */
+    public void skipToNext(Symbol symbol) throws LexerError {
         try {
-            lexer.skipToNextLine();
+            lexer.skipToNext(symbol);
             advance();
         } catch (IOException e) {
             throw new IllegalStateException(e);

@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.Symbol;
-import ppke.itk.xplang.parser.ErrorCode;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,8 +52,13 @@ class RootParser {
         FunctionParser.parse(parser);
     }
 
-    private static void parseForwardDeclaration(Parser parser, State state) throws ParseError {
-        FunctionParser.parseForwardDeclaration(parser);
+    private static void parseForwardDeclaration(Parser parser, State state) throws LexerError {
+        try {
+            FunctionParser.parseForwardDeclaration(parser);
+        } catch (ParseError error) {
+            parser.recordError(error.toErrorMessage());
+            parser.skipToNext(Symbol.EOL);
+        }
     }
 
     private static void parseProgram(Parser parser, State state) throws ParseError {

@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface Lexer {
     Token next() throws IOException;
-    void skipToNextLine() throws IOException;
+    void skipToNext(Symbol symbol) throws IOException;
 }
