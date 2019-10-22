@@ -116,8 +116,8 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     {Identifier}                    { return token(Symbol.IDENTIFIER, yytext(), yyline, yycolumn); }
 
     \*\*[^\r\n]*                    { return token(Symbol.COMMENT, yytext(), yyline, yycolumn); }
-    \r|\n|\r\n                      { return token(Symbol.WHITESPACE, yytext(), yyline, yycolumn); }
-    [ \t\f]                         { return token(Symbol.EOL, yytext(), yyline, yycolumn); }
+    \r|\n|\r\n                      { return token(Symbol.EOL, yytext(), yyline, yycolumn); }
+    [^\S\r\n]                       { return token(Symbol.WHITESPACE, yytext(), yyline, yycolumn); }
 
     <<EOF>>                         { return token(Symbol.EOF, yytext(), yyline, yycolumn); }
     [^]                             { return token(Symbol.LEXER_ERROR, yytext(), yyline, yycolumn); }
