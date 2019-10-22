@@ -188,12 +188,12 @@ public class Context {
                 "Could not register function '{}': name already taken in this scope by {}",
                 signature, nameTable.lookup(name)
             );
-            throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
+            throw new ParseError(function.location(), ErrorCode.NAME_CLASH, name);
         }
         functionSet = entry.getValueAsFunctionSet();
         if(functionSet.contains(signature)) {
             log.error("Could not register function '{}': same signature already declared in this scope.", signature);
-            throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
+            throw new ParseError(function.location(), ErrorCode.NAME_CLASH, name);
         }
 
         functionSet.add(function);

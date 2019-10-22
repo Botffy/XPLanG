@@ -1,0 +1,9 @@
+**#Forward declaration of the same function twice
+**FirstErrorLoc:5,11
+majd_lesz függvény f(x: Egész): Egész
+
+majd_lesz függvény f(x: Egész): Egész
+
+program t
+  ki: ">_>"
+program_vége
