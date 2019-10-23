@@ -81,7 +81,7 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     "megnyit"                       { return token(Symbol.OPEN, yytext(), yyline, yycolumn); }
     lez{A}r                         { return token(Symbol.CLOSE, yytext(), yyline, yycolumn); }
 
-    ":="                            { return token(Symbol.ASSIGNMENT, yytext(), yyline, yycolumn); }
+    :[ \t]*=                        { return token(Symbol.ASSIGNMENT, yytext(), yyline, yycolumn); }
     ":"                             { return token(Symbol.COLON, yytext(), yyline, yycolumn); }
     ","                             { return token(Symbol.COMMA, yytext(), yyline, yycolumn); }
     "("                             { return token(Symbol.PAREN_OPEN, yytext(), yyline, yycolumn); }
