@@ -1,0 +1,7 @@
+**#Declared function not defined (even if not used)
+**FirstErrorLoc:3,11
+majd_lesz függvény f(x: Egész): Egész
+
+program t
+  ki: ">_>"
+program_vége

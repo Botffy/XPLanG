@@ -2,6 +2,8 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.Function;
+import ppke.itk.xplang.ast.FunctionDeclaration;
 import ppke.itk.xplang.ast.Program;
 import ppke.itk.xplang.ast.Root;
 import ppke.itk.xplang.common.CompilerMessage;
@@ -11,7 +13,9 @@ import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -54,6 +58,14 @@ class RootParser {
             parser.recordError(CompilerMessage.error(parser.actual().location(), ErrorCode.MISSING_ENTRY_POINT));
         }
 
+        for (FunctionDeclaration declaration : state.declarations) {
+            if (!declaration.isDefined()) {
+                parser.recordError(CompilerMessage.error(
+                    declaration.location(), ErrorCode.FUNCTION_DECLARED_NOT_DEFINED, declaration.signature())
+                );
+            }
+        }
+
         Location endLoc = parser.actual().location();
         return new Root(Location.between(startLoc, endLoc), state.program);
     }
@@ -63,7 +75,8 @@ class RootParser {
     }
 
     private static void parseForwardDeclaration(Parser parser, State state) throws ParseError {
-        FunctionParser.parseForwardDeclaration(parser);
+        Function function = FunctionParser.parseForwardDeclaration(parser);
+        state.declarations.add(function);
     }
 
     private static void parseProgram(Parser parser, State state) throws ParseError {
@@ -75,6 +88,7 @@ class RootParser {
 
 
     private static class State {
+        List<FunctionDeclaration> declarations = new ArrayList<>();
         Program program = null;
     }
 

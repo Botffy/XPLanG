@@ -95,12 +95,13 @@ class FunctionParser {
         );
     }
 
-    static void parseForwardDeclaration(Parser parser) throws ParseError {
+    static Function parseForwardDeclaration(Parser parser) throws ParseError {
         log.debug("Forward declaration");
 
         parser.accept(Symbol.FORWARD_DECLARATION);
         Function function = parseSignature(parser);
         parser.context().registerFunction(function);
+        return function;
     }
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
