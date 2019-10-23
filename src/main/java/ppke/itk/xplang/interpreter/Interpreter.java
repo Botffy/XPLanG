@@ -65,7 +65,6 @@ public class Interpreter implements ASTVisitor {
 
     @Override
     public void visit(Function function) {
-        checkStopCondition();
         memory.addFrame();
 
         Block block = function.block();
@@ -83,7 +82,6 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(returnValue);
 
         memory.closeFrame();
-        step();
     }
 
     @Override public void visit(Sequence sequence) {
@@ -199,10 +197,12 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(FunctionCall call) {
+        checkStopCondition();
         for(RValue argument : call.arguments()) {
             argument.accept(this);
         }
         call.getDeclaration().accept(this);
+        step();
     }
 
     @Override
