@@ -50,6 +50,7 @@ public class PlangParserTest {
         Reader source = new StringReader("Ha igaz akkor\na:=5\nha_vége");
         parser.parse(source, grammar);
         VariableDeclaration var = new VariableDeclaration(Location.NONE, "a", Archetype.INTEGER_TYPE);
+        parser.context().openScope();
         parser.context().declareVariable(new PlangName("a"), var);
 
         Conditional cond = ConditionalParser.parse(parser);

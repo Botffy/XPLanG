@@ -1,6 +1,5 @@
 package ppke.itk.xplang.parser;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
@@ -11,18 +10,25 @@ import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
-import java.util.*;
-
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
- * Parsing context. The state of the parser, encapsulating the symbol table.
+ * Parsing context, the current state of the parser.
+ *
+ * <p>The parser context keeps track of declared functions, types, variables, and operators. Functions, types and
+ * operators are always global. Variables are always local, and can only be declared if there is a local scope
+ * open.</p>
  */
 public class Context {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Context");
 
-    private final ScopedMap<Name, NameTableEntry> nameTable = new ScopedMap<>();
+    private final Map<Name, Type> types = new HashMap<>();
+    private final Map<Name, FunctionSet> functions = new HashMap<>();
+    private Map<Name, VariableDeclaration> localVariables = null;
+
     private final Map<Symbol, Operator.Prefix> prefixOperators = new HashMap<>();
     private final Map<Symbol, Operator.Infix> infixOperators = new HashMap<>();
 
@@ -30,62 +36,65 @@ public class Context {
     private Type integerType = Archetype.NONE;
 
     public Context() {
-        log.debug("New context created.");
-        openScope();
+        log.debug("Global scope opened.");
     }
 
     /**
-     * Open a new lexical scope.
+     * Open a local scope.
      */
     public void openScope() {
-        nameTable.openScope();
+        if (localVariables != null) {
+            throw new IllegalStateException("A local scope is already open");
+        }
+
+        localVariables = new HashMap<>();
     }
 
     /**
-     * Close the current scope.
+     * Close the current local scope.
      *
      * @return The AST representation of the variable declarations (a {@link Scope} node).
      */
     public Scope closeScope() {
-        Scope scope = new Scope(
-            nameTable.entriesInCurrentScope().stream()
-                .map(Pair::getValue)
-                .filter(x -> x.type == NameTableEntry.EntryType.VARIABLE)
-                .map(NameTableEntry::getValueAsVariable)
-                .collect(toList()
-            )
-        );
-
-        nameTable.closeScope();
+        Scope scope = new Scope(localVariables.values());
+        localVariables = null;
         return scope;
+    }
+
+    private boolean isFree(Name name) {
+        return !types.containsKey(name) && !functions.containsKey(name)
+            && (localVariables == null || !localVariables.containsKey(name));
     }
 
     /**
      * Declare a new variable.
-
-     * @throws ParseError if the given name is already taken in the current scope.
+     *
+     * <p>A variable can only be declared if there is a local scope open (there are no global
+     * variables in PLanG), and the name is free in both the global and the local scope (shadowing is not allowed in
+     * PLanG).</p>
+     *
+     * @throws ParseError with ErrorCode NAME_CLASH if the given name is already taken.
      */
     public void declareVariable(Name name, VariableDeclaration declaration) throws ParseError {
-        if (nameTable.isFree(name)) {
-            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.VARIABLE, declaration));
-            log.debug("Declared variable '{}'", name);
-            return;
+        log.debug("Declaring variable '{}'", name);
+        if (localVariables == null) {
+            throw new IllegalStateException("Tried to declare variable with no local scope open.");
         }
 
-        log.error(
-            "Could not register variable by name '{}': name already taken in this scope by {}",
-            name,
-            nameTable.lookup(name)
-        );
-        throw new ParseError(declaration.location(), ErrorCode.NAME_CLASH, name);
+        if (!isFree(name)) {
+            log.error("Could not register variable by name '{}': name already taken", name);
+            throw new ParseError(declaration.location(), ErrorCode.NAME_CLASH, name);
+        }
+
+        localVariables.put(name, declaration);
+        log.debug("Declared variable '{}'", name);
     }
 
     /**
      * Does the given name denote a variable in this scope?
      */
     public boolean isVariable(Name name) {
-        NameTableEntry entry = nameTable.lookup(name);
-        return entry != null && entry.type == NameTableEntry.EntryType.VARIABLE;
+        return localVariables != null && localVariables.containsKey(name);
     }
 
     /**
@@ -107,19 +116,12 @@ public class Context {
     }
 
     private VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {
-        NameTableEntry entry = nameTable.lookup(name);
-
-        if (entry == null) {
-            log.info("Lookup of variable '{}' failed: no such declaration.", name);
+        if (localVariables == null || !localVariables.containsKey(name)) {
+            log.info("Lookup of variable '{}' failed.", name);
             throw new ParseError(token.location(), ErrorCode.NO_SUCH_VARIABLE, name);
         }
 
-        if (entry.type != NameTableEntry.EntryType.VARIABLE) {
-            log.info("Lookup of variable '{}' failed: found {}", name, entry.type);
-            throw new ParseError(token.location(), ErrorCode.NOT_A_VARIABLE, name, entry.type.name());
-        }
-
-        VariableDeclaration var = entry.getValueAsVariable();
+        VariableDeclaration var = localVariables.get(name);
         log.trace("Looked up variable for name '{}'", name);
         return var;
     }
@@ -130,11 +132,12 @@ public class Context {
      * @param name the name of the function.
      * @param instruction the instruction to process when the function is called.
      * @param returnType the return type of the function.
-     * @param operands the types of the operands of the function.
+     * @param parameters the types of the operands of the function.
      * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
      */
-    public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... operands) throws ParseError {
-        createBuiltin(name, instruction, returnType, asList(operands));
+    public void createBuiltin(Name name, Instruction instruction, Type returnType, Type... parameters) throws ParseError {
+        Signature signature = new Signature(name, returnType, parameters);
+        registerFunction(new BuiltinFunction(Location.NONE, signature, instruction));
     }
 
     /**
@@ -148,22 +151,8 @@ public class Context {
      */
     public void createBuiltin(Set<Name> aliases, Instruction instruction, Type returnType, Type... parameters) throws ParseError {
         for (Name alias : aliases) {
-            createBuiltin(alias, instruction, returnType, asList(parameters));
+            createBuiltin(alias, instruction, returnType, parameters);
         }
-    }
-
-    /**
-     * Create and register a new builtin function.
-     *
-     * @param name the name of the function.
-     * @param instruction the instruction to process when the function is called.
-     * @param returnType the return type of the function.
-     * @param parameters the types of the operands of the function.
-     * @throws ParseError when the name is already taken in this scope, or a function by the given signature already exists.
-     */
-    public void createBuiltin(Name name, Instruction instruction, Type returnType, List<Type> parameters) throws ParseError {
-        Signature signature = new Signature(name, returnType, parameters);
-        registerFunction(new BuiltinFunction(Location.NONE, signature, instruction));
     }
 
     /**
@@ -175,24 +164,14 @@ public class Context {
     public void registerFunction(FunctionDeclaration function) throws ParseError {
         Signature signature = function.signature();
         Name name = signature.getName();
-
-        FunctionSet functionSet;
-        if (nameTable.isFree(name)) {
-            functionSet = new FunctionSet();
-            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.FUNCTION, functionSet));
-        }
-
-        NameTableEntry entry = nameTable.lookup(name);
-        if (entry.type != NameTableEntry.EntryType.FUNCTION) {
-            log.error(
-                "Could not register function '{}': name already taken in this scope by {}",
-                signature, nameTable.lookup(name)
-            );
+        if (!functions.containsKey(name) && !isFree(name)) {
+            log.info("Could not register function '{}': name already taken", signature);
             throw new ParseError(function.location(), ErrorCode.NAME_CLASH, name);
         }
-        functionSet = entry.getValueAsFunctionSet();
+
+        FunctionSet functionSet = functions.computeIfAbsent(name, x -> new FunctionSet());
         if(functionSet.contains(signature)) {
-            log.error("Could not register function '{}': same signature already declared in this scope.", signature);
+            log.info("Could not register function '{}': same signature already declared.", signature);
             throw new ParseError(function.location(), ErrorCode.NAME_CLASH, name);
         }
 
@@ -201,11 +180,10 @@ public class Context {
     }
 
     /**
-     * Does the given name denote a function in this scope?
+     * Does the given name denote a function?
      */
     public boolean isFunction(Name name) {
-        NameTableEntry entry = nameTable.lookup(name);
-        return entry != null && entry.type == NameTableEntry.EntryType.FUNCTION;
+        return functions.containsKey(name);
     }
 
     /**
@@ -222,15 +200,10 @@ public class Context {
     }
 
     private FunctionSet functionSetFor(Name name) {
-        FunctionSet functionSet = new FunctionSet();
-        for (NameTableEntry entry : nameTable.allValues(name)) {
-            if (entry.type != NameTableEntry.EntryType.FUNCTION) {
-                break;
-            }
-
-            functionSet.merge(entry.getValueAsFunctionSet());
+        if (!functions.containsKey(name)) {
+            return new FunctionSet();
         }
-        return functionSet;
+        return functions.get(name);
     }
 
     /**
@@ -270,22 +243,20 @@ public class Context {
      * @throws ParseError if the name is already taken in this scope.
      */
     public void declareType(Name name, Type type) throws ParseError {
-        if (nameTable.isFree(name)) {
-            nameTable.add(name, new NameTableEntry(NameTableEntry.EntryType.TYPE, type));
-            log.debug("Declared type {} as '{}'", type, name);
-        } else {
-            Object offending = nameTable.lookup(name);
-            log.info(
-                "Could not register type by name '{}': name already taken in this scope by {}",
-                name, offending
-            );
+        if (!isFree(name)) {
+            log.info("Could not register type by name '{}': name already taken", name);
             throw new ParseError(Location.NONE, ErrorCode.NAME_CLASH, name);
         }
+
+        types.put(name, type);
+        log.debug("Declared type {} as '{}'", type, name);
     }
 
+    /**
+     * Does the given name denote a type?
+     */
     public boolean isType(Name name) {
-        NameTableEntry entry = nameTable.lookup(name);
-        return entry != null && entry.type == NameTableEntry.EntryType.TYPE;
+        return types.containsKey(name);
     }
 
     /**
@@ -293,21 +264,15 @@ public class Context {
      * @throws ParseError if the name is unknown, or does not denote a type.
      */
     public Type lookupType(Name name, Token token) throws ParseError {
-        NameTableEntry entry = nameTable.lookup(name);
+        Type type = types.get(name);
 
-        if (entry == null) {
-            log.error("Lookup of type '{}' failed.", name);
+        if (type == null) {
+            log.info("Lookup of type '{}' failed", name);
             throw new ParseError(token.location(), ErrorCode.NO_SUCH_TYPE, name);
         }
 
-        if (entry.type != NameTableEntry.EntryType.TYPE) {
-            log.error("Lookup of type '{}' failed: is {}.", name, entry.type);
-            throw new ParseError(token.location(), ErrorCode.NOT_A_TYPE, name, entry.type.name());
-        }
-
-        Type typ = entry.getValueAsType();
         log.trace("Looked up type for name '{}'", name);
-        return typ;
+        return type;
     }
 
     /**
@@ -333,49 +298,4 @@ public class Context {
     public void setIntegerType(Type integerType) {
         this.integerType = integerType;
     }
-
-    private static final class NameTableEntry {
-        enum EntryType {
-            VARIABLE(VariableDeclaration.class),
-            TYPE(Type.class),
-            FUNCTION(FunctionSet.class);
-
-            private final Class<?> clazz;
-            EntryType(Class<?> clazz) {
-                this.clazz = clazz;
-            }
-        }
-
-        private final EntryType type;
-        private final Object value;
-
-        NameTableEntry(EntryType type, Object value) {
-            if (!type.clazz.isInstance(value)) {
-                throw new IllegalStateException(String.format(
-                    "Tried to store %s as a %s", value.getClass().getSimpleName(), type
-                ));
-            }
-
-            this.type = type;
-            this.value = value;
-        }
-
-        private VariableDeclaration getValueAsVariable() {
-            return (VariableDeclaration) value;
-        }
-
-        private Type getValueAsType() {
-            return (Type) value;
-        }
-
-        private FunctionSet getValueAsFunctionSet() {
-            return (FunctionSet) value;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s[%s]", type, value);
-        }
-    }
-
 }

@@ -18,7 +18,6 @@ public enum ErrorCode {
     NO_SUCH_TYPE,
     NOT_A_TYPE,
     NO_SUCH_VARIABLE,
-    NOT_A_VARIABLE,
     NO_SUCH_PREFIX_OP,
     NO_SUCH_INFIX_OP,
 

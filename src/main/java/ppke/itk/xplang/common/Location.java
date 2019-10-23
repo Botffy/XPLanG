@@ -1,6 +1,7 @@
 package ppke.itk.xplang.common;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
@@ -37,7 +38,7 @@ public final class Location {
         return new Location(start.start, end.end);
     }
 
-    public static Location definedBy(List<? extends Locatable> variables) {
+    public static Location definedBy(Collection<? extends Locatable> variables) {
         if(variables.isEmpty()) return Location.NONE;
 
         return between(

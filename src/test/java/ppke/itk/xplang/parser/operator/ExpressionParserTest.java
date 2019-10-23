@@ -41,7 +41,6 @@ public class ExpressionParserTest {
 
     private final static Grammar grammar = new Grammar() {
         @Override protected void setup(Context ctx) {
-            ctx.openScope();
             try {
                 ctx.declareType(name("Int"), Archetype.INTEGER_TYPE);
 
@@ -135,6 +134,7 @@ public class ExpressionParserTest {
 
     @Test
     public void shouldHandleVariables() throws ParseError {
+        parser.context().openScope();
         VariableDeclaration var = new VariableDeclaration(Location.NONE, "a", Archetype.INTEGER_TYPE);
         parser.context().declareVariable(name("a"), var);
 

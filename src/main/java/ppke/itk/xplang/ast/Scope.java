@@ -2,7 +2,7 @@ package ppke.itk.xplang.ast;
 
 import ppke.itk.xplang.common.Location;
 
-import java.util.List;
+import java.util.Collection;
 
 import static java.util.stream.Collectors.toList;
 
@@ -12,12 +12,12 @@ import static java.util.stream.Collectors.toList;
  * A scope node is a collection of declarations.
  */
 public final class Scope extends Node {
-    public Scope(List<VariableDeclaration> variables) {
+    public Scope(Collection<VariableDeclaration> variables) {
         super(Location.definedBy(variables));
         this.children.addAll(0, variables);
     }
 
-    public List<VariableDeclaration> variables() {
+    public Collection<VariableDeclaration> variables() {
         return this.children.stream()
             .filter(x -> x instanceof VariableDeclaration)
             .map(x -> (VariableDeclaration) x)

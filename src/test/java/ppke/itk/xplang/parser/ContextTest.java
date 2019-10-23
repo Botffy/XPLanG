@@ -97,7 +97,7 @@ public class ContextTest {
         );
 
         assertThat(throwable, instanceOf(ParseError.class));
-        assertEquals(ErrorCode.NOT_A_VARIABLE, ((ParseError) throwable).getErrorCode());
+        assertEquals(ErrorCode.NO_SUCH_VARIABLE, ((ParseError) throwable).getErrorCode());
         throwable.printStackTrace();
     }
 

@@ -23,6 +23,7 @@ final class ProgramParser {
         Token startToken = parser.accept(Symbol.PROGRAM, ErrorCode.EXPECTED_PROGRAM);
         Token nameToken = parser.accept(Symbol.IDENTIFIER, ErrorCode.EXPECTED_PROGRAM_NAME);
 
+        parser.context().openScope();
         if(parser.actual().symbol().equals(Symbol.DECLARE)) {
             DeclarationsParser.parse(parser).forEach(variable -> {
                 try {
