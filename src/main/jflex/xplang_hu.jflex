@@ -7,6 +7,7 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.common.CursorPosition;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Lexer for the Hungarian PLanG variant.
@@ -37,11 +38,13 @@ import java.io.IOException;
     }
 
     @Override
-    public void skipToNext(Symbol symbol) throws IOException {
+    public Token skipToNext(Set<Symbol> symbols) throws IOException {
         Token act = null;
         do {
             act = next();
-        } while (act.symbol() != symbol && act.symbol() != Symbol.EOF);
+        } while (!symbols.contains(act.symbol()) && act.symbol() != Symbol.EOF);
+
+        return act;
     }
 %}
 

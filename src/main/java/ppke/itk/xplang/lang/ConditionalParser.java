@@ -46,7 +46,14 @@ final class ConditionalParser {
     }
 
     private static Conditional.Branch parseBranch(Parser parser) throws ParseError {
-        RValue condition = ConditionParser.parse(parser);
+        RValue condition = null;
+        try {
+            condition = ConditionParser.parse(parser);
+        } catch (ParseError error) {
+            parser.recordError(error.toErrorMessage());
+            parser.skipToNext(Symbol.THEN);
+        }
+
         parser.accept(Symbol.THEN);
         Sequence sequence = SequenceParser.parse(
             parser, Symbol.ENDIF, Symbol.ELSIF, Symbol.ELSE

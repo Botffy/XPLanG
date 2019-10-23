@@ -2,7 +2,9 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.FixArray;
 import ppke.itk.xplang.type.Type;
 import ppke.itk.xplang.util.Stack;
@@ -20,10 +22,16 @@ final class TypenameParser {
     static Type parse(Parser parser) throws ParseError {
         log.debug("Typename");
         Token token = parser.accept(Symbol.IDENTIFIER);
-        Type baseType = parser.context().lookupType(new PlangName(token.lexeme()), token);
-        Type result = parseArrayType(parser, baseType).orElse(baseType);
-        log.debug("Resolved type: {}", result);
-        return result;
+        try {
+            Type baseType = parser.context().lookupType(new PlangName(token.lexeme()), token);
+            Type result = parseArrayType(parser, baseType).orElse(baseType);
+            log.debug("Resolved type: {}", result);
+            return result;
+        } catch (ParseError error) {
+            log.warn("Failed to resolve type {}", token.lexeme());
+            parser.recordError(error.toErrorMessage());
+            return Archetype.NONE;
+        }
     }
 
     private static Optional<Type> parseArrayType(Parser parser, Type baseType) throws ParseError {

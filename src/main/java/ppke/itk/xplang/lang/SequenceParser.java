@@ -8,8 +8,7 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.parser.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 
@@ -26,7 +25,9 @@ final class SequenceParser {
         log.debug("Sequence");
         Location startLoc = parser.actual().location();
         List<Statement> statementList = new ArrayList<>();
-        List<Symbol> stoppers = asList(stopSymbols);
+        Set<Symbol> stoppers = new HashSet<>(asList(stopSymbols));
+        Set<Symbol> recoverySymbols = new HashSet<>(stoppers);
+        recoverySymbols.addAll(StatementParser.getStatementSymbols());
         do {
             try {
                 statementList.add(StatementParser.parse(parser));
@@ -38,7 +39,7 @@ final class SequenceParser {
             } catch(ParseError error) {
                 log.error("Parse error: ", error);
                 parser.recordError(error.toErrorMessage());
-                parser.skipToNext(Symbol.EOL);
+                parser.skipToNext(recoverySymbols);
                 if(parser.actual().symbol().equals(Symbol.EOF)) break;
             }
         } while(!parser.actual().symbol().equals(Symbol.EOF) && !stoppers.contains(parser.actual().symbol()));

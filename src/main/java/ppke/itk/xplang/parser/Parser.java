@@ -9,6 +9,8 @@ import ppke.itk.xplang.parser.operator.ExpressionParser;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
+import java.util.Set;
 
 public class Parser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser");
@@ -115,14 +117,20 @@ public class Parser {
         return expressionParser.parse();
     }
 
+    public void skipToNext(Symbol symbol) {
+        skipToNext(Collections.singleton(symbol));
+    }
+
     /**
      * Skip all symbols until encountering the specified symbol.
-     * @param symbol
      */
-    public void skipToNext(Symbol symbol) throws LexerError {
+    public void skipToNext(Set<Symbol> symbols) {
+        if (symbols.contains(act.symbol())) {
+            return;
+        }
+
         try {
-            lexer.skipToNext(symbol);
-            advance();
+            act = lexer.skipToNext(symbols);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }

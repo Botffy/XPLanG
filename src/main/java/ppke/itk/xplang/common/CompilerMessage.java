@@ -4,6 +4,8 @@ import ppke.itk.xplang.parser.ErrorCode;
 
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 /**
  * A compiler error we would like to display to the programmer.
  */
@@ -11,6 +13,10 @@ public final class CompilerMessage {
     public enum Severity {
         WARNING,
         ERROR;
+    }
+
+    public static CompilerMessage error(Location location, ErrorCode errorCode, Object... params) {
+        return error(location, errorCode, asList(params));
     }
 
     public static CompilerMessage error(Location location, ErrorCode errorCode, List<Object> params) {

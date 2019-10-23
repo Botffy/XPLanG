@@ -3,14 +3,14 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Statement;
+import ppke.itk.xplang.parser.ErrorCode;
+import ppke.itk.xplang.parser.ParseError;
+import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
-import ppke.itk.xplang.parser.*;
 
+import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashSet;
 import java.util.Map;
-
-import static java.util.stream.Collectors.toSet;
 
 final class StatementParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
@@ -43,6 +43,10 @@ final class StatementParser {
 
         StatementParserFunction statementParser = statementParsers.get(symbol);
         return statementParser.parse(parser);
+    }
+
+    public static Collection<? extends Symbol> getStatementSymbols() {
+        return statementParsers.keySet();
     }
 
     @FunctionalInterface
