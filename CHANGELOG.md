@@ -1,9 +1,28 @@
 # Change log
 
+## MS7 - 2019-10-23
+
+New language features.
+
+### Features
+
+- Elsif
+- Basic assertions
+- Functions (with overloading, recursion and forward declarations.
+
+### Refactor
+
+- ErrorCodes in Interpreter, errors handled more gracefully in CLI (#3)
+- Better null checks in Interpreter 
+- ErrorCodes in Parser (#5)
+- Somewhat better parsing error recovery (#6)
+- Refactor Memory to use a frame-based system
+- Replace the old handwritten lexer with a JFlex generated one
+- Refactor and clean up Context to conform the new view on scopes
+
 ## MS6 - 2019-09-17
 
 The birth of the XPLanG IDE. The small IDE comes with an editor, the edited files can be compiled. If there were no errors, the program can be run. Unlike in the original PLanG, the programs may be interactive: input can be submitted through the built-in console window. The IDE can be started with a separate startup script called 'XPLanG-editor'.
-
 
 ## MS5 - 2019-09-01
 
