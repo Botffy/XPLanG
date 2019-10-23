@@ -3,6 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Locatable;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
@@ -79,6 +80,7 @@ class FunctionParser {
         List<VariableDeclaration> parameters = parseParameterList(parser);
 
         parser.accept(Symbol.COLON);
+        Location typeNameLocation = parser.actual().location();
         Type type = TypenameParser.parse(parser);
 
         Signature signature = new Signature(
@@ -88,7 +90,7 @@ class FunctionParser {
         );
 
         return new Function(
-            Location.between(functionToken.location(), parser.actual().location()),
+            Location.between(functionToken.location(), typeNameLocation),
             signature,
             parameters,
             null

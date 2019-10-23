@@ -3,6 +3,10 @@
 majd_lesz függvény f(x: Egész): Egész
 majd_lesz függvény f(x: Egész): Egész
 
+függvény f(x: Egész): Egész
+  Eredmény := x
+függvény_vége
+
 program t
   ki: ">_>"
 program_vége
