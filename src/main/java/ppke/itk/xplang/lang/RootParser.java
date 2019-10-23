@@ -80,10 +80,11 @@ class RootParser {
     }
 
     private static void parseProgram(Parser parser, State state) throws ParseError {
+        Program program = ProgramParser.parse(parser);
         if (state.program != null) {
-            throw new ParseError(parser.actual().location(), ErrorCode.ENTRY_POINT_ALREADY_DEFINED);
+            throw new ParseError(program.location(), ErrorCode.ENTRY_POINT_ALREADY_DEFINED);
         }
-        state.program = ProgramParser.parse(parser);
+        state.program = program;
     }
 
 

@@ -1,0 +1,8 @@
+**#Two programs in one file
+**FirstErrorLoc:6,1
+program t
+  ki: "hello"
+program_vége
+program t2
+  ki: "world"
+program_vége
