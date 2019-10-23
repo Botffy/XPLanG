@@ -1,8 +1,10 @@
 package ppke.itk.xplang.common;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 public class ErrorLog {
     private final List<CompilerMessage> messages = new ArrayList<>();
@@ -12,7 +14,9 @@ public class ErrorLog {
     }
 
     public List<CompilerMessage> getErrorMessages() {
-        return Collections.unmodifiableList(messages);
+        return messages.stream()
+            .sorted(comparing(CompilerMessage::getCursorPosition))
+            .collect(toList());
     }
 
     public long getNumberOfErrors() {
