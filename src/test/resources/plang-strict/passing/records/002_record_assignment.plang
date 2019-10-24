@@ -1,0 +1,17 @@
+**#Assign records by value
+**Memory:pont1=Record(x=Real(-0.5000),y=Real(1.5000)),pont2=Record(x=Real(-1.5000),y=Real(1.5000))
+
+rekord Koordináta
+  x: Valós
+  y: Valós
+rekord_vége
+
+program t
+  változók:
+    pont1, pont2: Koordináta
+
+  pont1.x := -0.5
+  pont1.y := 1.5
+  pont2 := pont1
+  pont2.x := -1.5
+program_vége

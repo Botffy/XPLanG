@@ -3,7 +3,6 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
-import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.*;
@@ -15,7 +14,7 @@ import ppke.itk.xplang.type.Type;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
-import static ppke.itk.xplang.lang.PlangName.name;
+import static ppke.itk.xplang.lang.TypeName.typeName;
 import static ppke.itk.xplang.util.AccentUtils.calculateVariants;
 
 /**
@@ -43,7 +42,7 @@ public class PlangGrammar extends Grammar {
                 Archetype.STRING_TYPE
             );
             for (String variant : calculateVariants(stringType.getLabel())) {
-                ctx.declareType(name(variant), stringType);
+                ctx.declareType(typeName(variant), stringType);
             }
 
             ctx.setBooleanType(boolType);
@@ -172,7 +171,7 @@ public class PlangGrammar extends Grammar {
         Scalar type = new Scalar(typeName, archetype, archetype.getInitialization());
 
         for (String variant : calculateVariants(typeName)) {
-            ctx.declareType(name(variant), type);
+            ctx.declareType(typeName(variant), type);
         }
 
         return type;

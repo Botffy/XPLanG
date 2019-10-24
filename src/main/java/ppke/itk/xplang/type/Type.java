@@ -45,12 +45,6 @@ public abstract class Type {
         return 0;
     }
 
-    /**
-     * Is this type a scalar type?
-     *
-     * By default, a type is scalar if it has no elements.
-     * @return
-     */
     public Initialization getInitialization() {
         return Initialization.SCALAR;
     }
@@ -66,6 +60,7 @@ public abstract class Type {
     public enum Initialization {
         SCALAR,
         ARRAY,
+        RECORD,
         INPUT_STREAM,
         OUTPUT_STREAM
     }

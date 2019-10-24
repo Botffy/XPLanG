@@ -1,7 +1,0 @@
-**#Identifiers may contain dots
-**Memory:a.2=Integer(10)
-program Var.decl
-  Változók:
-    a.2: Egész
-  a.2 := 10
-program_vége

@@ -12,6 +12,7 @@ import ppke.itk.xplang.parser.ErrorCode;
 import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
+import ppke.itk.xplang.type.Type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ class RootParser {
         parselets.put(Symbol.FUNCTION, RootParser::parseFunctionDeclaration);
         parselets.put(Symbol.FORWARD_DECLARATION, RootParser::parseForwardDeclaration);
         parselets.put(Symbol.PROGRAM, RootParser::parseProgram);
+        parselets.put(Symbol.RECORD, RootParser::parseRecord);
     }
 
     static Root parse(Parser parser) throws ParseError {
@@ -87,6 +89,10 @@ class RootParser {
         state.program = program;
     }
 
+    private static void parseRecord(Parser parser, State state) throws ParseError {
+        Type type = RecordParser.parse(parser);
+        parser.context().declareType(new TypeName(type.getLabel()), type);
+    }
 
     private static class State {
         List<FunctionDeclaration> declarations = new ArrayList<>();

@@ -1,10 +1,12 @@
 package ppke.itk.xplang.interpreter;
 
+import ppke.itk.xplang.type.RecordType;
 import ppke.itk.xplang.type.Type;
 
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class ValueUtils {
     private static final Value NULL = new Value() {
@@ -31,8 +33,6 @@ public class ValueUtils {
 
     static Value initialise(Type type) {
         switch (type.getInitialization()) {
-            case SCALAR:
-                return NULL;
             case INPUT_STREAM:
                 return new InputStreamValue(null);
             case OUTPUT_STREAM:
@@ -41,8 +41,20 @@ public class ValueUtils {
                 return new ArrayValue(
                     Stream.generate(() -> initialise(type.elementType())).limit(type.size()).collect(toList())
                 );
+            case RECORD: {
+                RecordType recordType = (RecordType) type;
+                return new RecordValue(
+                    recordType.getFields()
+                        .stream()
+                        .collect(toMap(
+                            x -> x.getName().toString(),
+                            x -> initialise(x.getType())
+                        ))
+                );
+            }
+            default:
+                return NULL;
         }
-        return NULL;
     }
 
     /**

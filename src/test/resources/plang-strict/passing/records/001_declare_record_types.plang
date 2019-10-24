@@ -1,0 +1,15 @@
+**#Define and use record types
+**Memory:pont=Record(x=Real(-0.5000),y=Real(1.5000))
+
+rekord Koordináta
+  x: Valós
+  y: Valós
+rekord_vége
+
+program t
+  változók:
+    pont: Koordináta
+
+  pont.x := -0.5
+  pont.y := 1.5
+program_vége

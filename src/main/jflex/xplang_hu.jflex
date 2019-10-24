@@ -56,7 +56,7 @@ OE = [Oo\u00D6\u0150\u00D5\u00D4\u00F6\u0151\u00F5\u00F4]
 U = [Uu\u00DA\u00FA]
 UE = [Uu\u00DC\u0170\u0168\u00DB\u00FC\u0171\u0169\u00FB]
 
-Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150\u00D5\u00D4\u00F6\u0151\u00F5\u00F4\u00DA\u00FA\u00DC\u0170\u0168\u00DB\u00FC\u0171\u0169\u00FB_?][a-zA-Z0-9\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150\u00D5\u00D4\u00F6\u0151\u00F5\u00F4\u00DA\u00FA\u00DC\u0170\u0168\u00DB\u00FC\u0171\u0169\u00FB_?.]*
+Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150\u00D5\u00D4\u00F6\u0151\u00F5\u00F4\u00DA\u00FA\u00DC\u0170\u0168\u00DB\u00FC\u0171\u0169\u00FB_?][a-zA-Z0-9\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150\u00D5\u00D4\u00F6\u0151\u00F5\u00F4\u00DA\u00FA\u00DC\u0170\u0168\u00DB\u00FC\u0171\u0169\u00FB_?]*
 
 %%
 
@@ -66,6 +66,8 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     f{UE}ggv{E}ny                   { return token(Symbol.FUNCTION, yytext(), yyline, yycolumn); }
     f{UE}ggv{E}ny_v{E}ge            { return token(Symbol.END_FUNCTION, yytext(), yyline, yycolumn); }
     "majd_lesz"                     { return token(Symbol.FORWARD_DECLARATION, yytext(), yyline, yycolumn); }
+    "rekord"                        { return token(Symbol.RECORD, yytext(), yyline, yycolumn); }
+    rekord_v{E}ge                   { return token(Symbol.END_RECORD, yytext(), yyline, yycolumn); }
     V{A}ltoz{O}k                    { return token(Symbol.DECLARE, yytext(), yyline, yycolumn); }
     "ha"                            { return token(Symbol.IF, yytext(), yyline, yycolumn); }
     "akkor"                         { return token(Symbol.THEN, yytext(), yyline, yycolumn); }
@@ -84,6 +86,7 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     :[ \t]*=                        { return token(Symbol.ASSIGNMENT, yytext(), yyline, yycolumn); }
     ":"                             { return token(Symbol.COLON, yytext(), yyline, yycolumn); }
     ","                             { return token(Symbol.COMMA, yytext(), yyline, yycolumn); }
+    "."                             { return token(Symbol.DOT, yytext(), yyline, yycolumn); }
     "("                             { return token(Symbol.PAREN_OPEN, yytext(), yyline, yycolumn); }
     ")"                             { return token(Symbol.PAREN_CLOSE, yytext(), yyline, yycolumn); }
     "["                             { return token(Symbol.BRACKET_OPEN, yytext(), yyline, yycolumn); }
