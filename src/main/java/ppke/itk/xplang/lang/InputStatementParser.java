@@ -52,7 +52,8 @@ public class InputStatementParser {
                 ElementRef ref = new ElementRef(
                     Location.NONE,
                     lValue.toRValue(),
-                    index
+                    index,
+                    lValue.getType().elementType()
                 );
 
                 assignments.addAll(getAssignments(parser, ref, inputStream));

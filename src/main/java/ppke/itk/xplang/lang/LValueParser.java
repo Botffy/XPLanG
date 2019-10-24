@@ -7,7 +7,6 @@ import ppke.itk.xplang.ast.LValue;
 import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
-import ppke.itk.xplang.type.Archetype;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +55,9 @@ final class LValueParser {
         Token endToken = parser.accept(Symbol.BRACKET_CLOSE);
         return new ElementRef(
             new Location(startToken.location().start, endToken.location().end),
-            base.toRValue(), index
+            base.toRValue(),
+            index,
+            base.getType().elementType()
         );
     }
 

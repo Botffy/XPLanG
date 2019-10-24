@@ -63,7 +63,9 @@ class ElementValueOperator implements Operator.Infix {
                 .build()
                 .resolve();
 
-            return new ValueExpression(new ElementVal(location, addressable, address));
+            return new ValueExpression(
+                new ElementVal(location, addressable, address, addressable.getType().elementType())
+            );
         }
 
         RValue slicable = TypeChecker.in(parser.context())
