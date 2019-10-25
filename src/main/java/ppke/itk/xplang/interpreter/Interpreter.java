@@ -37,6 +37,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(Root root) throws InterpreterError {
+        root.scope().accept(this);
         root.entryPoint().accept(this);
         this.stdOut.printLn();
     }

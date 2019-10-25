@@ -66,6 +66,7 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     f{UE}ggv{E}ny                   { return token(Symbol.FUNCTION, yytext(), yyline, yycolumn); }
     f{UE}ggv{E}ny_v{E}ge            { return token(Symbol.END_FUNCTION, yytext(), yyline, yycolumn); }
     "majd_lesz"                     { return token(Symbol.FORWARD_DECLARATION, yytext(), yyline, yycolumn); }
+    "konstans"                      { return token(Symbol.CONSTANT, yytext(), yyline, yycolumn); }
     "rekord"                        { return token(Symbol.RECORD, yytext(), yyline, yycolumn); }
     rekord_v{E}ge                   { return token(Symbol.END_RECORD, yytext(), yyline, yycolumn); }
     V{A}ltoz{O}k                    { return token(Symbol.DECLARE, yytext(), yyline, yycolumn); }

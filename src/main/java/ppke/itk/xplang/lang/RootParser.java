@@ -2,10 +2,7 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ppke.itk.xplang.ast.Function;
-import ppke.itk.xplang.ast.FunctionDeclaration;
-import ppke.itk.xplang.ast.Program;
-import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.ErrorCode;
@@ -18,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static ppke.itk.xplang.lang.PlangName.name;
 
 /**
  * {@code Root = [Function] Program}
@@ -33,6 +32,7 @@ class RootParser {
         parselets.put(Symbol.FORWARD_DECLARATION, RootParser::parseForwardDeclaration);
         parselets.put(Symbol.PROGRAM, RootParser::parseProgram);
         parselets.put(Symbol.RECORD, RootParser::parseRecord);
+        parselets.put(Symbol.CONSTANT, RootParser::parseConstant);
     }
 
     static Root parse(Parser parser) throws ParseError {
@@ -60,7 +60,7 @@ class RootParser {
             parser.recordError(CompilerMessage.error(parser.actual().location(), ErrorCode.MISSING_ENTRY_POINT));
         }
 
-        for (FunctionDeclaration declaration : state.declarations) {
+        for (FunctionDeclaration declaration : state.functions) {
             if (!declaration.isDefined()) {
                 parser.recordError(CompilerMessage.error(
                     declaration.location(), ErrorCode.FUNCTION_DECLARED_NOT_DEFINED, declaration.signature())
@@ -69,7 +69,7 @@ class RootParser {
         }
 
         Location endLoc = parser.actual().location();
-        return new Root(Location.between(startLoc, endLoc), state.program);
+        return new Root(Location.between(startLoc, endLoc), state.program, new Scope(state.constants));
     }
 
     private static void parseFunctionDeclaration(Parser parser, State state) throws ParseError {
@@ -78,7 +78,7 @@ class RootParser {
 
     private static void parseForwardDeclaration(Parser parser, State state) throws ParseError {
         Function function = FunctionParser.parseForwardDeclaration(parser);
-        state.declarations.add(function);
+        state.functions.add(function);
     }
 
     private static void parseProgram(Parser parser, State state) throws ParseError {
@@ -94,8 +94,15 @@ class RootParser {
         parser.context().declareType(new TypeName(type.getLabel()), type);
     }
 
+    private static void parseConstant(Parser parser, State state) throws ParseError {
+        VariableDeclaration declaration = ConstantParser.parse(parser);
+        parser.context().declareConstant(name(declaration.getName()), declaration);
+        state.constants.add(declaration);
+    }
+
     private static class State {
-        List<FunctionDeclaration> declarations = new ArrayList<>();
+        List<FunctionDeclaration> functions = new ArrayList<>();
+        List<VariableDeclaration> constants = new ArrayList<>();
         Program program = null;
     }
 

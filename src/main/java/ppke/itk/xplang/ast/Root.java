@@ -8,9 +8,10 @@ import ppke.itk.xplang.common.Location;
 public class Root extends Node {
     @Override public void accept(ASTVisitor visitor) { visitor.visit(this); }
 
-    public Root(Location location, Program entryPoint) {
+    public Root(Location location, Program entryPoint, Scope scope) {
         super(location);
         children.add(0, entryPoint);
+        children.add(1, scope);
     }
 
     /**
@@ -19,5 +20,9 @@ public class Root extends Node {
      */
     public Program entryPoint() {
         return (Program) children.get(0);
+    }
+
+    public Scope scope() {
+        return (Scope) children.get(1);
     }
 }

@@ -27,6 +27,7 @@ public class Context {
 
     private final Map<Name, Type> types = new HashMap<>();
     private final Map<Name, FunctionSet> functions = new HashMap<>();
+    private Map<Name, VariableDeclaration> globalConstants = new HashMap<>();
     private Map<Name, VariableDeclaration> localVariables = null;
 
     private final Map<Symbol, Operator.Prefix> prefixOperators = new HashMap<>();
@@ -62,8 +63,25 @@ public class Context {
     }
 
     private boolean isFree(Name name) {
-        return !types.containsKey(name) && !functions.containsKey(name)
+        return !types.containsKey(name)
+            && !functions.containsKey(name)
+            && !globalConstants.containsKey(name)
             && (localVariables == null || !localVariables.containsKey(name));
+    }
+
+    public void declareConstant(Name name, VariableDeclaration declaration) throws ParseError {
+        log.debug("Declaring constant '{}'", name);
+        if (!isFree(name)) {
+            log.info("Could not register constant by name '{}'", name);
+            throw new ParseError(declaration.location(), ErrorCode.NAME_CLASH, name);
+        }
+
+        globalConstants.put(name, declaration);
+        log.debug("Declared constant '{}'", name);
+    }
+
+    public boolean isConstant(VariableDeclaration declaration) {
+        return globalConstants.containsValue(declaration);
     }
 
     /**
@@ -82,7 +100,7 @@ public class Context {
         }
 
         if (!isFree(name)) {
-            log.error("Could not register variable by name '{}': name already taken", name);
+            log.info("Could not register variable by name '{}': name already taken", name);
             throw new ParseError(declaration.location(), ErrorCode.NAME_CLASH, name);
         }
 
@@ -94,7 +112,7 @@ public class Context {
      * Does the given name denote a variable in this scope?
      */
     public boolean isVariable(Name name) {
-        return localVariables != null && localVariables.containsKey(name);
+        return (localVariables != null && localVariables.containsKey(name)) || globalConstants.containsKey(name);
     }
 
     /**
@@ -116,14 +134,19 @@ public class Context {
     }
 
     private VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {
-        if (localVariables == null || !localVariables.containsKey(name)) {
+        Optional<VariableDeclaration> var = Optional.empty();
+        var = Optional.ofNullable(localVariables == null ? null : localVariables.get(name));
+        if (!var.isPresent()) {
+            var = Optional.ofNullable(globalConstants.get(name));
+        }
+
+        if (!var.isPresent()) {
             log.info("Lookup of variable '{}' failed.", name);
             throw new ParseError(token.location(), ErrorCode.NO_SUCH_VARIABLE, name);
         }
 
-        VariableDeclaration var = localVariables.get(name);
         log.trace("Looked up variable for name '{}'", name);
-        return var;
+        return var.get();
     }
 
     /**

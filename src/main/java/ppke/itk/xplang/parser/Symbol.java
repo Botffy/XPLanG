@@ -9,6 +9,7 @@ public enum Symbol {
     FUNCTION,
     END_FUNCTION,
     FORWARD_DECLARATION,
+    CONSTANT,
     RECORD,
     END_RECORD,
     DECLARE,
