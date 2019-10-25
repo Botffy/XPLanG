@@ -3,6 +3,8 @@ package ppke.itk.xplang.ast;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Type;
 
+import java.util.Optional;
+
 /**
  * A variable declaration.
  *
@@ -14,9 +16,18 @@ public final class VariableDeclaration extends Node {
     private final Type type;
 
     public VariableDeclaration(Location location, String variableName, Type type) {
+        this(location, variableName, type, null);
+    }
+
+    public VariableDeclaration(Location location, String variableName, Type type, RValue initialValue) {
         super(location);
         this.variableName = variableName;
         this.type = type;
+        this.children.add(0, initialValue);
+    }
+
+    public Optional<RValue> getInitialValue() {
+        return Optional.ofNullable((RValue) this.children.get(0));
     }
 
     /**

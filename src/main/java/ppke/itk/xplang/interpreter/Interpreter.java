@@ -6,6 +6,7 @@ import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.StreamHandler;
 import ppke.itk.xplang.util.Stack;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.initialise;
@@ -52,10 +53,20 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(VariableDeclaration variable) throws InterpreterError {
+        Value value;
+
+        Optional<RValue> initialValue = variable.getInitialValue();
+        if (initialValue.isPresent()) {
+            initialValue.get().accept(this);
+            value = valueStack.pop();
+        } else {
+            value = initialise(variable.getType());
+        }
+
         memory.allocate(
             variable,
             variable.getName(),
-            initialise(variable.getType())
+            value
         );
     }
 
@@ -300,6 +311,10 @@ public class Interpreter implements ASTVisitor {
     @Override
     public void visit(StandardOutput standardOutput) {
         valueStack.push(stdOut);
+    }
+
+    Memory getMemory() {
+        return memory;
     }
 
     public String memoryDump() {
