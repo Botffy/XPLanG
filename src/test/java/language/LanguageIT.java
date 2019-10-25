@@ -1,6 +1,5 @@
 package language;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -21,7 +20,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -32,12 +34,10 @@ public class LanguageIT {
     private final Grammar grammar = new PlangGrammar();
     private String fileName;
     private File file;
-    private final boolean shouldPass;
 
-    public LanguageIT(String fileName, File file, boolean shouldPass) {
+    public LanguageIT(String fileName, File file) {
         this.fileName = fileName;
         this.file = file;
-        this.shouldPass = shouldPass;
     }
 
     @Test
@@ -90,13 +90,13 @@ public class LanguageIT {
             ErrorLog errorLog = new ErrorLog();
             Parser parser = new Parser(errorLog);
             Root root = parser.parse(reader, grammar);
-            if(!shouldPass) {
+
+            if(firstErrorLoc != null) {
                 if(errorLog.isEmpty()) {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
                 }
-                if(firstErrorLoc != null) {
-                    assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getCursorPosition());
-                }
+
+                assertEquals(firstErrorLoc, errorLog.getErrorMessages().get(0).getCursorPosition());
             } else {
                 if(!errorLog.isEmpty()) {
                     fail(String.format("%s (%s)", errorMessage, this.fileName));
@@ -158,7 +158,7 @@ public class LanguageIT {
                 .filter(Files::isRegularFile)
                 .forEach(x -> {
                     data.add(new Object[]{
-                        basePath.getParent().relativize(x).toString(), x.toFile(), entry.getValue()
+                        basePath.getParent().relativize(x).toString(), x.toFile()
                     });
                 });
         }
