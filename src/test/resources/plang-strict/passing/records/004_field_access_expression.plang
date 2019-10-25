@@ -1,0 +1,15 @@
+**#Field access in complex expressions
+**Memory:pontok=Array(Record(x=Real(-0.5000),y=Real(30.0000)))
+
+rekord Koordináta
+  x: Valós
+  y: Valós
+rekord_vége
+
+program t
+  változók:
+    pontok: Koordináta[1]
+
+  pontok[0].x := -0.5
+  pontok[0].y := 20 * (pontok[0].x + 2)
+program_vége

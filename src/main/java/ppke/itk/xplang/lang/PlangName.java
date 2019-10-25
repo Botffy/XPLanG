@@ -7,10 +7,10 @@ import java.util.Locale;
 /**
  * The Name class for the PLanG-strict language. Case-insensitive.
  */
-class PlangName implements Name {
+public class PlangName implements Name {
     private final String value;
 
-    PlangName(String str) {
+    public PlangName(String str) {
         this.value = str.toLowerCase(Locale.ENGLISH);
     }
 
@@ -26,7 +26,7 @@ class PlangName implements Name {
         return value;
     }
 
-    static PlangName name(String name) {
+    public static PlangName name(String name) {
         return new PlangName(name);
     }
 }

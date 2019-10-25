@@ -66,7 +66,7 @@ public class ExpressionParser {
         return parser.actual();
     }
 
-    public void accept(Symbol symbol) throws ParseError {
-        parser.accept(symbol);
+    public Token accept(Symbol symbol) throws ParseError {
+        return parser.accept(symbol);
     }
 }

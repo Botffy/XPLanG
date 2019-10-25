@@ -119,6 +119,7 @@ public class PlangGrammar extends Grammar {
             ctx.prefix(Symbol.LITERAL_FALSE, new LiteralOperator<>(BooleanLiteral::new, boolType, x -> false) );
             ctx.prefix(Symbol.LITERAL_CHAR, new LiteralOperator<>(CharacterLiteral::new, charType, x -> x.charAt(1)));
             ctx.prefix(Symbol.LITERAL_STRING, new LiteralOperator<>(StringLiteral::new, stringType, x -> x.substring(1, x.length() - 1)));
+            ctx.infix(Symbol.DOT, new FieldAccessOperator());
             ctx.infix(Symbol.BRACKET_OPEN, new ElementValueOperator(Symbol.BRACKET_CLOSE, Symbol.COLON));
 
             ctx.infix(Symbol.OPERATOR_EQ, new InfixBinary(operator("eq"), Operator.Precedence.RELATIONAL));

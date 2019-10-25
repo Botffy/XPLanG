@@ -1,0 +1,15 @@
+**#Field access in expressions
+**Memory:pont=Record(x=Real(-0.5000),y=Real(0.5000))
+
+rekord Koordináta
+  x: Valós
+  y: Valós
+rekord_vége
+
+program t
+  változók:
+    pont: Koordináta
+
+  pont.x := -0.5
+  pont.y := -pont.x
+program_vége
