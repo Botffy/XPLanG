@@ -276,6 +276,11 @@ public class TypeCheckerTest {
         public boolean isDefined() {
             return true;
         }
+
+        @Override
+        public boolean isPure() {
+            return true;
+        }
     }
 
     private static class MockRValue extends RValue {
@@ -289,6 +294,11 @@ public class TypeCheckerTest {
         @Override
         public Type getType() {
             return type;
+        }
+
+        @Override
+        public boolean isStatic() {
+            return true;
         }
 
         @Override

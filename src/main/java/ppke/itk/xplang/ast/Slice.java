@@ -42,4 +42,9 @@ public class Slice extends RValue {
     public Type getType() {
         return getSlicable().getType();
     }
+
+    @Override
+    public boolean isStatic() {
+        return getSlicable().isStatic() && getStartIndex().isStatic() && getEndIndex().isStatic();
+    }
 }

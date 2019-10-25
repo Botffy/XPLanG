@@ -32,6 +32,29 @@ public class Function extends FunctionDeclaration {
     }
 
     @Override
+    public boolean isPure() {
+        return isPure(block().sequence());
+    }
+
+    private boolean isPure(Node parent) {
+        if (parent instanceof FunctionCall) {
+            return ((FunctionCall) parent).getDeclaration().isPure();
+        }
+
+        if (parent instanceof Input || parent instanceof Output) {
+            return false;
+        }
+
+        for (Node child : parent.getChildren()) {
+            if (!isPure(child)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

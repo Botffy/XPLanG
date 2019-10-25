@@ -1,0 +1,12 @@
+**#Constant declaration and usage
+**Memory:leet=Integer(124)
+
+függvény f(x: Egész): Egész
+  Eredmény := 4 * x
+függvény_vége
+
+konstans egész leet = 100 + f(6)
+
+program t
+  ki: leet
+program_vége

@@ -1,0 +1,15 @@
+**#Constant declaration and usage
+**FirstErrorLoc:11,23
+
+függvény f(x: Egész): Egész
+  változók:
+    y: Egész
+  be: y
+  Eredmény := x + y
+függvény_vége
+
+konstans egész leet = 100 + f(6)
+
+program t
+  ki: leet
+program_vége

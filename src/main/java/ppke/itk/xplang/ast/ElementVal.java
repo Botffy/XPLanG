@@ -35,6 +35,11 @@ public class ElementVal extends RValue {
         return type;
     }
 
+    @Override
+    public boolean isStatic() {
+        return getAddressable().isStatic() && getAddress().isStatic();
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

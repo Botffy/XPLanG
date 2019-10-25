@@ -21,6 +21,11 @@ public class BuiltinFunction extends FunctionDeclaration {
         return true;
     }
 
+    @Override
+    public boolean isPure() {
+        return instruction.isPure();
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

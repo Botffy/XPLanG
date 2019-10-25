@@ -18,4 +18,9 @@ public class StandardOutput extends RValue {
     public Type getType() {
         return Archetype.OUTSTREAM_TYPE;
     }
+
+    @Override
+    public boolean isStatic() {
+        return false;
+    }
 }

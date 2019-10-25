@@ -1,0 +1,8 @@
+**#Constant declaration and usage
+**FirstErrorLoc:4,23
+
+konstans egész leet = rnd 48
+
+program t
+  ki: leet
+program_vége

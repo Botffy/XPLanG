@@ -1,0 +1,8 @@
+**#Constant declaration and usage
+**Memory:leet=Integer(1337)
+
+konstans egész leet = 1300 + 37
+
+program t
+  ki: leet
+program_vége

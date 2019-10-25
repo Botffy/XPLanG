@@ -18,4 +18,9 @@ public class StandardInput extends RValue {
     public Type getType() {
         return Archetype.INSTREAM_TYPE;
     }
+
+    @Override
+    public boolean isStatic() {
+        return false;
+    }
 }

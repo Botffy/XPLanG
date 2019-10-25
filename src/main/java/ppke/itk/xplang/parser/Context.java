@@ -134,7 +134,7 @@ public class Context {
      * @throws ParseError if the name cannot be found, or does not denote a type.
      */
     public VarVal getVariableValue(Name name, Token token) throws ParseError {
-        return new VarVal(token.location(), lookupVariable(name, token));
+        return new VarVal(token.location(), lookupVariable(name, token), isConstant(name));
     }
 
     private VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {

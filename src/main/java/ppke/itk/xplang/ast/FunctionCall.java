@@ -30,6 +30,14 @@ public class FunctionCall extends RValue {
         return function.signature().getReturnType();
     }
 
+    /**
+     * A function call is considered static, if all its arguments are static, and the function itself is pure.
+     */
+    @Override
+    public boolean isStatic() {
+        return arguments().stream().allMatch(RValue::isStatic) && getDeclaration().isPure();
+    }
+
     @Override public void accept(ASTVisitor visitor) {
         visitor.visit(this);
     }

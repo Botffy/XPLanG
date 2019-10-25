@@ -23,6 +23,11 @@ public abstract class FunctionDeclaration extends Node {
 
     abstract public boolean isDefined();
 
+    /**
+     * A function is considered "pure" if it does not interact with its outer scope at all.
+     */
+    abstract public boolean isPure();
+
     @Override public String toString() {
         return String.format("FUNCTION[%s]", signature);
     }

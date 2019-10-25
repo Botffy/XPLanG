@@ -13,4 +13,9 @@ public abstract class RValue extends Node {
     }
 
     abstract public Type getType();
+
+    /**
+     * Can the RValue be computed at compile time?
+     */
+    abstract public boolean isStatic();
 }

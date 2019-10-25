@@ -10,14 +10,16 @@ import ppke.itk.xplang.type.Type;
  */
 public final class VarVal extends RValue {
     private final VariableDeclaration var;
+    private final boolean isConstant;
 
     /**
      * Constructor.
      * @param var The variable this reference refers to.
      */
-    public VarVal(Location location, VariableDeclaration var) {
+    public VarVal(Location location, VariableDeclaration var, boolean isConstant) {
         super(location);
         this.var = var;
+        this.isConstant = isConstant;
     }
 
     public VariableDeclaration getVariable() {
@@ -30,6 +32,11 @@ public final class VarVal extends RValue {
 
     @Override public Type getType() {
         return var.getType();
+    }
+
+    @Override
+    public boolean isStatic() {
+        return isConstant;
     }
 
     @Override public void accept(ASTVisitor visitor) {

@@ -23,6 +23,11 @@ public abstract class Literal<T> extends RValue {
         return value;
     }
 
+    @Override
+    public boolean isStatic() {
+        return true;
+    }
+
     @Override public String toString() {
         return String.format("%s[%s]", this.getClass().getSimpleName().toUpperCase(Locale.ENGLISH), value);
     }

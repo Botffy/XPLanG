@@ -3,7 +3,10 @@ package ppke.itk.xplang.function;
 import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Type;
 
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -194,6 +197,19 @@ public enum Instruction {
     /** Close the given input stream */
     OFILE_CLOSE(Archetype.OUTSTREAM_TYPE, Archetype.OUTSTREAM_TYPE);
 
+    private static final Set<Instruction> impureInstructions = EnumSet.of(
+        RAND,
+        FREAD,
+        CREAD,
+        BREAD,
+        AREAD,
+        IFILE_OPEN,
+        IFILE_CLOSE,
+        IFILE_END,
+        OFILE_OPEN,
+        OFILE_CLOSE
+    );
+
     private final Type returnType;
     private final List<Type> operands;
 
@@ -224,5 +240,9 @@ public enum Instruction {
      */
     public List<Type> operands() {
         return operands;
+    }
+
+    public boolean isPure() {
+        return !impureInstructions.contains(this);
     }
 }

@@ -23,6 +23,10 @@ class ConstantParser {
 
         RValue value = TypeChecker.in(parser.context()).checking(expression).expecting(type).build().resolve();
 
+        if (!value.isStatic()) {
+            throw new ParseError(value.location(), ErrorCode.CONSTANT_MUST_BE_STATIC);
+        }
+
         return new VariableDeclaration(location, identifier.lexeme(), type, value);
     }
 }

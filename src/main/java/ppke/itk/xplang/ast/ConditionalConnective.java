@@ -35,6 +35,11 @@ public class ConditionalConnective extends RValue {
         return ((RValue) this.children.get(0)).getType();
     }
 
+    @Override
+    public boolean isStatic() {
+        return getLeft().isStatic() && getRight().isStatic();
+    }
+
     public static enum Op {
         AND(false),
         OR(true);
