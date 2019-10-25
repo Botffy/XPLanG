@@ -24,10 +24,11 @@ public class InfixBinary implements Operator.Infix {
     }
 
     @Override public Expression parseInfix(Expression left, ExpressionParser parser) throws ParseError {
+        Location loc = parser.actual().location();
         Expression right = parser.parse(associativity == Associativity.LEFT ? precedence : precedence - 1);
         return new FunctionExpression(
             functionName,
-            Location.between(left.getLocation(), right.getLocation()),
+            loc,
             parser.context().findFunctionsFor(functionName),
             Arrays.asList(left, right)
         );

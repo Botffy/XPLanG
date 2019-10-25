@@ -35,6 +35,12 @@ public final class Location {
     }
 
     public static Location between(Location start, Location end) {
+        if (start.start.compareTo(end.end) > 0) {
+            Location t = start;
+            start = end;
+            end = t;
+        }
+
         return new Location(start.start, end.end);
     }
 

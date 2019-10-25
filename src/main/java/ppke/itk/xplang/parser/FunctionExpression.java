@@ -82,7 +82,10 @@ public class FunctionExpression extends Expression {
     @Override
     public RValue toASTNode() {
         FunctionDeclaration declaration = candidates.iterator().next();
-        return declaration.call(location, childNodes.stream().map(Expression::toASTNode).collect(toList()));
+        Location nodeLocation = childNodes.stream()
+            .map(Expression::getLocation)
+            .reduce(location, Location::between);
+        return declaration.call(nodeLocation, childNodes.stream().map(Expression::toASTNode).collect(toList()));
     }
 
     @Override
