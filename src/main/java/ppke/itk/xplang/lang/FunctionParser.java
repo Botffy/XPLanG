@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static ppke.itk.xplang.lang.PlangName.name;
 
 /**
  * {@code Function = FUNCTION IDENTIFIER PAREN_OPEN ParameterList PAREN_CLOSE COLON Typename [Declarations] Sequence END_FUNCTION }
@@ -39,11 +40,17 @@ class FunctionParser {
             function.parameters().add(0, retVal);
 
             for (VariableDeclaration parameter : function.parameters()) {
-                parser.context().declareVariable(new PlangName(parameter.getName()), parameter);
+                parser.context().declareVariable(name(parameter.getName()), parameter);
             }
 
             if (parser.actual().symbol().equals(Symbol.DECLARE)) {
-                DeclarationsParser.parse(parser);
+                DeclarationsParser.parse(parser).forEach(variable -> {
+                    try {
+                        parser.context().declareVariable(name(variable.getName()), variable);
+                    } catch (ParseError error) {
+                        parser.recordError(error.toErrorMessage());
+                    }
+                });
             }
             Sequence sequence = SequenceParser.parse(parser, Symbol.END_FUNCTION);
             parser.accept(Symbol.END_FUNCTION);
