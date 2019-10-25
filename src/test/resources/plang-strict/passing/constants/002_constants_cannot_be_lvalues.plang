@@ -1,0 +1,7 @@
+**#Constant cannot be used as LValues
+**FirstErrorLoc:6,3
+konstans egész val = 1337
+
+program t
+  val := 57
+program_vége

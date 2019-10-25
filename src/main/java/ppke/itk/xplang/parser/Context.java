@@ -80,8 +80,8 @@ public class Context {
         log.debug("Declared constant '{}'", name);
     }
 
-    public boolean isConstant(VariableDeclaration declaration) {
-        return globalConstants.containsValue(declaration);
+    public boolean isConstant(Name name) {
+        return globalConstants.containsKey(name);
     }
 
     /**
@@ -112,15 +112,19 @@ public class Context {
      * Does the given name denote a variable in this scope?
      */
     public boolean isVariable(Name name) {
-        return (localVariables != null && localVariables.containsKey(name)) || globalConstants.containsKey(name);
+        return (localVariables != null && localVariables.containsKey(name)) || isConstant(name);
     }
 
     /**
      * Get a reference to a declared variable.
      * @return The VarRef AST node pointing at the variable.
-     * @throws ParseError if the name cannot be found, or does not denote a type.
+     * @throws ParseError if the name cannot be found, or if it denotes a constant.
      */
     public VarRef getVariableReference(Name name, Token token) throws ParseError {
+        if (isConstant(name)) {
+            throw new ParseError(token.location(), ErrorCode.CONSTANT_CANNOT_BE_LVALUE, name);
+        }
+
         return new VarRef(token.location(), lookupVariable(name, token));
     }
 
