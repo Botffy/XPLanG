@@ -4,6 +4,7 @@ import com.github.stefanbirkner.fishbowl.Fishbowl;
 import org.junit.Before;
 import org.junit.Test;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.CursorPosition;
 import ppke.itk.xplang.common.ErrorLog;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.function.Instruction;
@@ -154,6 +155,7 @@ public class ExpressionParserTest {
         ExpressionParser ep = new ExpressionParser(parser);
         Expression res = ep.parse(Operator.Precedence.CONTAINING);
         assertThat(res, instanceOf(FunctionExpression.class));
+        assertEquals(new CursorPosition(1, 1), res.getLocation().start);
     }
 
     @Test

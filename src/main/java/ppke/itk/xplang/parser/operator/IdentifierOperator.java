@@ -61,7 +61,7 @@ public class IdentifierOperator implements Operator.Prefix {
 
             return new FunctionExpression(
                 name,
-                parser.actual().location(),
+                location,
                 parser.context().findFunctionsFor(name),
                 args
             );
