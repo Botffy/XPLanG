@@ -80,6 +80,10 @@ public class Context {
         log.debug("Declared constant '{}'", name);
     }
 
+    public Scope getGlobalConstants() {
+        return new Scope(globalConstants.values());
+    }
+
     public boolean isConstant(Name name) {
         return globalConstants.containsKey(name);
     }

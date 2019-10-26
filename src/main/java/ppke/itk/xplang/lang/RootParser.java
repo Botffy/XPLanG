@@ -69,7 +69,7 @@ class RootParser {
         }
 
         Location endLoc = parser.actual().location();
-        return new Root(Location.between(startLoc, endLoc), state.program, new Scope(state.constants));
+        return new Root(Location.between(startLoc, endLoc), state.program, parser.context().getGlobalConstants());
     }
 
     private static void parseFunctionDeclaration(Parser parser, State state) throws ParseError {
@@ -97,12 +97,10 @@ class RootParser {
     private static void parseConstant(Parser parser, State state) throws ParseError {
         VariableDeclaration declaration = ConstantParser.parse(parser);
         parser.context().declareConstant(name(declaration.getName()), declaration);
-        state.constants.add(declaration);
     }
 
     private static class State {
         List<FunctionDeclaration> functions = new ArrayList<>();
-        List<VariableDeclaration> constants = new ArrayList<>();
         Program program = null;
     }
 
