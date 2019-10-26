@@ -1,0 +1,13 @@
+**#Arrays
+**Memory:a=Array(Integer(1),Integer(2),Integer(3),Integer(4))
+konstans Egész hossz = 4
+
+Program testing
+  Változók:
+    a: Egész[hossz + 1 - 1]
+
+  a[0] := 1
+  a[1] := 2
+  a[2] := 3
+  a[3] := 4
+program_vége

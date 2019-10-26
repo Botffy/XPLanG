@@ -2,9 +2,12 @@ package ppke.itk.xplang.parser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.ast.Root;
+import ppke.itk.xplang.ast.Scope;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.common.ErrorLog;
+import ppke.itk.xplang.interpreter.StaticEvaluator;
 import ppke.itk.xplang.parser.operator.ExpressionParser;
 
 import java.io.IOException;
@@ -16,6 +19,7 @@ public class Parser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser");
 
     private final ErrorLog errorLog;
+    private final StaticEvaluator evaluator;
     private Context context;
     private Lexer lexer;
     private Token act;
@@ -23,6 +27,7 @@ public class Parser {
     public Parser(ErrorLog errorLog) {
         this.context = new Context();
         this.errorLog = errorLog;
+        this.evaluator = new StaticEvaluator();
     }
 
     /**
@@ -134,6 +139,10 @@ public class Parser {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    public <T> T eval(RValue rValue, Class<T> expectType) {
+        return evaluator.eval(rValue, context.getGlobalConstants(), expectType);
     }
 
     public void recordError(CompilerMessage errorMessage) {

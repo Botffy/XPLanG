@@ -2,6 +2,7 @@ package ppke.itk.xplang.lang;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ppke.itk.xplang.ast.RValue;
 import ppke.itk.xplang.common.CompilerMessage;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Archetype;
@@ -38,13 +39,20 @@ final class TypenameParser {
         Stack<Integer> lengths = new Stack<>();
         while(parser.actual().symbol().equals(Symbol.BRACKET_OPEN)) {
             parser.advance();
-            Token lengthToken = parser.advance();
-            if (!lengthToken.symbol().equals(Symbol.LITERAL_INT)) {
-                throw new ParseError(
-                    lengthToken.location(), ErrorCode.ARRAY_LENGTH_EXPECT_INTEGER_LITERAL, lengthToken.symbol()
-                );
+
+            Expression lengthExpression = parser.parseExpression();
+            RValue address = TypeChecker.in(parser.context())
+                .checking(lengthExpression)
+                .expecting(parser.context().integerType())
+                .withCustomErrorMessage(x -> new ParseError(x.location(), ErrorCode.ARRAY_LENGTH_EXPECT_INTEGER_EXPRESSION, x.getType()))
+                .build()
+                .resolve();
+
+            if (!address.isStatic()) {
+                throw new ParseError(address.location(), ErrorCode.ARRAY_LENGTH_EXPECT_STATIC);
             }
-            int length = Integer.parseInt(lengthToken.lexeme());
+
+            int length = parser.eval(address, Integer.class);
             lengths.push(length);
             parser.accept(Symbol.BRACKET_CLOSE);
         }

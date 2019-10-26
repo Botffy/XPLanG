@@ -1,0 +1,13 @@
+**#Arrays
+**FirstErrorLoc:7,14
+konstans Egész hossz = 4
+
+Program testing
+  Változók:
+    a: Egész[hossz + rnd 4]
+
+  a[0] := 1
+  a[1] := 2
+  a[2] := 3
+  a[3] := 4
+program_vége
