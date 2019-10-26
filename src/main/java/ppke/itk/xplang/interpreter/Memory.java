@@ -156,11 +156,7 @@ class Memory {
     }
 
     String dump() {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Frame frame : frames) {
-            stringBuilder.append(frame.describe());
-        }
-        return stringBuilder.toString();
+        return frames.getLast().describe();
     }
 
     @Override

@@ -1,5 +1,5 @@
 **#Constant declaration and usage
-**Memory:leet=Integer(124)
+**stdOut:124
 
 függvény f(x: Egész): Egész
   Eredmény := 4 * x

@@ -43,6 +43,7 @@ public class Interpreter implements ASTVisitor {
     }
 
     @Override public void visit(Program program) {
+        memory.addFrame();
         log.debug("Executing {}", program);
         program.block().accept(this);
     }
