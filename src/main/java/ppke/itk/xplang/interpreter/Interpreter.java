@@ -315,6 +315,10 @@ public class Interpreter implements ASTVisitor {
         valueStack.push(stdOut);
     }
 
+    public Stack<Value> getValueStack() {
+        return valueStack;
+    }
+
     Memory getMemory() {
         return memory;
     }

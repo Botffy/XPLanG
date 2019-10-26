@@ -3,7 +3,7 @@ package ppke.itk.xplang.parser;
 public class MockName implements Name {
     private final String value;
 
-    MockName(String name) {
+    public MockName(String name) {
         this.value = name;
     }
 
