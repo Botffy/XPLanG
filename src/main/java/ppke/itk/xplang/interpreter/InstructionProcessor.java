@@ -50,7 +50,7 @@ class InstructionProcessor {
         executions.put(Instruction.FDIV, realBinary((x, y) -> x / y));
         executions.put(Instruction.FEXP, realBinary(Math::pow));
         executions.put(Instruction.ROUND, new UnaryInstruction<>(RealValue.class, x -> new IntegerValue((int) Math.round(x.getValue()))));
-        executions.put(Instruction.FTOI, new UnaryInstruction<>(RealValue.class, x -> new IntegerValue((int) (x.getValue()))));
+        executions.put(Instruction.FTOI, new UnaryInstruction<>(RealValue.class, x -> new IntegerValue(x.getValue().intValue())));
         executions.put(Instruction.SIN, realUnary(Math::sin));
         executions.put(Instruction.COS, realUnary(Math::cos));
         executions.put(Instruction.TAN, realUnary(Math::tan));

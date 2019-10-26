@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 import static ppke.itk.xplang.interpreter.ValueUtils.convert;
 
-class StringValue extends IntegerAddressable implements ComparableValue, SlicableValue, WritableValue {
+class StringValue extends IntegerAddressable implements ComparableValue, SlicableValue, WritableValue, ScalarValue<String> {
     private final char[] chars;
 
     StringValue(String value) {
@@ -39,7 +39,8 @@ class StringValue extends IntegerAddressable implements ComparableValue, Slicabl
         return chars.length;
     }
 
-    String getValue() {
+    @Override
+    public String getValue() {
         return new String(chars);
     }
 

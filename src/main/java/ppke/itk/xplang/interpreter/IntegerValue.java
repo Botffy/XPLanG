@@ -2,7 +2,7 @@ package ppke.itk.xplang.interpreter;
 
 import java.text.DecimalFormat;
 
-class IntegerValue implements ComparableValue, WritableValue {
+class IntegerValue implements ComparableValue, WritableValue, ScalarValue<Integer> {
     private static final DecimalFormat format = DecimalFormatFactory.integerDecimalFormat();
 
     private final int value;
@@ -11,7 +11,8 @@ class IntegerValue implements ComparableValue, WritableValue {
         this.value = value;
     }
 
-    int getValue() {
+    @Override
+    public Integer getValue() {
         return value;
     }
 

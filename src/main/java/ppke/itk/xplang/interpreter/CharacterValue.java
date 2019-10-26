@@ -1,13 +1,14 @@
 package ppke.itk.xplang.interpreter;
 
-class CharacterValue implements ComparableValue, WritableValue {
+class CharacterValue implements ComparableValue, WritableValue, ScalarValue<Character> {
     public final char value;
 
     CharacterValue(char value) {
         this.value = value;
     }
 
-    char getValue() {
+    @Override
+    public Character getValue() {
         return value;
     }
 

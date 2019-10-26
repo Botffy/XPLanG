@@ -3,7 +3,7 @@ package ppke.itk.xplang.interpreter;
 import java.text.DecimalFormat;
 import java.util.Locale;
 
-public class RealValue implements ComparableValue, WritableValue {
+public class RealValue implements ComparableValue, WritableValue, ScalarValue<Double> {
     private static final DecimalFormat format = DecimalFormatFactory.realDecimalFormat();
 
     private final double value;
@@ -12,7 +12,8 @@ public class RealValue implements ComparableValue, WritableValue {
         this.value = value;
     }
 
-    public double getValue() {
+    @Override
+    public Double getValue() {
         return value;
     }
 

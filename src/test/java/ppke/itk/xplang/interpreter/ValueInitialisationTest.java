@@ -64,6 +64,6 @@ public class ValueInitialisationTest {
 
         Value initialValue = memory.getValue(var);
         assertThat(initialValue, instanceOf(IntegerValue.class));
-        assertEquals(1337, ((IntegerValue) initialValue).getValue());
+        assertEquals(1337, ((IntegerValue) initialValue).getValue().intValue());
     }
 }

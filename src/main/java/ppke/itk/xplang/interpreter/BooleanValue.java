@@ -1,6 +1,6 @@
 package ppke.itk.xplang.interpreter;
 
-final class BooleanValue implements WritableValue, ComparableValue {
+final class BooleanValue implements WritableValue, ComparableValue, ScalarValue<Boolean> {
     final static BooleanValue TRUE = new BooleanValue(true);
     final static BooleanValue FALSE = new BooleanValue(false);
 
@@ -10,7 +10,8 @@ final class BooleanValue implements WritableValue, ComparableValue {
         this.value = value;
     }
 
-    boolean getValue() {
+     @Override
+    public Boolean getValue() {
         return value;
     }
 
