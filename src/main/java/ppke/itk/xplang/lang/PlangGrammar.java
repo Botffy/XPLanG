@@ -3,6 +3,7 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
+import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.function.Instruction;
 import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.*;
@@ -14,6 +15,7 @@ import ppke.itk.xplang.type.Type;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
+import static ppke.itk.xplang.lang.PlangName.name;
 import static ppke.itk.xplang.lang.TypeName.typeName;
 import static ppke.itk.xplang.util.AccentUtils.calculateVariants;
 
@@ -63,6 +65,10 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(SpecialName.OPEN_OUTPUT_FILE, Instruction.OFILE_OPEN, outputStreamType, stringType);
             ctx.createBuiltin(SpecialName.CLOSE_OUTPUTSTREAM, Instruction.OFILE_CLOSE, Archetype.NONE, outputStreamType);
 
+            ctx.declareConstant(name("SV"), new VariableDeclaration(
+                Location.NONE, "sv", charType, new CharacterLiteral(Location.NONE, charType, '\n')
+            ));
+
             ctx.createBuiltin(operator("eq"), Instruction.EQ, boolType, boolType, boolType);
             ctx.createBuiltin(operator("neq"), Instruction.NEQ, boolType, boolType, boolType);
             createComparisons(ctx, boolType, intType);
@@ -90,7 +96,6 @@ public class PlangGrammar extends Grammar {
             ctx.createBuiltin(operator("plus"), Instruction.CONCAT, stringType, stringType, stringType);
             ctx.createBuiltin(operator("find"), Instruction.FIND_CHAR, intType, stringType, charType);
             ctx.createBuiltin(operator("find"), Instruction.FIND_SUBSTR, intType, stringType, stringType);
-            ctx.createBuiltin(operator("sv"), Instruction.NEWLINE, charType);
             ctx.createBuiltin(operator("length"), Instruction.ARLEN, intType, Archetype.ADDRESSABLE);
 
             ctx.createBuiltin(aliases(props.getFunctionName("rand")), Instruction.RAND, intType, intType);
@@ -145,7 +150,6 @@ public class PlangGrammar extends Grammar {
             ctx.infix(Symbol.OPERATOR_EXP, new InfixBinary(operator("pow"), Operator.Precedence.EXPONENT));
 
             ctx.infix(Symbol.OPERATOR_FIND, new InfixBinary(operator("find"), Operator.Precedence.EXPONENT));
-            ctx.prefix(Symbol.OPERATOR_SV, new NullaryOperator(operator("sv")));
         } catch(ParseError | IllegalStateException error) {
             throw new IllegalStateException("Failed to initialise PlangGrammar", error);
         }

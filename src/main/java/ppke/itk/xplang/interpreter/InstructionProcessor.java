@@ -68,7 +68,6 @@ class InstructionProcessor {
         executions.put(Instruction.CONCAT, new BinaryInstruction<>(StringValue.class, StringValue.class, (x, y) -> x.concat(y)));
         executions.put(Instruction.FIND_CHAR, new BinaryInstruction<>(StringValue.class, CharacterValue.class, StringValue::findCharacter));
         executions.put(Instruction.FIND_SUBSTR, new BinaryInstruction<>(StringValue.class, StringValue.class, StringValue::findSubstring));
-        executions.put(Instruction.NEWLINE, stack -> stack.push(new CharacterValue('\n')));
         executions.put(Instruction.IREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readIntegerValue));
         executions.put(Instruction.FREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readRealValue));
         executions.put(Instruction.CREAD, new UnaryInstruction<>(InputStreamValue.class, InputStreamValue::readCharacterValue));
