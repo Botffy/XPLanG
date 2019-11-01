@@ -1,0 +1,17 @@
+**#Multiple parameters
+**stdOut:**********
+
+függvény nszer(kar: Karakter, n: Egész): Szöveg
+  Változók:
+    i: Egész
+  Eredmény := ""
+  i := 0
+  ciklus amíg i < n
+    Eredmény := Eredmény + kar
+    i := i + 1
+  ciklus_vége
+függvény_vége
+
+program t
+  ki: nszer('*', 10)
+program_vége

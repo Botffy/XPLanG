@@ -83,7 +83,7 @@ public class Interpreter implements ASTVisitor {
         Block block = function.block();
         block.scope().accept(this);
 
-        for (int i = 1; i <= function.signature().parameterCount(); ++i) {
+        for (int i = function.signature().parameterCount(); i > 0; --i) {
             Value argument = valueStack.pop();
             memory.getReference(function.parameters().get(i)).assign(argument.copy());
         }
