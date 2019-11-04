@@ -5,14 +5,13 @@ import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Locatable;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
-import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -24,6 +23,12 @@ import static ppke.itk.xplang.lang.PlangName.name;
  */
 class FunctionParser {
     private static final Logger log = LoggerFactory.getLogger("Root.Parser");
+
+    private static final Map<Symbol, Parselet> parsers = new HashMap<>();
+    static {
+        parsers.put(Symbol.DECLARE, FunctionParser::parseDeclarations);
+        parsers.put(Symbol.PRECONDITION, FunctionParser::parsePreconditions);
+    }
 
     private FunctionParser() { /* empty private ctor */ }
 
@@ -43,15 +48,11 @@ class FunctionParser {
                 parser.context().declareVariable(name(parameter.getName()), parameter);
             }
 
-            if (parser.actual().symbol().equals(Symbol.DECLARE)) {
-                DeclarationsParser.parse(parser).forEach(variable -> {
-                    try {
-                        parser.context().declareVariable(name(variable.getName()), variable);
-                    } catch (ParseError error) {
-                        parser.recordError(error.toErrorMessage());
-                    }
-                });
+            while (parsers.containsKey(parser.actual().symbol())) {
+                Parselet parselet = parsers.get(parser.actual().symbol());
+                parselet.parse(parser, function);
             }
+
             Sequence sequence = SequenceParser.parse(parser, Symbol.END_FUNCTION);
             parser.accept(Symbol.END_FUNCTION);
 
@@ -104,6 +105,25 @@ class FunctionParser {
         );
     }
 
+    private static void parseDeclarations(Parser parser, Function function) throws ParseError {
+        DeclarationsParser.parse(parser).forEach(variable -> {
+            try {
+                parser.context().declareVariable(name(variable.getName()), variable);
+            } catch (ParseError error) {
+                parser.recordError(error.toErrorMessage());
+            }
+        });
+    }
+
+    private static void parsePreconditions(Parser parser, Function function) throws ParseError {
+        Token startToken = parser.accept(Symbol.PRECONDITION);
+        parser.accept(Symbol.COLON);
+        RValue condition = ConditionParser.parse(parser);
+        Location location = Location.between(startToken.location(), condition.location());
+        Assertion assertion = new Assertion(location, condition);
+        function.setPrecondition(assertion);
+    }
+
     static Function parseForwardDeclaration(Parser parser) throws ParseError {
         log.debug("Forward declaration");
 
@@ -122,5 +142,10 @@ class FunctionParser {
         }
         parser.accept(Symbol.PAREN_CLOSE);
         return declarations.collect(toList());
+    }
+
+    @FunctionalInterface
+    private interface Parselet {
+        void parse(Parser parser, Function function) throws ParseError;
     }
 }

@@ -87,6 +87,7 @@ public class Interpreter implements ASTVisitor {
             Value argument = valueStack.pop();
             memory.getReference(function.parameters().get(i)).assign(argument.copy());
         }
+        function.precondition().ifPresent(x -> x.accept(this));
 
         block.sequence().accept(this);
 

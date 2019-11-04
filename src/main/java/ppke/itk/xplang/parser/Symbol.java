@@ -13,6 +13,7 @@ public enum Symbol {
     RECORD,
     END_RECORD,
     DECLARE,
+    PRECONDITION,
     IF,
     THEN,
     ELSIF,

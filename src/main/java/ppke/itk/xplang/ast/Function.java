@@ -4,6 +4,7 @@ import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.type.Signature;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Function extends FunctionDeclaration {
     private final List<VariableDeclaration> parameters;
@@ -12,6 +13,7 @@ public class Function extends FunctionDeclaration {
         super(location, signature);
         this.parameters = parameters;
         children.add(0, block);
+        children.add(1, null); // precondition
     }
 
     public Block block() {
@@ -20,6 +22,14 @@ public class Function extends FunctionDeclaration {
 
     public void setBlock(Block block) {
         this.children.set(0, block);
+    }
+
+    public Optional<Assertion> precondition() {
+        return Optional.ofNullable((Assertion) children.get(1));
+    }
+
+    public void setPrecondition(Assertion precondition) {
+        children.set(1, precondition);
     }
 
     public List<VariableDeclaration> parameters() {
