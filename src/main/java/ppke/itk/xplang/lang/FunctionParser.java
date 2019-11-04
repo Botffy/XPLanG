@@ -45,6 +45,9 @@ class FunctionParser {
             if (parser.actual().symbol().equals(Symbol.PRECONDITION)) {
                 parsePreconditions(parser, function);
             }
+            if (parser.actual().symbol().equals(Symbol.POSTCONDITION)) {
+                parsePostcondition(parser, function);
+            }
             if (parser.actual().symbol().equals(Symbol.DECLARE)) {
                 parseDeclarations(parser, function);
             }
@@ -117,6 +120,15 @@ class FunctionParser {
         Location location = Location.between(startToken.location(), condition.location());
         Assertion assertion = new Assertion(location, condition);
         function.setPrecondition(assertion);
+    }
+
+    private static void parsePostcondition(Parser parser, Function function) throws ParseError {
+        Token startToken = parser.accept(Symbol.POSTCONDITION);
+        parser.accept(Symbol.COLON);
+        RValue condition = ConditionParser.parse(parser);
+        Location location = Location.between(startToken.location(), condition.location());
+        Assertion assertion = new Assertion(location, condition);
+        function.setPostcondition(assertion);
     }
 
     static Function parseForwardDeclaration(Parser parser) throws ParseError {

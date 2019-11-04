@@ -1,0 +1,14 @@
+**#Specify postconditions
+**Memory:x=Integer(1)
+
+függvény f(x: Egész): Egész
+  Utófeltétel: Eredmény = x
+  Eredmény := x
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1)
+program_vége

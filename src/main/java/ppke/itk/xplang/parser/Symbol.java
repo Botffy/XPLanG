@@ -14,6 +14,7 @@ public enum Symbol {
     END_RECORD,
     DECLARE,
     PRECONDITION,
+    POSTCONDITION,
     IF,
     THEN,
     ELSIF,

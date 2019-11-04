@@ -88,8 +88,8 @@ public class Interpreter implements ASTVisitor {
             memory.getReference(function.parameters().get(i)).assign(argument.copy());
         }
         function.precondition().ifPresent(x -> x.accept(this));
-
         block.sequence().accept(this);
+        function.postcondition().ifPresent(x -> x.accept(this));
 
         VariableDeclaration returnVariable = function.parameters().get(0);
         Value returnValue = memory.getValue(returnVariable);

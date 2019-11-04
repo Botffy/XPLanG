@@ -14,6 +14,7 @@ public class Function extends FunctionDeclaration {
         this.parameters = parameters;
         children.add(0, null);
         children.add(1, null); // precondition
+        children.add(2, null); // postcondition
     }
 
     public Block block() {
@@ -30,6 +31,14 @@ public class Function extends FunctionDeclaration {
 
     public void setPrecondition(Assertion precondition) {
         children.set(1, precondition);
+    }
+
+    public Optional<Assertion> postcondition() {
+        return Optional.ofNullable((Assertion) children.get(2));
+    }
+
+    public void setPostcondition(Assertion postcondition) {
+        children.set(2, postcondition);
     }
 
     public List<VariableDeclaration> parameters() {

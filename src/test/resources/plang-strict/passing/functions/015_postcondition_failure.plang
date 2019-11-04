@@ -1,0 +1,14 @@
+**#Failing preconditions causes interpreter error
+**InterpreterError:ASSERTION_FAILURE
+
+függvény f(x: Egész): Egész
+  Utófeltétel: Eredmény = 0
+  Eredmény := x
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1)
+program_vége

@@ -71,6 +71,7 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     rekord_v{E}ge                   { return token(Symbol.END_RECORD, yytext(), yyline, yycolumn); }
     V{A}ltoz{O}k                    { return token(Symbol.DECLARE, yytext(), yyline, yycolumn); }
     El{OE}felt{E}tel                { return token(Symbol.PRECONDITION, yytext(), yyline, yycolumn); }
+    Ut{O}felt{E}tel                 { return token(Symbol.POSTCONDITION, yytext(), yyline, yycolumn); }
     "ha"                            { return token(Symbol.IF, yytext(), yyline, yycolumn); }
     "akkor"                         { return token(Symbol.THEN, yytext(), yyline, yycolumn); }
     "vagy_ha"                       { return token(Symbol.ELSIF, yytext(), yyline, yycolumn); }
