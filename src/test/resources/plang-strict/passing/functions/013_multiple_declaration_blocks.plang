@@ -1,0 +1,16 @@
+**#Multiple declare blocks are given
+**FirstErrorLoc:6,3
+
+függvény f(x: Egész): Egész
+  Változók: y: Egész
+  Változók: z: Valós
+
+  Eredmény := x
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(-1)
+program_vége

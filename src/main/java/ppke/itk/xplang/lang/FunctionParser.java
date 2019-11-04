@@ -3,15 +3,15 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
-import ppke.itk.xplang.common.Locatable;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.*;
+import ppke.itk.xplang.parser.ParseError;
+import ppke.itk.xplang.parser.Parser;
+import ppke.itk.xplang.parser.Symbol;
+import ppke.itk.xplang.parser.Token;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -23,12 +23,6 @@ import static ppke.itk.xplang.lang.PlangName.name;
  */
 class FunctionParser {
     private static final Logger log = LoggerFactory.getLogger("Root.Parser");
-
-    private static final Map<Symbol, Parselet> parsers = new HashMap<>();
-    static {
-        parsers.put(Symbol.DECLARE, FunctionParser::parseDeclarations);
-        parsers.put(Symbol.PRECONDITION, FunctionParser::parsePreconditions);
-    }
 
     private FunctionParser() { /* empty private ctor */ }
 
@@ -48,9 +42,11 @@ class FunctionParser {
                 parser.context().declareVariable(name(parameter.getName()), parameter);
             }
 
-            while (parsers.containsKey(parser.actual().symbol())) {
-                Parselet parselet = parsers.get(parser.actual().symbol());
-                parselet.parse(parser, function);
+            if (parser.actual().symbol().equals(Symbol.PRECONDITION)) {
+                parsePreconditions(parser, function);
+            }
+            if (parser.actual().symbol().equals(Symbol.DECLARE)) {
+                parseDeclarations(parser, function);
             }
 
             Sequence sequence = SequenceParser.parse(parser, Symbol.END_FUNCTION);
@@ -141,10 +137,5 @@ class FunctionParser {
         }
         parser.accept(Symbol.PAREN_CLOSE);
         return declarations.collect(toList());
-    }
-
-    @FunctionalInterface
-    private interface Parselet {
-        void parse(Parser parser, Function function) throws ParseError;
     }
 }
