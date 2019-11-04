@@ -9,10 +9,10 @@ import java.util.Optional;
 public class Function extends FunctionDeclaration {
     private final List<VariableDeclaration> parameters;
 
-    public Function(Location location, Signature signature, List<VariableDeclaration> parameters, Block block) {
+    public Function(Location location, Signature signature, List<VariableDeclaration> parameters) {
         super(location, signature);
         this.parameters = parameters;
-        children.add(0, block);
+        children.add(0, null);
         children.add(1, null); // precondition
     }
 

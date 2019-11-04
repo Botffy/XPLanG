@@ -100,8 +100,7 @@ class FunctionParser {
         return new Function(
             Location.between(functionToken.location(), typeNameLocation),
             signature,
-            parameters,
-            null
+            parameters
         );
     }
 
