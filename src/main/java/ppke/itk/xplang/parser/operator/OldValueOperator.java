@@ -20,14 +20,19 @@ public class OldValueOperator implements Operator.Prefix {
         Token op = parser.actual();
         Token var = parser.accept(Symbol.IDENTIFIER);
         Name name = nameCreator.apply(var.lexeme());
+        Location location = Location.between(op.location(), var.location());
 
         if (!parser.context().isVariable(name)) {
             throw new ParseError(var.location(), ErrorCode.OPERATOR_OLD_EXPEECTS_VARIABLE);
         }
 
+        if (parser.context().isConstant(name)) {
+            return new ValueExpression(parser.context().getVariableValue(name, var));
+        }
+
         VariableDeclaration variableDeclaration = parser.context().lookupVariable(name, var);
         return new ValueExpression(new OldVariableValue(
-            Location.between(op.location(), var.location()),
+            location,
             variableDeclaration
         ));
     }
