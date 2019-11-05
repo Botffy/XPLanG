@@ -1,0 +1,15 @@
+**#Refer to the original value of a parameter in the postcondition
+**Memory:x=Integer(1)
+
+függvény f(x: Egész): Egész
+  Utófeltétel: Eredmény = régi x
+  Eredmény := x
+  x := x + 1
+függvény_vége
+
+program t
+  változók:
+    x: Egész
+
+  x := f(1)
+program_vége

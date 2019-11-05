@@ -141,7 +141,7 @@ public class Context {
         return new VarVal(token.location(), lookupVariable(name, token), isConstant(name));
     }
 
-    private VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {
+    public VariableDeclaration lookupVariable(Name name, Token token) throws ParseError {
         Optional<VariableDeclaration> var = Optional.empty();
         var = Optional.ofNullable(localVariables == null ? null : localVariables.get(name));
         if (!var.isPresent()) {
@@ -244,6 +244,10 @@ public class Context {
      */
     public void prefix(Symbol symbol, Operator.Prefix operator) {
         prefixOperators.put(symbol, operator);
+    }
+
+    public void removePrefix(Symbol symbol) {
+        prefixOperators.remove(symbol);
     }
 
     /**

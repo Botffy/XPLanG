@@ -54,6 +54,7 @@ public enum Symbol {
     OPERATOR_GT,
     OPERATOR_GTE,
     OPERATOR_FIND,
+    OPERATOR_OLD,
     IDENTIFIER,
     LITERAL_INT,
     LITERAL_REAL,

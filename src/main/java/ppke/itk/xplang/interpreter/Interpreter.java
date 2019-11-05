@@ -87,6 +87,7 @@ public class Interpreter implements ASTVisitor {
             Value argument = valueStack.pop();
             memory.getReference(function.parameters().get(i)).assign(argument.copy());
         }
+        memory.saveFrame();
         function.precondition().ifPresent(x -> x.accept(this));
         block.sequence().accept(this);
         function.postcondition().ifPresent(x -> x.accept(this));
@@ -314,6 +315,13 @@ public class Interpreter implements ASTVisitor {
     @Override
     public void visit(StandardOutput standardOutput) {
         valueStack.push(stdOut);
+    }
+
+    @Override
+    public void visit(OldVariableValue oldVariableValue) {
+        Value old = memory.getSavedValue(oldVariableValue.getVariable());
+        log.debug("Old value of {} resolved to {}", oldVariableValue.getVariable().getName(), old);
+        valueStack.push(old);
     }
 
     public Stack<Value> getValueStack() {

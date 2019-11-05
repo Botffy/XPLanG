@@ -114,6 +114,8 @@ Identifier = [a-zA-Z\u00E1\u00C1\u00E9\u00C9\u00CD\u00ED\u00D3\u00F3\u00D6\u0150
     ">="                            { return token(Symbol.OPERATOR_GTE, yytext(), yyline, yycolumn); }
     "@"                             { return token(Symbol.OPERATOR_FIND, yytext(), yyline, yycolumn); }
 
+    r{E}gi                          { return token(Symbol.OPERATOR_OLD, yytext(), yyline, yycolumn); }
+
     \d+                             { return token(Symbol.LITERAL_INT, yytext(), yyline, yycolumn); }
     \d+\.\d+                        { return token(Symbol.LITERAL_REAL, yytext(), yyline, yycolumn); }
     "igaz"                          { return token(Symbol.LITERAL_TRUE, yytext(), yyline, yycolumn); }

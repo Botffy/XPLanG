@@ -34,4 +34,5 @@ public interface ASTVisitor {
     void visit(StringLiteral stringLiteral);
     void visit(StandardInput standardInput);
     void visit(StandardOutput standardOutput);
+    void visit(OldVariableValue oldVariableValue);
 }

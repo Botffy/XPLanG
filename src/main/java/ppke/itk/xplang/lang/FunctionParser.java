@@ -8,6 +8,7 @@ import ppke.itk.xplang.parser.ParseError;
 import ppke.itk.xplang.parser.Parser;
 import ppke.itk.xplang.parser.Symbol;
 import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.operator.OldValueOperator;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
@@ -125,7 +126,9 @@ class FunctionParser {
     private static void parsePostcondition(Parser parser, Function function) throws ParseError {
         Token startToken = parser.accept(Symbol.POSTCONDITION);
         parser.accept(Symbol.COLON);
+        parser.context().prefix(Symbol.OPERATOR_OLD, new OldValueOperator(PlangName::new));
         RValue condition = ConditionParser.parse(parser);
+        parser.context().removePrefix(Symbol.OPERATOR_OLD);
         Location location = Location.between(startToken.location(), condition.location());
         Assertion assertion = new Assertion(location, condition);
         function.setPostcondition(assertion);

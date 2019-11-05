@@ -23,6 +23,7 @@ class Memory {
     private final static class Frame {
         final String label;
         final Map<VariableDeclaration, Entry> memory = new HashMap<>();
+        Map<VariableDeclaration, Entry> savedState = null;
 
         Frame(String label) {
             this.label = label;
@@ -34,6 +35,18 @@ class Memory {
 
         Optional<Entry> find(VariableDeclaration variable) {
             return Optional.ofNullable(memory.get(variable));
+        }
+
+        Optional<Entry> findOld(VariableDeclaration variable) {
+            return savedState == null ? Optional.empty() : Optional.ofNullable(savedState.get(variable));
+        }
+
+        void saveState() {
+            savedState = memory.entrySet().stream()
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    entry -> entry.getValue().copy()
+                ));
         }
 
         String describe() {
@@ -53,6 +66,10 @@ class Memory {
             this.value = value;
         }
 
+        Entry copy() {
+            return new Entry(label, value.copy());
+        }
+
         String describe() {
             return String.format("%s=%s", label, value);
         }
@@ -70,6 +87,18 @@ class Memory {
 
     void addFrame() {
         frames.add(new Frame(Integer.toString(frames.size() - 1)));
+    }
+
+    /**
+     * Saves the state of the current frame, copying all values.
+     *
+     * <p>The saved values can later be retrieved using the {@link #getSavedValue(VariableDeclaration)} method.</p>
+     *
+     * <p>Calling this method successively for the same frame overwrites the earlier saved state.
+     * Closing the frame drops the saved state as well.</p>
+     */
+    void saveFrame() {
+        frames.getLast().saveState();
     }
 
     /**
@@ -138,6 +167,19 @@ class Memory {
     Value getValue(VariableDeclaration variable) {
         Entry entry = find(variable);
         return entry.value;
+    }
+
+    /**
+     * Get the saved state of a variable.
+     *
+     * <p>Must be called after {@link #saveFrame()}</p>
+     *
+     * @throws IllegalStateException if there is no saved state, or the variable is not in the saved state.
+     */
+    Value getSavedValue(VariableDeclaration variable) {
+        return frames.getLast().findOld(variable)
+            .orElseThrow(() -> new IllegalStateException(String.format("Variable %s has not been saved", variable.getName())))
+            .value;
     }
 
     private Entry find(VariableDeclaration variable) {
