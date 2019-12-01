@@ -25,6 +25,10 @@
     <property name="message" value="Line has trailing spaces."/>
     <property name="fileExtensions" value="java"/>
   </module>
+  <module name="LineLength">
+    <property name="max" value="120"/>
+    <property name="ignorePattern" value="^import\s.*$"/>
+  </module>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
     <module name="ArrayTypeStyle"/>
@@ -61,10 +65,6 @@
     <module name="IllegalImport"/>
     <module name="RedundantImport"/>
     <module name="UnusedImports"/>
-    <module name="LineLength">
-      <property name="max" value="120"/>
-      <property name="ignorePattern" value="^import\s.*$"/>
-    </module>
     <module name="AnnotationLocation"/>
     <module name="AnnotationUseStyle"/>
     <module name="MissingDeprecated"/>
@@ -186,12 +186,10 @@
     <module name="JavadocMethod">
       <property name="severity" value="warning" />
       <property name="scope" value="package"/>
-      <property name="minLineCount" value="6"/>
       <property name="allowMissingParamTags" value="true"/>
       <property name="allowMissingThrowsTags" value="true"/>
       <property name="allowMissingReturnTag" value="true"/>
       <property name="allowedAnnotations" value="Override, Test"/>
-      <property name="allowMissingPropertyJavadoc" value="true"/>
     </module>
     <module name="JavadocStyle">
       <property name="severity" value="info" />
