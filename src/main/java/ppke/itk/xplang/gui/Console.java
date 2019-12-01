@@ -47,6 +47,10 @@ class Console {
         stream(input.getActionListeners()).forEach(input::removeActionListener);
         input.addActionListener(ev -> {
             try {
+                display.append(input.getText()
+                    + '\n');
+                display.setCaretPosition(display.getDocument().getLength());
+
                 os.write(input.getText().getBytes(StandardCharsets.UTF_8));
                 os.write('\n');
                 os.flush();
