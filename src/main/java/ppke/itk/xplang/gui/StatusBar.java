@@ -46,7 +46,7 @@ class StatusBar implements CursorPositionChangeListener {
             return;
         }
 
-        this.message.setText(format("%d:%d", position.line + 1, position.column + 1));
+        this.message.setText(format("%d:%d", position.line, position.column));
     }
 
     @Override
