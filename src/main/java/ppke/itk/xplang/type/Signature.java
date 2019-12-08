@@ -11,6 +11,8 @@ import static java.util.Collections.unmodifiableList;
 
 /**
  * The signature of a function: its name, and the inputs and outputs of the function.
+ *
+ * <p>If the returnType is {@link Archetype#NONE}, then the function does not return a value, it is a procedure.</p>
  */
 public class Signature {
     private final Name name;

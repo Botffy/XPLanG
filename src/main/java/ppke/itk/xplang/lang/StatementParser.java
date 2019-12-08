@@ -3,21 +3,20 @@ package ppke.itk.xplang.lang;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.Statement;
-import ppke.itk.xplang.parser.ErrorCode;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
+import ppke.itk.xplang.parser.*;
 
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Map;
+
+import static ppke.itk.xplang.lang.PlangName.name;
 
 final class StatementParser {
     private final static Logger log = LoggerFactory.getLogger("Root.Parser.Grammar");
 
     private static final Map<Symbol, StatementParserFunction> statementParsers = new EnumMap<>(Symbol.class);
     static {
-        statementParsers.put(Symbol.IDENTIFIER, AssignmentParser::parse);
+        statementParsers.put(Symbol.IDENTIFIER, StatementParser::identifier);
         statementParsers.put(Symbol.IF, ConditionalParser::parse);
         statementParsers.put(Symbol.LOOP, LoopParser::parse);
         statementParsers.put(Symbol.IN, InputStatementParser::parse);
@@ -47,6 +46,16 @@ final class StatementParser {
 
     public static Collection<? extends Symbol> getStatementSymbols() {
         return statementParsers.keySet();
+    }
+
+    private static Statement identifier(Parser parser) throws ParseError {
+        // FIXME: this is a bit horrible, it screws up the error recovery. We really need a parse tree.
+        Name name = name(parser.actual().lexeme());
+        if (parser.context().isVariable(name)) {
+            return AssignmentParser.parse(parser);
+        } else {
+            return ProcedureCallParser.parse(parser);
+        }
     }
 
     @FunctionalInterface

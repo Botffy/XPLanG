@@ -211,6 +211,14 @@ public class Interpreter implements ASTVisitor {
         }
     }
 
+    @Override
+    public void visit(ExpressionStatement expressionStatement) {
+        checkStopCondition();
+        expressionStatement.getExpression().accept(this);
+        valueStack.drop(1);
+        step();
+    }
+
     @Override public void visit(FunctionCall call) {
         checkStopCondition();
         for(RValue argument : call.arguments()) {

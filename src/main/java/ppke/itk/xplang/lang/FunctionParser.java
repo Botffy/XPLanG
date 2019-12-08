@@ -4,11 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ppke.itk.xplang.ast.*;
 import ppke.itk.xplang.common.Location;
-import ppke.itk.xplang.parser.ParseError;
-import ppke.itk.xplang.parser.Parser;
-import ppke.itk.xplang.parser.Symbol;
-import ppke.itk.xplang.parser.Token;
+import ppke.itk.xplang.parser.*;
 import ppke.itk.xplang.parser.operator.OldValueOperator;
+import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
@@ -20,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 import static ppke.itk.xplang.lang.PlangName.name;
 
 /**
- * {@code Function = FUNCTION IDENTIFIER PAREN_OPEN ParameterList PAREN_CLOSE COLON Typename [Declarations] Sequence END_FUNCTION }
+ * {@code Subprogram = FUNCTION IDENTIFIER PAREN_OPEN ParameterList PAREN_CLOSE COLON Typename [Declarations] Sequence END_FUNCTION | PROCEDURE IDENTIFIER PAREN_OPEN ParameterList PAREN_CLOSE [Declarations] Sequence END_PROCEDURE }
  */
 class FunctionParser {
     private static final Logger log = LoggerFactory.getLogger("Root.Parser");
@@ -33,9 +31,10 @@ class FunctionParser {
         Function function = register(parseSignature(parser), parser);
         parser.context().openScope();
         try {
-            // Fixme the identifier should be localized. somehow.
+            // Fixme the identifier "Eredmény" should be localized.
+            Name returnValueName = function.isProcedure() ? SpecialName.NULL_RESULT : name("Eredmény");
             VariableDeclaration retVal = new VariableDeclaration(
-                function.location(), "Eredmény", function.signature().getReturnType()
+                function.location(), returnValueName.toString(), function.signature().getReturnType()
             );
             function.parameters().add(0, retVal);
 
@@ -53,8 +52,9 @@ class FunctionParser {
                 parseDeclarations(parser, function);
             }
 
-            Sequence sequence = SequenceParser.parse(parser, Symbol.END_FUNCTION);
-            parser.accept(Symbol.END_FUNCTION);
+            Symbol endSymbol = function.isProcedure() ? Symbol.END_PROCEDURE : Symbol.END_FUNCTION;
+            Sequence sequence = SequenceParser.parse(parser, endSymbol);
+            parser.accept(endSymbol);
 
             // todo this is a bit iffy. We SUPPOSE the statements below won't throw parseErrors, but it'd be more exact
             //      to close the scope outside the try block.
@@ -81,24 +81,30 @@ class FunctionParser {
         return function;
     }
 
-    static Function parseSignature(Parser parser) throws ParseError {
-        Token functionToken = parser.accept(Symbol.FUNCTION);
-        Token functionNameToken = parser.accept(Symbol.IDENTIFIER);
+    private static Function parseSignature(Parser parser) throws ParseError {
+        Token kindToken = parser.advance();
+        Token nameToken = parser.accept(Symbol.IDENTIFIER);
+
+        boolean isFunction = kindToken.symbol() == Symbol.FUNCTION;
 
         List<VariableDeclaration> parameters = parseParameterList(parser);
 
-        parser.accept(Symbol.COLON);
-        Location typeNameLocation = parser.actual().location();
-        Type type = TypenameParser.parse(parser);
+        Location endLoc = parameters.get(parameters.size() - 1).location();
+        Type returnType = Archetype.NONE;
+        if (isFunction) {
+            parser.accept(Symbol.COLON);
+            endLoc = parser.actual().location();
+            returnType = TypenameParser.parse(parser);
+        }
 
         Signature signature = new Signature(
-            new PlangName(functionNameToken.lexeme()),
-            type,
+            new PlangName(nameToken.lexeme()),
+            returnType,
             parameters.stream().map(VariableDeclaration::getType).collect(toList())
         );
 
         return new Function(
-            Location.between(functionToken.location(), typeNameLocation),
+            Location.between(kindToken.location(), endLoc),
             signature,
             parameters
         );

@@ -29,6 +29,7 @@ class RootParser {
     private static Map<Symbol, Parselet> parselets = new HashMap<>();
     static {
         parselets.put(Symbol.FUNCTION, RootParser::parseFunctionDeclaration);
+        parselets.put(Symbol.PROCEDURE, RootParser::parseFunctionDeclaration);
         parselets.put(Symbol.FORWARD_DECLARATION, RootParser::parseForwardDeclaration);
         parselets.put(Symbol.PROGRAM, RootParser::parseProgram);
         parselets.put(Symbol.RECORD, RootParser::parseRecord);

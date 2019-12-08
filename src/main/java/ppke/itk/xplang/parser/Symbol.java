@@ -8,6 +8,8 @@ public enum Symbol {
     END_PROGRAM,
     FUNCTION,
     END_FUNCTION,
+    PROCEDURE,
+    END_PROCEDURE,
     FORWARD_DECLARATION,
     CONSTANT,
     RECORD,

@@ -1,6 +1,11 @@
 package ppke.itk.xplang.parser;
 
 public enum SpecialName implements Name {
+    /**
+     * A procedure returns a null value under the hood.
+     */
+    NULL_RESULT,
+
     /** If a typename is encountered in an Expression, then the function call will be resolved for this special name.
      * <p>
      * Register your conversion functions by this name.

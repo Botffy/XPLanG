@@ -1,0 +1,10 @@
+**#Declare and call a procedure with a single parameter
+**stdOut:szia
+
+eljárás f(x: Szöveg)
+  ki: x
+eljárás_vége
+
+program t
+  f("szia")
+program_vége
