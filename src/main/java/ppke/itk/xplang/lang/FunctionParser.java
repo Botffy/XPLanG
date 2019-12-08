@@ -10,10 +10,13 @@ import ppke.itk.xplang.type.Archetype;
 import ppke.itk.xplang.type.Signature;
 import ppke.itk.xplang.type.Type;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static ppke.itk.xplang.lang.PlangName.name;
 
@@ -89,7 +92,7 @@ class FunctionParser {
 
         List<VariableDeclaration> parameters = parseParameterList(parser);
 
-        Location endLoc = parameters.get(parameters.size() - 1).location();
+        Location endLoc = parser.actual().location();
         Type returnType = Archetype.NONE;
         if (isFunction) {
             parser.accept(Symbol.COLON);
@@ -151,6 +154,12 @@ class FunctionParser {
 
     private static List<VariableDeclaration> parseParameterList(Parser parser) throws ParseError {
         parser.accept(Symbol.PAREN_OPEN);
+
+        if (parser.actual().symbol() == Symbol.PAREN_CLOSE) {
+            parser.advance();
+            return new ArrayList<>();
+        }
+
         Stream<VariableDeclaration> declarations = VariableDeclarationParser.parse(parser);
         while(parser.actual().symbol().equals(Symbol.COMMA)) {
             parser.advance();

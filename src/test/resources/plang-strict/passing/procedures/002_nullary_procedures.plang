@@ -1,0 +1,10 @@
+**#Declare and call a procedure with no parameters
+**stdOut:szia
+
+eljárás f()
+  ki: "szia"
+eljárás_vége
+
+program t
+  f()
+program_vége

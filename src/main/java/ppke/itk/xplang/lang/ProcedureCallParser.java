@@ -6,8 +6,12 @@ import ppke.itk.xplang.ast.Statement;
 import ppke.itk.xplang.common.Location;
 import ppke.itk.xplang.parser.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static ppke.itk.xplang.common.Location.between;
 import static ppke.itk.xplang.lang.PlangName.name;
 
@@ -15,7 +19,19 @@ public class ProcedureCallParser {
     public static Statement parse(Parser parser) throws ParseError {
         Token identifier = parser.accept(Symbol.IDENTIFIER);
         parser.accept(Symbol.PAREN_OPEN);
-        Expression argumentExpression = parser.parseExpression();
+
+        List<Expression> arguments;
+        if (parser.actual().symbol() == Symbol.PAREN_CLOSE) {
+            arguments = emptyList();
+        } else {
+            arguments = new ArrayList<>();
+            arguments.add(parser.parseExpression());
+            while (parser.actual().symbol() == Symbol.COMMA) {
+                parser.advance();
+                arguments.add(parser.parseExpression());
+            }
+        }
+
         Token closingToken = parser.accept(Symbol.PAREN_CLOSE);
 
         Name functionName = name(identifier.lexeme());
@@ -24,7 +40,7 @@ public class ProcedureCallParser {
             functionName,
             location,
             parser.context().findFunctionsFor(functionName),
-            Collections.singletonList(argumentExpression)
+            arguments
         );
 
         RValue resolved = TypeChecker.in(parser.context()).checking(call).build().resolve();
